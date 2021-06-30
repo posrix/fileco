@@ -1,0 +1,14 @@
+{
+  "password.create.form.title": "Set wallet access password",
+  "password.create.form.subTitle": "Keystore Lite does not store your password on the server. Once you forget your password, you can only restore your wallet through the backup mnemonic.",
+  "password.create.form.password": "8-20 digit password",
+  "password.create.form.confirm": "Confirm password",
+  "password.create.form.password.validaton.required": "password is required",
+  "password.create.form.confirm.validaton.required": "confirm password is required",
+  "password.create.form.password.validaton.match": "password must match",
+  "password.create.form.password.validaton.min": "Password is too short, should be 2 digits minimum",
+  "password.create.form.password.validaton.max": "Password is too long, should be 8 digits maximum",
+
+  "global.confirm": "Confirm",
+  "global.back": "Go Back"
+}
