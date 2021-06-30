@@ -1,11 +1,11 @@
 {
-  "name": "filecoin-wallet",
+  "name": "keystore-lite",
   "version": "0.0.1",
-  "description": "A filecoin wallet",
+  "description": "A filecoin wallet in chrome extension",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lxieyang/chrome-extension-boilerplate-react.git"
+    "url": "https://bitbucket.bitrost.tech/projects/KL/repos/keystore-lite/browse"
   },
   "scripts": {
     "build": "node utils/build.js",
