@@ -69,6 +69,7 @@ const SetPassword: React.FC = () => {
             </Typography>
             <Field
               id="password"
+              type="password"
               label={intl.formatMessage({
                 id: 'password.create.form.password',
               })}
@@ -80,6 +81,7 @@ const SetPassword: React.FC = () => {
             />
             <Field
               id="confirm"
+              type="password"
               label={intl.formatMessage({
                 id: 'password.create.form.confirm',
               })}
@@ -90,7 +92,11 @@ const SetPassword: React.FC = () => {
               component={StyleTextField}
             />
             <FormActions>
-              <Button variant="contained" fullWidth>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => history.goBack()}
+              >
                 <FormattedMessage id="global.back" />
               </Button>
               <Button

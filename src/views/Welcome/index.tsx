@@ -1,15 +1,58 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
-import Button from 'src/components/Button';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { Container } from './styled';
+import Box from '@material-ui/core/Box';
+import Icon from 'src/components/Icon';
+import { FormattedMessage } from 'react-intl';
+import {
+  Container,
+  WalletEntryContainer,
+  WalletEntryTitle,
+  WalletEntrySubTitle,
+  CoverContainer,
+  Title,
+  Slogan,
+} from './styled';
 
 const Welcome = () => {
   const history = useHistory();
-  const intl = useIntl();
 
-  return <Container></Container>;
+  return (
+    <>
+      <CoverContainer>
+        <Box>
+          <Title>Keystore</Title>
+          <Title>Lite</Title>
+          <Slogan>
+            <FormattedMessage id="welcome.slogan" />
+          </Slogan>
+        </Box>
+      </CoverContainer>
+      <Container>
+        <WalletEntryContainer onClick={() => history.push('/set-password')}>
+          <Icon glyph="add-wallet" width={26} height={21} />
+          <Box>
+            <WalletEntryTitle>
+              <FormattedMessage id="welcome.wallet.entry.create.title" />
+            </WalletEntryTitle>
+            <WalletEntrySubTitle>
+              <FormattedMessage id="welcome.wallet.entry.create.title.sub" />
+            </WalletEntrySubTitle>
+          </Box>
+        </WalletEntryContainer>
+        <WalletEntryContainer>
+          <Icon glyph="import-wallet" width={26} height={21} />
+          <Box>
+            <WalletEntryTitle>
+              <FormattedMessage id="welcome.wallet.entry.import.title" />
+            </WalletEntryTitle>
+            <WalletEntrySubTitle>
+              <FormattedMessage id="welcome.wallet.entry.import.title.sub" />
+            </WalletEntrySubTitle>
+          </Box>
+        </WalletEntryContainer>
+      </Container>
+    </>
+  );
 };
 
 export default Welcome;

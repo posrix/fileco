@@ -1,7 +1,5 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: PingFang SC;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -17,8 +15,9 @@ code {
 
 #app-container {
   width: 357px;
+  height: 600px;
   box-shadow: 0 0 7px 0 rgb(0 0 0 / 8%);
-  min-height: 90vh;
+  position: relative;
 }
 
 /* @media screen and (min-width: 576px) {
