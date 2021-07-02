@@ -24,6 +24,7 @@ export const Title = styled.div`
   font-size: 40px;
   font-weight: 700;
   color: #fff;
+  font-family: verdana;
 `;
 
 export const Slogan = styled.div`
@@ -31,6 +32,7 @@ export const Slogan = styled.div`
   color: #fff;
   font-weight: 600;
   margin-top: 15px;
+  font-family: verdana;
 `;
 
 export const WalletEntryContainer = styled.div`

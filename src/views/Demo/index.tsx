@@ -9,12 +9,7 @@ import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browse
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { Container, Section, Content, Message } from './styled';
 
-//@ts-ignore
-window.global = window;
-//@ts-ignore
-window.Buffer = window.Buffer || require('buffer').Buffer;
-
-const signer = require('src/signer');
+const signer = require('src/utils/signer');
 const pbkdf2 = require('pbkdf2');
 const aesjs = require('aes-js');
 

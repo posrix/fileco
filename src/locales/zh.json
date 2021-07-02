@@ -6,7 +6,7 @@
   "welcome.slogan": "开始使用！",
 
   "password.create.form.title": "设置钱包访问密码",
-  "password.create.form.subTitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
+  "password.create.form.subtitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
   "password.create.form.password": "8-20位密码",
   "password.create.form.confirm": "确认密码",
   "password.create.form.password.validaton.required": "请输入密码",
@@ -14,6 +14,12 @@
   "password.create.form.password.validaton.match": "两次输入密码不一致",
   "password.create.form.password.validaton.min": "密码长度至少2位",
   "password.create.form.password.validaton.max": "密码长度最大8位",
+
+  "mnemonic.produce.title": "备份助记词",
+  "mnemonic.produce.subtitle": "请按顺序在纸上抄写助记词并妥善保管，我们将在下一个屏幕确认",
+  "mnemonic.produce.warning1": "· 助记词代表您的钱包所有权，请勿泄漏给任何人",
+  "mnemonic.produce.warning2": "· 助记词一旦丢失，资产将无法恢复",
+  "mnemonic.produce.warning3": "· 请勿通过截屏，网络传输的方式进行备份保存",
 
   "global.confirm": "确认",
   "global.back": "返回"

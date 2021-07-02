@@ -1,11 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import Button from 'src/components/Button';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
+import ActionFooter from 'src/components/ActionFooter';
 import * as yup from 'yup';
-import { Container, StyleTextField, FormActions } from './styled';
+import { Container, StyleTextField } from './styled';
 
 const SetPassword: React.FC = () => {
   const history = useHistory();
@@ -65,7 +65,7 @@ const SetPassword: React.FC = () => {
               <FormattedMessage id="password.create.form.title" />
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-              <FormattedMessage id="password.create.form.subTitle" />
+              <FormattedMessage id="password.create.form.subtitle" />
             </Typography>
             <Field
               id="password"
@@ -91,23 +91,7 @@ const SetPassword: React.FC = () => {
               helperText={formik.touched.confirm && formik.errors.confirm}
               component={StyleTextField}
             />
-            <FormActions>
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => history.goBack()}
-              >
-                <FormattedMessage id="global.back" />
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                color="primary"
-              >
-                <FormattedMessage id="global.confirm" />
-              </Button>
-            </FormActions>
+            <ActionFooter />
           </Form>
         )}
       </Formik>
