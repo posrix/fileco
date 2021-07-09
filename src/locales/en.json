@@ -15,11 +15,16 @@
   "password.create.form.password.validaton.min": "Password is too short, should be 2 digits minimum",
   "password.create.form.password.validaton.max": "Password is too long, should be 8 digits maximum",
 
-  "mnemonic.produce.title": "Backup mnemonic",
+  "mnemonic.produce.title": "Please backup your mnemonic",
   "mnemonic.produce.subtitle": "Please copy the mnemonic words on the paper in order and keep them in a safe place, we will confirm on the next screen",
   "mnemonic.produce.warning1": "· The mnemonic phrase represents the ownership of your wallet, please do not disclose it to anyone",
   "mnemonic.produce.warning2": "· Once the mnemonic phrase is lost, the assets cannot be recovered",
   "mnemonic.produce.warning3": "· Do not use screenshots, network transmission methods to backup and save",
+  "mnemonic.produce.lock": "Click here to show mnemonic",
+
+  "mnemonic.verify.title": "Please confirm your mnemonic",
+  "mnemonic.verify.subtitle": "Please select each word to ensure it is correct",
+  "mnemonic.verify.wrong.order": "Mnemonic phrsae order is incorrect",
 
   "global.confirm": "Confirm",
   "global.back": "Go Back"

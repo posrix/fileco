@@ -1,9 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
-import { FormattedMessage, useIntl } from 'react-intl';
+import ActionHeader from 'src/components/ActionHeader';
+import { useIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import ActionFooter from 'src/components/ActionFooter';
+import { setLocalStorage } from 'src/utils/app';
 import * as yup from 'yup';
 import { Container, StyleTextField } from './styled';
 
@@ -13,16 +14,19 @@ const SetPassword: React.FC = () => {
 
   return (
     <Container>
+      <ActionHeader
+        titleLocaleId="password.create.form.title"
+        subtitleLocaleId="password.create.form.subtitle"
+        gutter={50}
+      />
       <Formik
         initialValues={{
           password: '',
           confirm: '',
         }}
         onSubmit={({ password }) => {
-          chrome.storage.sync.set({ password }, function () {
-            console.log('password is set to ' + password);
-            history.push('/mnemonic');
-          });
+          setLocalStorage('password', password);
+          history.push('/mnemonic');
         }}
         validationSchema={yup.object().shape({
           password: yup
@@ -61,12 +65,6 @@ const SetPassword: React.FC = () => {
       >
         {(formik) => (
           <Form autoComplete="off">
-            <Typography variant="h5" gutterBottom>
-              <FormattedMessage id="password.create.form.title" />
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              <FormattedMessage id="password.create.form.subtitle" />
-            </Typography>
             <Field
               id="password"
               type="password"

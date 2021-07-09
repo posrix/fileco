@@ -5,23 +5,29 @@ export const Container = styled.div`
 `;
 
 export const Mnemonic = styled.div`
-  border: 1px solid #bdbdbd;
+  border: 1px solid #f7f7f7;
   border-radius: 4px;
-  padding: 12px;
+  padding: 20px;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 24px;
 `;
 
-export const Title = styled.div`
-  margin-top: 80px;
-  font-weight: 600;
-  font-size: 24px;
-  color: #212121;
-`;
-
-export const SubTitle = styled.div`
+export const MnemonicLockedPlaceholder = styled.div`
+  background-color: #5b5b5b;
+  border-radius: 4px;
+  width: 317px;
+  height: 117px;
   font-size: 14px;
-  color: #212121;
-  margin-top: 8px;
-  margin-bottom: 24px;
+  text-align: center;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  margin-top: 24px;
 `;
 
 export const Warning = styled.div`

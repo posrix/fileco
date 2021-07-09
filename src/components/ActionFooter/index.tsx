@@ -4,11 +4,11 @@ import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import { ActionContainer } from './styled';
 
-interface ActionFooterProps {
-  nextRoute?: string;
+export interface ActionFooterProps {
+  onConfirm?: () => void;
 }
 
-const ActionFooter: React.FC<ActionFooterProps> = ({ nextRoute }) => {
+const ActionFooter: React.FC<ActionFooterProps> = ({ onConfirm }) => {
   const history = useHistory();
   return (
     <ActionContainer>
@@ -16,11 +16,11 @@ const ActionFooter: React.FC<ActionFooterProps> = ({ nextRoute }) => {
         <FormattedMessage id="global.back" />
       </Button>
       <Button
-        type={nextRoute ? 'button' : 'submit'}
+        type={onConfirm ? 'button' : 'submit'}
         variant="contained"
         fullWidth
         color="primary"
-        onClick={() => (nextRoute ? history.push(nextRoute) : null)}
+        onClick={() => (onConfirm ? onConfirm() : null)}
       >
         <FormattedMessage id="global.confirm" />
       </Button>

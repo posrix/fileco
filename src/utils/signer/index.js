@@ -17,8 +17,8 @@ const {
 const { ProtocolIndicator } = require('./constants');
 
 function generateMnemonic() {
-  // 256 so it generate 24 words
-  return bip39.generateMnemonic(256);
+  // 256 generate 24 words
+  return bip39.generateMnemonic(128);
 }
 
 function keyDeriveFromSeed(seed, path) {

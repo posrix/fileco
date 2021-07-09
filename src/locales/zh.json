@@ -20,6 +20,11 @@
   "mnemonic.produce.warning1": "· 助记词代表您的钱包所有权，请勿泄漏给任何人",
   "mnemonic.produce.warning2": "· 助记词一旦丢失，资产将无法恢复",
   "mnemonic.produce.warning3": "· 请勿通过截屏，网络传输的方式进行备份保存",
+  "mnemonic.produce.lock": "点击此处显示密语",
+
+  "mnemonic.verify.title": "验证助记词",
+  "mnemonic.verify.subtitle": "请选择每个单词以确保它是正确的",
+  "mnemonic.verify.wrong.order": "助记词顺序不正确",
 
   "global.confirm": "确认",
   "global.back": "返回"
