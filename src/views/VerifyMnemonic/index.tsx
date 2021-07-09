@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import ActionHeader from 'src/components/ActionHeader';
 import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
 import ActionFooter from 'src/components/ActionFooter';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import { getLocalStorage } from 'src/utils/app';
+import { getLocalStorage, setLocalStorage } from 'src/utils/app';
 import {
   Container,
   WordButton,
@@ -18,15 +18,30 @@ import {
 const passworder = require('browser-passworder');
 
 const VerifyMnemonic: React.FC = () => {
-  const intl = useIntl();
   const history = useHistory();
 
+  const password = getLocalStorage('password');
   const mnemonic = getLocalStorage('mnemonic');
+
   const [words, setWords] = useState(mnemonic.split(' '));
   const [sortedwords, setSortedWords] = useState([]);
   const [showError, setShowError] = React.useState(false);
 
-  console.log(mnemonic);
+  const handleConfirm = () => {
+    const matchedOrder = sortedwords.join(' ') === mnemonic;
+    if (matchedOrder) {
+      window.localStorage.clear();
+      passworder.encrypt(password, mnemonic).then(function (blob: any) {
+        setLocalStorage('mnemonic', blob);
+      });
+      history.push('/');
+    } else if (words.length) {
+      return;
+    } else {
+      setShowError(true);
+    }
+  };
+
   return (
     <Container>
       <ActionHeader
@@ -62,17 +77,7 @@ const VerifyMnemonic: React.FC = () => {
           </WordButton>
         ))}
       </WordsContainer>
-      <ActionFooter
-        onConfirm={() => {
-          if (sortedwords.join(' ') === mnemonic) {
-            history.push('/');
-          } else if (words.length) {
-            return;
-          } else {
-            setShowError(true);
-          }
-        }}
-      />
+      <ActionFooter onConfirm={handleConfirm} />
       <Snackbar
         anchorOrigin={{
           vertical: 'top',
