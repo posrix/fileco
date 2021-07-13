@@ -26,6 +26,11 @@
   "mnemonic.verify.subtitle": "Please select each word to ensure it is correct",
   "mnemonic.verify.wrong.order": "Mnemonic phrsae order is incorrect",
 
+  "home.network.current": "Current Network: {network}",
+  "home.order.list": "Order List",
+
   "global.confirm": "Confirm",
-  "global.back": "Go Back"
+  "global.back": "Go Back",
+  "global.receive": "Receive",
+  "global.send": "Send"
 }

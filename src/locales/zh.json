@@ -26,6 +26,11 @@
   "mnemonic.verify.subtitle": "请选择每个单词以确保它是正确的",
   "mnemonic.verify.wrong.order": "助记词顺序不正确",
 
+  "home.network.current": "当前网络: {network}",
+  "home.order.list": "交易列表",
+
   "global.confirm": "确认",
-  "global.back": "返回"
+  "global.back": "返回",
+  "global.receive": "接收",
+  "global.send": "发送"
 }

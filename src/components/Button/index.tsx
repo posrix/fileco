@@ -16,6 +16,9 @@ const StyledButton = styled(Button)`
   border-radius: 4px;
   border: 1px solid #bdbdbd;
   box-shadow: none;
+  font-weight: 600;
+  font-size: 16px;
+  
   ${(props) => (props.color === 'primary' ? primiaryColorMixin : null)}
 `;
 
