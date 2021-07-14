@@ -33,8 +33,9 @@ const VerifyMnemonic: React.FC = () => {
       window.localStorage.clear();
       passworder.encrypt(password, mnemonic).then(function (blob: any) {
         setLocalStorage('mnemonic', blob);
+        setLocalStorage('password', password);
       });
-      history.push('/');
+      history.push('/home');
     } else if (words.length) {
       return;
     } else {

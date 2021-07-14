@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import Icon from 'src/components/Icon';
 import ActionHeader from 'src/components/ActionHeader';
+import { PATH } from 'src/utils/constants';
 import {
   Container,
   Mnemonic,
@@ -27,8 +28,7 @@ const ProduceMnemonic: React.FC = () => {
 
   useEffect(() => {
     const mnemonic = signer.generateMnemonic();
-    const path = "m/44'/461'/0'/0/0";
-    const extendedKey = signer.keyDerive(mnemonic, path, '');
+    const extendedKey = signer.keyDerive(mnemonic, PATH, '');
     setLocalStorage('address', extendedKey.address);
     setLocalStorage('mnemonic', mnemonic);
     setMnemonic(mnemonic);

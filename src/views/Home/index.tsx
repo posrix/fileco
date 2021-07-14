@@ -7,8 +7,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from 'src/components/Button';
 import {
   getLocalStorage,
-  setLocalStorage,
   WrappedLotusRPC,
+  getExtendedKeyBySeed,
+  getAddressByNetwork,
 } from 'src/utils/app';
 import { Network } from 'src/types/app';
 import { Dispatch } from 'src/models/store';
@@ -35,23 +36,27 @@ const Home: React.FC = () => {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [balance, setBalance] = useState(0);
+  const [address, setAddress] = useState('');
   const dispatch = useDispatch<Dispatch>();
   const selectedNetwork = useSelector(
     (state: RootState) => state.app.selectedNetwork
   );
 
   useEffect(() => {
-    if (selectedNetwork) {
+    getExtendedKeyBySeed(getLocalStorage('password')).then((extendedKey) => {
+      setAddress(getAddressByNetwork(selectedNetwork, extendedKey.address));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedNetwork && address) {
+      setAddress(getAddressByNetwork(selectedNetwork, address));
       new WrappedLotusRPC(selectedNetwork, true);
-      WrappedLotusRPC.client
-        .walletBalance(
-          't3wrlr4fzq2ca3xtunadwls33g6zxwm6tj3xqp6gukpdsjgnf4relgshvw3a6lhlue6nkhnnws5am5gcg3dfla'
-        )
-        .then((value: any) => {
-          setBalance(value);
-        });
+      WrappedLotusRPC.client.walletBalance(address).then((value: any) => {
+        setBalance(value);
+      });
     }
-  }, [selectedNetwork]);
+  }, [selectedNetwork, address]);
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -93,18 +98,18 @@ const Home: React.FC = () => {
             },
           }}
         >
-          <MenuItem onClick={handleSetNetwork} data-value={Network.Mainnet}>
-            {Network.Mainnet}
-          </MenuItem>
           <MenuItem onClick={handleSetNetwork} data-value={Network.Calibration}>
             {Network.Calibration}
+          </MenuItem>
+          <MenuItem onClick={handleSetNetwork} data-value={Network.Mainnet}>
+            {Network.Mainnet}
           </MenuItem>
         </Menu>
         <Avatar></Avatar>
       </Header>
       <AccountContainer>
         <LotusAccount>F012689</LotusAccount>
-        <Account>f17ead...349a</Account>
+        <Account>{address}</Account>
       </AccountContainer>
       <BalanceContainer>
         <Icon glyph="filecoin" size={32} />
