@@ -68,7 +68,7 @@ export const BalanceFilecoin = styled.div`
 
 export const TextEllipsis = styled.div`
   display: inline-block;
-  width: 40%;
+  max-width: 200px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
@@ -10,6 +10,8 @@ import {
   WrappedLotusRPC,
   getExtendedKeyBySeed,
   getAddressByNetwork,
+  transfer,
+  convertFilecoin,
 } from 'src/utils/app';
 import { Network } from 'src/types/app';
 import { Dispatch } from 'src/models/store';
@@ -37,6 +39,7 @@ const Home: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [balance, setBalance] = useState(0);
   const [address, setAddress] = useState('');
+  const privateKeyRef = useRef('');
   const dispatch = useDispatch<Dispatch>();
   const selectedNetwork = useSelector(
     (state: RootState) => state.app.selectedNetwork
@@ -45,6 +48,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     getExtendedKeyBySeed(getLocalStorage('password')).then((extendedKey) => {
       setAddress(getAddressByNetwork(selectedNetwork, extendedKey.address));
+      privateKeyRef.current = extendedKey.privateKey;
     });
   }, []);
 
@@ -53,7 +57,7 @@ const Home: React.FC = () => {
       setAddress(getAddressByNetwork(selectedNetwork, address));
       new WrappedLotusRPC(selectedNetwork, true);
       WrappedLotusRPC.client.walletBalance(address).then((value: any) => {
-        setBalance(value);
+        setBalance(convertFilecoin(value));
       });
     }
   }, [selectedNetwork, address]);
@@ -114,7 +118,7 @@ const Home: React.FC = () => {
       <BalanceContainer>
         <Icon glyph="filecoin" size={32} />
         <BalanceFilecoin>
-          <TextEllipsis>{balance}</TextEllipsis>FIL
+          <TextEllipsis>{balance}</TextEllipsis>&nbsp;FIL
         </BalanceFilecoin>
         <BalanceDollar>$12345.67 USD</BalanceDollar>
       </BalanceContainer>
@@ -122,7 +126,20 @@ const Home: React.FC = () => {
         <Button variant="contained" fullWidth>
           <FormattedMessage id="global.receive" />
         </Button>
-        <Button variant="contained" fullWidth color="primary">
+        <Button
+          variant="contained"
+          fullWidth
+          color="primary"
+          onClick={() => {
+            transfer({
+              client: WrappedLotusRPC.client,
+              from: address,
+              to: 't1tarmoe3mh6uoznw3sw4322eo4pyvei6o2mbafgi',
+              value: 1e18,
+              privateKey: privateKeyRef.current,
+            });
+          }}
+        >
           <FormattedMessage id="global.send" />
         </Button>
       </ActionsContainer>

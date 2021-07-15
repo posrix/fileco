@@ -210,7 +210,7 @@ function transactionSign(unsignedMessage, privateKey) {
 function transactionSignLotus(unsignedMessage, privateKey) {
   const signedMessage = transactionSign(unsignedMessage, privateKey);
 
-  return JSON.stringify({
+  return {
     Message: {
       From: signedMessage.message.from,
       GasLimit: signedMessage.message.gaslimit,
@@ -226,7 +226,7 @@ function transactionSignLotus(unsignedMessage, privateKey) {
       Data: signedMessage.signature.data,
       Type: signedMessage.signature.type,
     },
-  });
+  };
 }
 
 // TODO: new function 'verifySignature(signedMessage)'; Makes more sense ?

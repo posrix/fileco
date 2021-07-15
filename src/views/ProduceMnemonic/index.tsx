@@ -5,6 +5,8 @@ import { useHistory } from 'react-router-dom';
 import Icon from 'src/components/Icon';
 import ActionHeader from 'src/components/ActionHeader';
 import { PATH } from 'src/utils/constants';
+import { setLocalStorage } from 'src/utils/app';
+import signer from 'src/utils/signer';
 import {
   Container,
   Mnemonic,
@@ -12,14 +14,6 @@ import {
   Warning,
   WarningContainer,
 } from './styled';
-import { setLocalStorage } from 'src/utils/app';
-
-//@ts-ignore
-window.global = window;
-//@ts-ignore
-window.Buffer = window.Buffer || require('buffer').Buffer;
-
-const signer = require('src/utils/signer');
 
 const ProduceMnemonic: React.FC = () => {
   const [mnemonic, setMnemonic] = useState('');
