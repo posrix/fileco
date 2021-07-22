@@ -67,20 +67,16 @@ export function convertFilecoin(value: number) {
   return Math.floor(value * Math.pow(10, -18) * 1e4) / 1e4;
 }
 
-export async function transfer({
-  client,
+export function constructUnsignedMessage({
   from,
   to,
   value,
-  privateKey,
 }: {
-  client: any;
   from: string;
   to: string;
   value: number;
-  privateKey: string;
 }) {
-  const unsignedMessage = {
+  return {
     From: from,
     GasFeeCap: '0',
     GasLimit: 0,
@@ -91,28 +87,53 @@ export async function transfer({
     To: to,
     Value: String(value),
   };
+}
+
+export async function getEstimateGas(unsignedMessage: any): Promise<any> {
+  const estimateMessageGas = await WrappedLotusRPC.client.gasEstimateMessageGas(
+    unsignedMessage,
+    { MaxFee: '0' },
+    []
+  );
+  return {
+    gasFeeCap: estimateMessageGas.GasFeeCap,
+    gasLimit: estimateMessageGas.GasLimit,
+    gasPremium: estimateMessageGas.GasPremium,
+  };
+}
+
+export async function sendSignedMessage({
+  from,
+  to,
+  value,
+  privateKey,
+}: {
+  from: string;
+  to: string;
+  value: number;
+  privateKey: string;
+}) {
+  const unsignedMessage = constructUnsignedMessage({ from, to, value });
 
   // get nonce and compare value with balance
-  const actor = await client.StateGetActor(from, []);
+  const actor = await WrappedLotusRPC.client.StateGetActor(from, []);
   if (actor.Balance < value) {
     throw new Error('transfer amount is greater than balance');
   }
   unsignedMessage.Nonce = actor.Nonce;
 
   // get gas info
-  const estimateMessageGas = await client.gasEstimateMessageGas(
-    unsignedMessage,
-    { MaxFee: '0' },
-    []
+  const { gasFeeCap, gasLimit, gasPremium } = await getEstimateGas(
+    unsignedMessage
   );
-  unsignedMessage.GasFeeCap = estimateMessageGas.GasFeeCap;
-  unsignedMessage.GasLimit = estimateMessageGas.GasLimit;
-  unsignedMessage.GasPremium = estimateMessageGas.GasPremium;
+  unsignedMessage.GasFeeCap = gasFeeCap;
+  unsignedMessage.GasLimit = gasLimit;
+  unsignedMessage.GasPremium = gasPremium;
 
   // sign message and push message
   const signedMessage = signer.transactionSignLotus(
     unsignedMessage,
     privateKey
   );
-  await client.mpoolPush(signedMessage);
+  await WrappedLotusRPC.client.mpoolPush(signedMessage);
 }

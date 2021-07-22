@@ -3,6 +3,9 @@ import { FormattedMessage } from 'react-intl';
 import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
 import {
+  WrappedLotusRPC,
+} from 'src/utils/app';
+import {
   Container,
   OrderListItem,
   OrderListSegment,
@@ -14,6 +17,23 @@ import {
 
 const Home: React.FC = () => {
   const history = useHistory();
+
+  // async function stateListMessages() {
+  //   const listMessages = await WrappedLotusRPC.client.stateListMessages(
+  //     {
+  //       From: '',
+  //       To: '',
+  //     },
+  //     [],
+  //     0
+  //   );
+  //   if (!listMessages) return;
+  //   const chainMessages = await Promise.all(
+  //     listMessages.map(async (cid: any) => {
+  //       return await WrappedLotusRPC.client.chainGetMessage(cid);
+  //     })
+  //   );
+  // }
 
   return (
     <Container>

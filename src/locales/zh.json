@@ -29,6 +29,14 @@
   "home.network.current": "当前网络: {network}",
   "home.order.list": "交易列表",
 
+  "transfer.form.title": "发送",
+  "transfer.form.address": "发送地址",
+  "transfer.form.amount": "发送数量",
+  "transfer.form.address.validaton.required": "请输入发送地址",
+  "transfer.form.amount.validaton.required": "请输入发送数量",
+  "transfer.form.info.balance.available": "可用余额: {balance} FIL",
+  "transfer.form.info.gas.estimate": "预估 Gas 费用: {gasEstimate} FIL",
+
   "global.confirm": "确认",
   "global.back": "返回",
   "global.receive": "接收",

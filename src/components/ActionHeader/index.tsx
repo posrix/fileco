@@ -4,7 +4,7 @@ import { TitleContainer, Title, SubTitle } from './styled';
 
 export interface ActionHeaderProps {
   titleLocaleId: string;
-  subtitleLocaleId: string;
+  subtitleLocaleId?: string;
   gutter?: number;
 }
 
@@ -18,9 +18,11 @@ const ActionHeader: React.FC<ActionHeaderProps> = ({
       <Title>
         <FormattedMessage id={titleLocaleId} />
       </Title>
-      <SubTitle>
-        <FormattedMessage id={subtitleLocaleId} />
-      </SubTitle>
+      {subtitleLocaleId && (
+        <SubTitle>
+          <FormattedMessage id={subtitleLocaleId} />
+        </SubTitle>
+      )}
     </TitleContainer>
   );
 };

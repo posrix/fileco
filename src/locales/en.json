@@ -29,6 +29,14 @@
   "home.network.current": "Current Network: {network}",
   "home.order.list": "Order List",
 
+  "transfer.form.title": "Transfer",
+  "transfer.form.address": "Transfer Address",
+  "transfer.form.amount": "Transfer Amount",
+  "transfer.form.address.validaton.required": "Please enter transfer address",
+  "transfer.form.amount.validaton.required": "Please enter transfer amount",
+  "transfer.form.info.balance.available": "Available Balance: {balance} FIL",
+  "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gasEstimate} FIL",
+
   "global.confirm": "Confirm",
   "global.back": "Go Back",
   "global.receive": "Receive",
