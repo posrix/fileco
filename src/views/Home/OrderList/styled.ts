@@ -1,6 +1,11 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  display: flex;
+  height: 245px;
+  flex-direction: column;
+  overflow: scroll;
+`;
 
 export const OrderListItem = styled.div`
   display: flex;

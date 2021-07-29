@@ -6,11 +6,11 @@ import {
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
+  getfilUnit,
 } from 'src/utils/app';
 import Header from 'src/views/Header';
 import { RootState } from 'src/models/store';
-import { Dispatch } from 'src/models/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
 import ActionHeader from 'src/components/ActionHeader';
 import { Formik, Form, Field } from 'formik';
@@ -28,19 +28,13 @@ const Transfer: React.FC = () => {
   const history = useHistory();
   const intl = useIntl();
 
-  const dispatch = useDispatch<Dispatch>();
   const [gasEstimate, setGasEstimate] = useState(0);
-  const { address, extendedKey, balance } = useSelector(
-    (state: RootState) => state.app
-  );
+  const { address, extendedKey } = useSelector((state: RootState) => state.app);
 
-  useQuery(
+  const { data: balance = 0 } = useQuery(
     ['balance', address],
     () => WrappedLotusRPC.client.walletBalance(address),
     {
-      onSuccess: (data) => {
-        dispatch.app.setBalance(data);
-      },
       enabled: !!address,
     }
   );
@@ -55,7 +49,7 @@ const Transfer: React.FC = () => {
             value: Number(formik.values.amount),
           })
         ).then((estimateGas) => {
-          // TODO convertFilecoin support much more smaller unit
+          // TODO getfilUnit support much more smaller unit
           setGasEstimate(estimateGas.gasFeeCap);
         });
       }
@@ -128,7 +122,7 @@ const Transfer: React.FC = () => {
           <TransferInfo>
             <FormattedMessage
               id="transfer.form.info.balance.available"
-              values={{ balance }}
+              values={{ balance: getfilUnit(balance) }}
             />
           </TransferInfo>
           <TransferInfo>

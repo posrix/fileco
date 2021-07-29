@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
@@ -6,7 +6,8 @@ import Button from 'src/components/Button';
 import {
   WrappedLotusRPC,
   getAddressByNetwork,
-  convertFilecoin,
+  getfilUnit,
+  addressEllipsis,
 } from 'src/utils/app';
 import { useQuery } from 'react-query';
 import Header from 'src/views/Header';
@@ -29,19 +30,15 @@ import {
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const [balance, setBalance] = useState(0);
   const dispatch = useDispatch<Dispatch>();
-  const { address, selectedNetwork, extendedKey } = useSelector(
+  const { address, selectedNetwork } = useSelector(
     (state: RootState) => state.app
   );
 
-  useQuery(
+  const { data: balance = 0 } = useQuery(
     ['balance', address],
     () => WrappedLotusRPC.client.walletBalance(address),
     {
-      onSuccess: (data) => {
-        setBalance(convertFilecoin(data));
-      },
       enabled: !!address,
     }
   );
@@ -57,12 +54,12 @@ const Home: React.FC = () => {
       <Header />
       <AccountContainer>
         <LotusAccount>F012689</LotusAccount>
-        <Account>{address}</Account>
+        <Account>{addressEllipsis(address)}</Account>
       </AccountContainer>
       <BalanceContainer>
         <Icon glyph="filecoin" size={32} />
         <BalanceFilecoin>
-          <TextEllipsis>{balance}</TextEllipsis>&nbsp;FIL
+          <TextEllipsis>{getfilUnit(balance)}</TextEllipsis>
         </BalanceFilecoin>
         <BalanceDollar>$12345.67 USD</BalanceDollar>
       </BalanceContainer>
@@ -84,7 +81,7 @@ const Home: React.FC = () => {
           <FormattedMessage id="home.order.list" />
         </OrderListTitle>
       </OrderListTitleContainer>
-      <OrderList />
+      <OrderList address={address} />
     </>
   );
 };

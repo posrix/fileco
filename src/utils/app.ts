@@ -62,9 +62,34 @@ export function getAddressByNetwork(network: Network, address: string): string {
     : address;
 }
 
-export function convertFilecoin(value: number) {
-  // remain 4 decimals
-  return Math.floor(value * Math.pow(10, -18) * 1e4) / 1e4;
+export function getfilUnit(value: number, decimal: number = 4) {
+  const filScope = Math.pow(10, 18);
+  const nanoScope = Math.pow(10, 9);
+  const attoScope = 0;
+  if (value >= filScope) {
+    return (
+      Math.floor(value * Math.pow(10, -18) * Math.pow(10, decimal)) /
+        Math.pow(10, decimal) +
+      ' FIL'
+    );
+  } else if (value <= filScope && value >= nanoScope) {
+    return (
+      Math.floor(value * Math.pow(10, -9) * Math.pow(10, decimal)) /
+        Math.pow(10, decimal) +
+      ' nanoFIL'
+    );
+  } else if (value <= nanoScope && value > attoScope) {
+    return (
+      Math.floor(value * Math.pow(10, decimal)) / Math.pow(10, decimal) +
+      ' attoFIL'
+    );
+  }
+}
+
+export function addressEllipsis(address: string) {
+  const head = address.substring(0, 7);
+  const tail = address.substring(address.length - 4, address.length);
+  return `${head}...${tail}`;
 }
 
 export function constructUnsignedMessage({

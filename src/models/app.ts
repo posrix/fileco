@@ -1,7 +1,7 @@
 import { createModel } from '@rematch/core';
 import { Network } from 'src/types/app';
 import produce, { Draft } from 'immer';
-import { convertFilecoin, WrappedLotusRPC } from 'src/utils/app';
+import { getfilUnit, WrappedLotusRPC } from 'src/utils/app';
 import { RootModel } from '.';
 
 interface AppState {
@@ -37,7 +37,7 @@ export const app = createModel<RootModel>()({
     },
     setBalance(state: AppState, balance: number) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.balance = convertFilecoin(balance);
+        draftState.balance = balance;
       });
     },
   },
