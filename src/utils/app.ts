@@ -4,8 +4,8 @@ import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browse
 //@ts-ignore
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
-import { Network } from 'src/types/app';
-import BigNumber from "bignumber.js";
+import { Network, Cid, Message, MsgLookup } from 'src/types/app';
+import moment from 'moment';
 import signer from 'src/utils/signer';
 
 const passworder = require('browser-passworder');
@@ -100,7 +100,7 @@ export function constructUnsignedMessage({
 }: {
   from: string;
   to: string;
-  value: BigNumber;
+  value: number;
 }) {
   return {
     From: from,
@@ -128,6 +128,80 @@ export async function getEstimateGas(unsignedMessage: any): Promise<any> {
   };
 }
 
+// TODO use closure to aviod window variable
+declare global {
+  interface Window {
+    elapse: number;
+  }
+}
+
+window.elapse = 0;
+
+export async function searchMessageByCid({
+  cid,
+  enablePolling = false,
+  timeout = 5000,
+  onSuccess,
+  onError,
+}: {
+  cid: Cid;
+  enablePolling?: boolean;
+  timeout?: number;
+  onSuccess?: (message: MsgLookup) => void;
+  onError?: () => void;
+}): Promise<MsgLookup> {
+  const searchedMessage = await WrappedLotusRPC.client.stateSearchMsg(cid);
+  if (!searchedMessage) {
+    if (enablePolling) {
+      // polling will be over after 5 mins
+      if (window.elapse >= 5 * 60 * 1000) {
+        if (onError) {
+          onError();
+        }
+        window.elapse = 0;
+        throw new Error('Message can not be sent');
+      }
+      window.elapse += timeout;
+      setTimeout(
+        () => searchMessageByCid({ cid, enablePolling, onSuccess, onError }),
+        timeout
+      );
+    } else {
+      throw new Error('Message not exist');
+    }
+  } else {
+    if (onSuccess) {
+      onSuccess(searchedMessage);
+    }
+    return searchedMessage;
+  }
+}
+
+export async function getMessageTimestampByHeight({
+  Height,
+  TipSet,
+}: Pick<MsgLookup, 'Height' | 'TipSet'>): Promise<number> {
+  const tipSet = await WrappedLotusRPC.client.chainGetTipSetByHeight(
+    Height,
+    TipSet
+  );
+  return tipSet.Blocks[0].Timestamp;
+}
+
+export async function getMessageByCid(cid: Cid): Promise<Message> {
+  const { Height, TipSet } = await searchMessageByCid({ cid });
+  const messageFromGet = await WrappedLotusRPC.client.chainGetMessage(cid);
+  const timestamp = await getMessageTimestampByHeight({ Height, TipSet });
+  return {
+    cid: messageFromGet['CID'],
+    from: messageFromGet['From'],
+    to: messageFromGet['To'],
+    value: messageFromGet['Value'],
+    datetime: moment.unix(timestamp).format('YYYY/MM/DD h:mm:ss'),
+    pending: false,
+  };
+}
+
 export async function sendSignedMessage({
   from,
   to,
@@ -136,7 +210,7 @@ export async function sendSignedMessage({
 }: {
   from: string;
   to: string;
-  value: BigNumber;
+  value: number;
   privateKey: string;
 }) {
   const unsignedMessage = constructUnsignedMessage({ from, to, value });
@@ -161,5 +235,5 @@ export async function sendSignedMessage({
     unsignedMessage,
     privateKey
   );
-  await WrappedLotusRPC.client.mpoolPush(signedMessage);
+  return await WrappedLotusRPC.client.mpoolPush(signedMessage);
 }

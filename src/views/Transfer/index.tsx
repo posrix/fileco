@@ -9,15 +9,16 @@ import {
   getFilByUnit,
 } from 'src/utils/app';
 import Header from 'src/views/Header';
-import { RootState } from 'src/models/store';
-import { useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
 import ActionHeader from 'src/components/ActionHeader';
 import { Formik, Form, Field } from 'formik';
 import ActionFooter from 'src/components/ActionFooter';
+import { RootState } from 'src/models/store';
+import { Dispatch } from 'src/models/store';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import * as yup from 'yup';
-import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import {
   Container,
   StyleTextField,
@@ -29,6 +30,7 @@ const Transfer: React.FC = () => {
   const history = useHistory();
   const intl = useIntl();
 
+  const dispatch = useDispatch<Dispatch>();
   const [gasEstimate, setGasEstimate] = useState(0);
   const { address, extendedKey } = useSelector((state: RootState) => state.app);
 
@@ -47,7 +49,7 @@ const Transfer: React.FC = () => {
           constructUnsignedMessage({
             from: address,
             to: formik.values.address,
-            value: new BigNumber(formik.values.amount),
+            value: Number(formik.values.amount),
           })
         ).then((estimateGas) => {
           setGasEstimate(estimateGas.gasFeeCap);
@@ -67,13 +69,23 @@ const Transfer: React.FC = () => {
             amount: '',
           }}
           onSubmit={(values) => {
-            sendSignedMessage({
+            const base = {
               from: address,
               to: values.address,
-              value: new BigNumber(values.amount),
+              value: Number(values.amount),
+            };
+            sendSignedMessage({
+              ...base,
               privateKey: extendedKey.privateKey,
+            }).then((cid) => {
+              dispatch.app.incrementalPushMessage({
+                ...base,
+                cid,
+                datetime: moment().format('YYYY/MM/DD h:mm:ss'),
+                pending: true,
+              });
+              history.push('/home');
             });
-            history.push('/home');
           }}
           validationSchema={yup.object().shape({
             address: yup.string().required(
@@ -116,7 +128,7 @@ const Transfer: React.FC = () => {
                 component={StyleTextField}
                 validate={(value: string) => {
                   let error;
-                  if (Number(value) * 1e18 > balance) {
+                  if (Number(value) > balance) {
                     error = intl.formatMessage({
                       id: 'transfer.form.amount.validaton.exceed',
                     });

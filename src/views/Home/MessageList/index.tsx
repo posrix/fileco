@@ -28,7 +28,7 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
   const { messages } = useSelector((state: RootState) => state.app);
   const dispatch = useDispatch<Dispatch>();
 
-  const { isLoading } = useQuery(['messages', address], () =>
+  const { isLoading } = useQuery('messages', () =>
     dispatch.app.fetchMessages(address)
   );
 
@@ -40,7 +40,7 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
         </MessageListItem>
       )}
       {messages.map((message) => (
-        <MessageListItem key={message.cid}>
+        <MessageListItem key={message.cid['/']}>
           <>
             {message.from === address ? (
               <>
@@ -48,6 +48,7 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
                 <MessageListSegment>
                   <Title>
                     <FormattedMessage id="home.message.list.send" />
+                    {message.pending && ' / PENDING'}
                   </Title>
                   <OrderFrom>
                     <FormattedMessage id="home.message.list.to" />
@@ -61,6 +62,7 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
                 <MessageListSegment>
                   <Title>
                     <FormattedMessage id="home.message.list.receive" />
+                    {message.pending && ' / PENDING'}
                   </Title>
                   <OrderFrom>
                     <FormattedMessage id="home.message.list.from" />

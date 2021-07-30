@@ -1,9 +1,13 @@
 import { createModel } from '@rematch/core';
 import { Network, Message } from 'src/types/app';
 import produce, { Draft } from 'immer';
-import { WrappedLotusRPC } from 'src/utils/app';
-import { sortBy, reverse, flatten } from 'lodash';
-import * as moment from 'moment';
+import {
+  WrappedLotusRPC,
+  getMessageByCid,
+  searchMessageByCid,
+} from 'src/utils/app';
+import { sortBy, reverse, flatten, findIndex, remove } from 'lodash';
+import { Cid } from 'src/types/app';
 import { RootModel } from '.';
 
 interface AppState {
@@ -51,12 +55,35 @@ export const app = createModel<RootModel>()({
         );
       });
     },
+    removeMessage(state: AppState, cid: Cid) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.messages = remove(
+          draftState.messages,
+          (message) => message.cid['/'] !== cid['/']
+        );
+      });
+    },
+    setMessagePendingStatus(
+      state: AppState,
+      { cid, pending }: { cid: Cid; pending: boolean }
+    ) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        const index = findIndex(
+          draftState.messages,
+          (message) => message.cid['/'] === cid['/']
+        );
+        draftState.messages[index] = {
+          ...draftState.messages[index],
+          pending,
+        };
+      });
+    },
   },
   effects: (dispatch) => ({
     async fetchMessages(address: string) {
       // TODO get decent height for performance improvement
       const height = 73232;
-      const messagesSet = (
+      const relatedCids = (
         (await Promise.all([
           WrappedLotusRPC.client.stateListMessages(
             {
@@ -74,31 +101,33 @@ export const app = createModel<RootModel>()({
           ),
         ])) as any[]
       ).filter((i) => i);
-      if (messagesSet.length) {
-        const messages = (await Promise.all(
-          flatten(messagesSet).map(async (cid: any) => {
-            const messageFromSearch =
-              await WrappedLotusRPC.client.stateSearchMsg(cid);
-            const messageFromGet = await WrappedLotusRPC.client.chainGetMessage(
-              cid
-            );
-            const tipSet = await WrappedLotusRPC.client.chainGetTipSetByHeight(
-              messageFromSearch.Height,
-              messageFromSearch.TipSet
-            );
-            const timestamp = tipSet.Blocks[0].Timestamp;
-            return {
-              cid: messageFromGet['CID']['/'],
-              from: messageFromGet['From'],
-              to: messageFromGet['To'],
-              value: messageFromGet['Value'],
-              datetime: moment.unix(timestamp).format('YYYY/MM/DD h:mm:ss'),
-            };
-          })
-        )) as Message[];
+      if (relatedCids.length) {
+        const messages = await Promise.all(
+          flatten(relatedCids).map(
+            async (cid: Cid) => await getMessageByCid(cid)
+          )
+        );
         dispatch.app.setMessages(messages);
         return messages;
       }
+    },
+    async incrementalPushMessage(message: Message, rootState) {
+      dispatch.app.setMessages([message, ...rootState.app.messages]);
+
+      searchMessageByCid({
+        cid: message.cid,
+        enablePolling: true,
+        onSuccess: () => {
+          dispatch.app.setMessagePendingStatus({
+            cid: message.cid,
+            pending: false,
+          });
+        },
+        onError: () => {
+          // remove message if failed
+          dispatch.app.removeMessage(message.cid);
+        },
+      });
     },
   }),
 });
