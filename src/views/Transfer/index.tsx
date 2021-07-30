@@ -6,7 +6,7 @@ import {
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
-  getfilUnit,
+  getFilByUnit,
 } from 'src/utils/app';
 import Header from 'src/views/Header';
 import { RootState } from 'src/models/store';
@@ -17,6 +17,7 @@ import { Formik, Form, Field } from 'formik';
 import ActionFooter from 'src/components/ActionFooter';
 import { isEmpty } from 'lodash';
 import * as yup from 'yup';
+import BigNumber from 'bignumber.js';
 import {
   Container,
   StyleTextField,
@@ -46,10 +47,9 @@ const Transfer: React.FC = () => {
           constructUnsignedMessage({
             from: address,
             to: formik.values.address,
-            value: Number(formik.values.amount),
+            value: new BigNumber(formik.values.amount),
           })
         ).then((estimateGas) => {
-          // TODO getfilUnit support much more smaller unit
           setGasEstimate(estimateGas.gasFeeCap);
         });
       }
@@ -70,9 +70,10 @@ const Transfer: React.FC = () => {
             sendSignedMessage({
               from: address,
               to: values.address,
-              value: Number(values.amount) * 1e18,
+              value: new BigNumber(values.amount),
               privateKey: extendedKey.privateKey,
             });
+            history.push('/home');
           }}
           validationSchema={yup.object().shape({
             address: yup.string().required(
@@ -89,7 +90,7 @@ const Transfer: React.FC = () => {
           validateOnBlur={false}
         >
           {(formik) => (
-            <Form autoComplete="off">
+            <Form>
               <Field
                 id="address"
                 label={intl.formatMessage({
@@ -113,6 +114,15 @@ const Transfer: React.FC = () => {
                 helperText={formik.touched.amount && formik.errors.amount}
                 onBlur={() => gasEstimateHandler(formik)}
                 component={StyleTextField}
+                validate={(value: string) => {
+                  let error;
+                  if (Number(value) * 1e18 > balance) {
+                    error = intl.formatMessage({
+                      id: 'transfer.form.amount.validaton.exceed',
+                    });
+                  }
+                  return error;
+                }}
               />
               <ActionFooter />
             </Form>
@@ -122,13 +132,13 @@ const Transfer: React.FC = () => {
           <TransferInfo>
             <FormattedMessage
               id="transfer.form.info.balance.available"
-              values={{ balance: getfilUnit(balance) }}
+              values={{ balance: getFilByUnit(balance) }}
             />
           </TransferInfo>
           <TransferInfo>
             <FormattedMessage
               id="transfer.form.info.gas.estimate"
-              values={{ gasEstimate }}
+              values={{ gasEstimate: getFilByUnit(gasEstimate) }}
             />
           </TransferInfo>
         </TransferInfoContainer>

@@ -5,6 +5,7 @@ import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browse
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
 import { Network } from 'src/types/app';
+import BigNumber from "bignumber.js";
 import signer from 'src/utils/signer';
 
 const passworder = require('browser-passworder');
@@ -62,7 +63,7 @@ export function getAddressByNetwork(network: Network, address: string): string {
     : address;
 }
 
-export function getfilUnit(value: number, decimal: number = 4) {
+export function getFilByUnit(value: number, decimal: number = 4) {
   const filScope = Math.pow(10, 18);
   const nanoScope = Math.pow(10, 9);
   const attoScope = 0;
@@ -99,7 +100,7 @@ export function constructUnsignedMessage({
 }: {
   from: string;
   to: string;
-  value: number;
+  value: BigNumber;
 }) {
   return {
     From: from,
@@ -135,7 +136,7 @@ export async function sendSignedMessage({
 }: {
   from: string;
   to: string;
-  value: number;
+  value: BigNumber;
   privateKey: string;
 }) {
   const unsignedMessage = constructUnsignedMessage({ from, to, value });

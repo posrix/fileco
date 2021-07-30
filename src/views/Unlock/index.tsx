@@ -28,7 +28,9 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
       );
       dispatch.app.setExtendedKey(extendedKey);
       new WrappedLotusRPC(selectedNetwork, true);
-      history.replace(location.state.from.pathname);
+      history.replace(
+        location.state && location.state.from ? location.state.from.pathname : 'home'
+      );
     });
   }, []);
 

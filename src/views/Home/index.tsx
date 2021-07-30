@@ -6,7 +6,7 @@ import Button from 'src/components/Button';
 import {
   WrappedLotusRPC,
   getAddressByNetwork,
-  getfilUnit,
+  getFilByUnit,
   addressEllipsis,
 } from 'src/utils/app';
 import { useQuery } from 'react-query';
@@ -14,7 +14,7 @@ import Header from 'src/views/Header';
 import { RootState } from 'src/models/store';
 import { Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
-import OrderList from './OrderList';
+import MessageList from './MessageList';
 import {
   AccountContainer,
   LotusAccount,
@@ -24,8 +24,8 @@ import {
   TextEllipsis,
   BalanceFilecoin,
   ActionsContainer,
-  OrderListTitleContainer,
-  OrderListTitle,
+  MessageListTitleContainer,
+  MessageListTitle,
 } from './styled';
 
 const Home: React.FC = () => {
@@ -59,7 +59,7 @@ const Home: React.FC = () => {
       <BalanceContainer>
         <Icon glyph="filecoin" size={32} />
         <BalanceFilecoin>
-          <TextEllipsis>{getfilUnit(balance)}</TextEllipsis>
+          <TextEllipsis>{getFilByUnit(balance)}</TextEllipsis>
         </BalanceFilecoin>
         <BalanceDollar>$12345.67 USD</BalanceDollar>
       </BalanceContainer>
@@ -76,12 +76,12 @@ const Home: React.FC = () => {
           <FormattedMessage id="global.send" />
         </Button>
       </ActionsContainer>
-      <OrderListTitleContainer>
-        <OrderListTitle>
-          <FormattedMessage id="home.order.list" />
-        </OrderListTitle>
-      </OrderListTitleContainer>
-      <OrderList address={address} />
+      <MessageListTitleContainer>
+        <MessageListTitle>
+          <FormattedMessage id="home.message.list.title" />
+        </MessageListTitle>
+      </MessageListTitleContainer>
+      <MessageList address={address} />
     </>
   );
 };

@@ -87,12 +87,12 @@ export const ActionsContainer = styled.div`
   margin: 24px 52px;
 `;
 
-export const OrderListTitleContainer = styled.div`
+export const MessageListTitleContainer = styled.div`
   padding: 8px 16px;
   box-shadow: 0 4px 4px -2px rgba(33, 33, 33, 0.16);
 `;
 
-export const OrderListTitle = styled.div`
+export const MessageListTitle = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: #757575;

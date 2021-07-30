@@ -7,3 +7,11 @@ export enum Network {
   Mainnet = 'Mainnet',
   Calibration = 'Calibration',
 }
+
+export interface Message {
+  cid: string;
+  datetime: string;
+  from: string;
+  to: string;
+  value: number;
+}

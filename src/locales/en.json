@@ -27,15 +27,20 @@
   "mnemonic.verify.wrong.order": "Mnemonic phrsae order is incorrect",
 
   "home.network.current": "Current Network: {network}",
-  "home.order.list": "Order List",
+  "home.message.list": "Order List",
+  "home.message.list.send": "Send",
+  "home.message.list.receive": "Receive",
+  "home.message.list.from": "From",
+  "home.message.list.to": "To",
 
   "transfer.form.title": "Transfer",
   "transfer.form.address": "Transfer Address",
   "transfer.form.amount": "Transfer Amount",
   "transfer.form.address.validaton.required": "Please enter transfer address",
   "transfer.form.amount.validaton.required": "Please enter transfer amount",
+  "transfer.form.amount.validaton.exceed": "Amount can not greater than balance",
   "transfer.form.info.balance.available": "Available Balance: {balance}",
-  "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gasEstimate} FIL",
+  "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gasEstimate}",
 
   "global.confirm": "Confirm",
   "global.back": "Go Back",
