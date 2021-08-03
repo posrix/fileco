@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
 import Button from 'src/components/Button';
 import {
@@ -15,6 +14,7 @@ import { RootState } from 'src/models/store';
 import { Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
 import MessageList from './MessageList';
+import Icon from 'src/components/Icon';
 import {
   AccountContainer,
   LotusAccount,
@@ -26,6 +26,7 @@ import {
   ActionsContainer,
   MessageListTitleContainer,
   MessageListTitle,
+  ButtonSpinner,
 } from './styled';
 
 const Home: React.FC = () => {
@@ -34,6 +35,7 @@ const Home: React.FC = () => {
   const { address, selectedNetwork } = useSelector(
     (state: RootState) => state.app
   );
+  const [isLoading, setLoading] = useState(false);
 
   const { data: balance = 0 } = useQuery(
     ['balance', address],
@@ -79,9 +81,10 @@ const Home: React.FC = () => {
       <MessageListTitleContainer>
         <MessageListTitle>
           <FormattedMessage id="home.message.list.title" />
+          {isLoading && <ButtonSpinner glyph="spinner" />}
         </MessageListTitle>
       </MessageListTitleContainer>
-      <MessageList address={address} />
+      <MessageList address={address} handleLoading={setLoading} />
     </>
   );
 };

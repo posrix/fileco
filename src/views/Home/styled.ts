@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Icon from 'src/components/Icon';
 
 export const Header = styled.div`
   background-color: #e0e0e0;
@@ -96,4 +97,23 @@ export const MessageListTitle = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: #757575;
+`;
+
+export const ButtonSpinner = styled(Icon)`
+  width: 10px;
+  height: 10px;
+  margin-left: 7px;
+  animation: rotate 1000ms linear infinite;
+  transform-origin: center center;
+
+  @keyframes rotate {
+    0% {
+      -webkit-transform: rotate(130deg);
+      transform: rotate(0) translateZ(0);
+    }
+    100% {
+      -webkit-transform: rotate(360deg) translateZ(0);
+      transform: rotate(360deg) translateZ(0);
+    }
+  }
 `;
