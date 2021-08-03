@@ -2,13 +2,13 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { TitleContainer, Title, SubTitle } from './styled';
 
-export interface ActionHeaderProps {
+export interface CommonPageHeaderProps {
   titleLocaleId: string;
   subtitleLocaleId?: string;
   gutter?: number;
 }
 
-const ActionHeader: React.FC<ActionHeaderProps> = ({
+const CommonPageHeader: React.FC<CommonPageHeaderProps> = ({
   titleLocaleId,
   subtitleLocaleId,
   gutter,
@@ -27,4 +27,4 @@ const ActionHeader: React.FC<ActionHeaderProps> = ({
   );
 };
 
-export default ActionHeader;
+export default CommonPageHeader;

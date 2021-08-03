@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { ActionHeaderProps } from './';
+import { CommonPageHeaderProps } from '.';
 
 export const Title = styled.div`
-  margin-top: 60px;
+  margin-top: 20px;
   font-weight: 600;
   font-size: 24px;
   color: #212121;
@@ -14,6 +14,6 @@ export const SubTitle = styled.div`
   margin-top: 8px;
 `;
 
-export const TitleContainer = styled.div<Pick<ActionHeaderProps, 'gutter'>>`
+export const TitleContainer = styled.div<Pick<CommonPageHeaderProps, 'gutter'>>`
   margin-bottom: ${(props) => (!props.gutter ? '20px' : `${props.gutter}px`)};
 `;

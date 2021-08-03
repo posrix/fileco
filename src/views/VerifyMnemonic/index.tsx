@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import ActionHeader from 'src/components/ActionHeader';
+import CommonPageHeader from 'src/components/CommonPageHeader';
 import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
-import ActionFooter from 'src/components/ActionFooter';
+import CommonPageFooter from 'src/components/CommonPageFooter';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import { getLocalStorage, setLocalStorage } from 'src/utils/app';
@@ -45,7 +45,7 @@ const VerifyMnemonic: React.FC = () => {
 
   return (
     <Container>
-      <ActionHeader
+      <CommonPageHeader
         titleLocaleId="mnemonic.verify.title"
         subtitleLocaleId="mnemonic.verify.subtitle"
       />
@@ -78,7 +78,7 @@ const VerifyMnemonic: React.FC = () => {
           </WordButton>
         ))}
       </WordsContainer>
-      <ActionFooter onConfirm={handleConfirm} />
+      <CommonPageFooter onConfirm={handleConfirm} />
       <Snackbar
         anchorOrigin={{
           vertical: 'top',

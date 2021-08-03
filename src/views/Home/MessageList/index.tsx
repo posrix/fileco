@@ -36,7 +36,11 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
           rowRenderer={({ index, key, style }) => {
             const message = messages[index];
             return (
-              <MessageListItem key={key} style={style}>
+              <MessageListItem
+                key={key}
+                style={style}
+                onClick={() => history.push(`message/${message.cid['/']}`)}
+              >
                 <>
                   {message.from === address ? (
                     <>

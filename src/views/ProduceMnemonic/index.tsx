@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import ActionFooter from 'src/components/ActionFooter';
+import CommonPageFooter from 'src/components/CommonPageFooter';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import Icon from 'src/components/Icon';
-import ActionHeader from 'src/components/ActionHeader';
+import CommonPageHeader from 'src/components/CommonPageHeader';
 import { PATH } from 'src/utils/constants';
 import { setLocalStorage } from 'src/utils/app';
 import signer from 'src/utils/signer';
@@ -30,7 +30,7 @@ const ProduceMnemonic: React.FC = () => {
 
   return (
     <Container>
-      <ActionHeader
+      <CommonPageHeader
         titleLocaleId="mnemonic.produce.title"
         subtitleLocaleId="mnemonic.produce.subtitle"
       />
@@ -53,7 +53,7 @@ const ProduceMnemonic: React.FC = () => {
           <FormattedMessage id="mnemonic.produce.warning3" />
         </Warning>
       </WarningContainer>
-      <ActionFooter onConfirm={() => history.push('/verify-mnemonic')} />
+      <CommonPageFooter onConfirm={() => history.push('/verify-mnemonic')} />
     </Container>
   );
 };

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import ActionHeader from 'src/components/ActionHeader';
+import CommonPageHeader from 'src/components/CommonPageHeader';
 import { useIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
-import ActionFooter from 'src/components/ActionFooter';
+import CommonPageFooter from 'src/components/CommonPageFooter';
 import { setLocalStorage } from 'src/utils/app';
 import * as yup from 'yup';
 import { Container, StyleTextField } from './styled';
@@ -14,7 +14,7 @@ const SetPassword: React.FC = () => {
 
   return (
     <Container>
-      <ActionHeader
+      <CommonPageHeader
         titleLocaleId="password.create.form.title"
         subtitleLocaleId="password.create.form.subtitle"
         gutter={50}
@@ -89,7 +89,7 @@ const SetPassword: React.FC = () => {
               helperText={formik.touched.confirm && formik.errors.confirm}
               component={StyleTextField}
             />
-            <ActionFooter />
+            <CommonPageFooter />
           </Form>
         )}
       </Formik>

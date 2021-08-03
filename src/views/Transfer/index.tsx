@@ -10,9 +10,9 @@ import {
 } from 'src/utils/app';
 import Header from 'src/views/Header';
 import { useQuery } from 'react-query';
-import ActionHeader from 'src/components/ActionHeader';
+import CommonPageHeader from 'src/components/CommonPageHeader';
 import { Formik, Form, Field } from 'formik';
-import ActionFooter from 'src/components/ActionFooter';
+import CommonPageFooter from 'src/components/CommonPageFooter';
 import { RootState } from 'src/models/store';
 import { Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -62,7 +62,7 @@ const Transfer: React.FC = () => {
     <>
       <Header />
       <Container>
-        <ActionHeader titleLocaleId="transfer.form.title" gutter={50} />
+        <CommonPageHeader titleLocaleId="transfer.form.title" gutter={50} />
         <Formik
           initialValues={{
             address: '',
@@ -136,7 +136,7 @@ const Transfer: React.FC = () => {
                   return error;
                 }}
               />
-              <ActionFooter />
+              <CommonPageFooter />
             </Form>
           )}
         </Formik>
