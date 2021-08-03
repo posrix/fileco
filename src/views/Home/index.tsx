@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import Button from 'src/components/Button';
@@ -35,7 +35,6 @@ const Home: React.FC = () => {
   const { address, selectedNetwork } = useSelector(
     (state: RootState) => state.app
   );
-  const [isLoading, setLoading] = useState(false);
 
   const { data: balance = 0 } = useQuery(
     ['balance', address],
@@ -50,6 +49,10 @@ const Home: React.FC = () => {
       dispatch.app.setAddress(getAddressByNetwork(selectedNetwork, address));
     }
   }, [selectedNetwork]);
+
+  const { isLoading } = useQuery('messages', () =>
+    dispatch.app.fetchMessages(address)
+  );
 
   return (
     <>
@@ -84,7 +87,7 @@ const Home: React.FC = () => {
           {isLoading && <ButtonSpinner glyph="spinner" />}
         </MessageListTitle>
       </MessageListTitleContainer>
-      <MessageList address={address} handleLoading={setLoading} />
+      <MessageList address={address} />
     </>
   );
 };
