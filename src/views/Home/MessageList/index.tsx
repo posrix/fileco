@@ -29,7 +29,7 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
     <AutoSizer>
       {({ width }) => (
         <List
-          height={288}
+          height={242}
           width={width}
           rowCount={messages.length}
           rowHeight={74}
