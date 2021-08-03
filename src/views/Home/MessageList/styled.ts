@@ -1,13 +1,6 @@
 import styled from 'styled-components';
 import Icon from 'src/components/Icon';
 
-export const Container = styled.div`
-  display: flex;
-  height: 245px;
-  flex-direction: column;
-  overflow: scroll;
-`;
-
 export const MessageListItem = styled.div`
   display: flex;
   align-items: center;
@@ -15,6 +8,7 @@ export const MessageListItem = styled.div`
   border-bottom: 1px solid #dcdcdc;
   padding: 16px 18px;
   cursor: pointer;
+  box-sizing: border-box;
 `;
 
 export const MessageListSegment = styled.div`

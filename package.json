@@ -51,6 +51,7 @@
     "react-query": "^3.19.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
+    "react-virtualized": "^9.22.3",
     "redux": "^4.1.0",
     "secp256k1": "^4.0.2",
     "yup": "^0.32.9"
@@ -60,6 +61,7 @@
     "@babel/plugin-proposal-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.12.17",
     "@babel/preset-react": "^7.12.13",
+    "@types/react-virtualized": "^9.21.12",
     "@types/styled-components": "^5.1.10",
     "assert": "^2.0.0",
     "babel-eslint": "^10.1.0",

@@ -128,52 +128,47 @@ export async function getEstimateGas(unsignedMessage: any): Promise<any> {
   };
 }
 
-// TODO use closure to aviod window variable
-declare global {
-  interface Window {
-    elapse: number;
-  }
-}
+export class SearchMessageByCid {
+  private elapse: number = 0;
 
-window.elapse = 0;
-
-export async function searchMessageByCid({
-  cid,
-  enablePolling = false,
-  timeout = 5000,
-  onSuccess,
-  onError,
-}: {
-  cid: Cid;
-  enablePolling?: boolean;
-  timeout?: number;
-  onSuccess?: (message: MsgLookup) => void;
-  onError?: () => void;
-}): Promise<MsgLookup> {
-  const searchedMessage = await WrappedLotusRPC.client.stateSearchMsg(cid);
-  if (!searchedMessage) {
-    if (enablePolling) {
-      // polling will be over after 5 mins
-      if (window.elapse >= 5 * 60 * 1000) {
-        if (onError) {
-          onError();
+  public async exec({
+    cid,
+    enablePolling = false,
+    timeout = 5000,
+    onSuccess,
+    onError,
+  }: {
+    cid: Cid;
+    enablePolling?: boolean;
+    timeout?: number;
+    onSuccess?: (message: MsgLookup) => void;
+    onError?: () => void;
+  }): Promise<MsgLookup> {
+    const searchedMessage = await WrappedLotusRPC.client.stateSearchMsg(cid);
+    if (!searchedMessage) {
+      if (enablePolling) {
+        // polling will be over after 5 mins
+        if (this.elapse >= 5 * 60 * 1000) {
+          if (onError) {
+            onError();
+          }
+          this.elapse = 0;
+          throw new Error('Message can not be sent');
         }
-        window.elapse = 0;
-        throw new Error('Message can not be sent');
+        this.elapse += timeout;
+        setTimeout(
+          () => this.exec({ cid, enablePolling, onSuccess, onError }),
+          timeout
+        );
+      } else {
+        throw new Error('Message not exist');
       }
-      window.elapse += timeout;
-      setTimeout(
-        () => searchMessageByCid({ cid, enablePolling, onSuccess, onError }),
-        timeout
-      );
     } else {
-      throw new Error('Message not exist');
+      if (onSuccess) {
+        onSuccess(searchedMessage);
+      }
+      return searchedMessage;
     }
-  } else {
-    if (onSuccess) {
-      onSuccess(searchedMessage);
-    }
-    return searchedMessage;
   }
 }
 
@@ -189,7 +184,7 @@ export async function getMessageTimestampByHeight({
 }
 
 export async function getMessageByCid(cid: Cid): Promise<Message> {
-  const { Height, TipSet } = await searchMessageByCid({ cid });
+  const { Height, TipSet } = await new SearchMessageByCid().exec({ cid });
   const messageFromGet = await WrappedLotusRPC.client.chainGetMessage(cid);
   const timestamp = await getMessageTimestampByHeight({ Height, TipSet });
   return {

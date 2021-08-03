@@ -4,7 +4,7 @@ import produce, { Draft } from 'immer';
 import {
   WrappedLotusRPC,
   getMessageByCid,
-  searchMessageByCid,
+  SearchMessageByCid,
 } from 'src/utils/app';
 import { sortBy, reverse, flatten, findIndex, remove } from 'lodash';
 import { Cid } from 'src/types/app';
@@ -114,7 +114,7 @@ export const app = createModel<RootModel>()({
     async incrementalPushMessage(message: Message, rootState) {
       dispatch.app.setMessages([message, ...rootState.app.messages]);
 
-      searchMessageByCid({
+      new SearchMessageByCid().exec({
         cid: message.cid,
         enablePolling: true,
         onSuccess: () => {
