@@ -69,7 +69,11 @@ const Home: React.FC = () => {
         <BalanceDollar>$12345.67 USD</BalanceDollar>
       </BalanceContainer>
       <ActionsContainer>
-        <Button variant="contained" fullWidth>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => history.push('/receive')}
+        >
           <FormattedMessage id="global.receive" />
         </Button>
         <Button

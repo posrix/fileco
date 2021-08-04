@@ -32,7 +32,7 @@ const Message: React.FC = () => {
     <>
       <Header />
       <Container>
-        <CommonPageHeader titleLocaleId="transfer.detail.title" gutter={50} />
+        <CommonPageHeader titleLocaleId="transfer.detail.title" gutter={30} />
         <MessageDetail>
           <MessageDetailName>交易ID</MessageDetailName>
           <MessageDetailValue>{selected.cid['/']}</MessageDetailValue>
