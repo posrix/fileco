@@ -42,6 +42,8 @@
   "transfer.form.info.balance.available": "Available Balance: {balance}",
   "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gasEstimate}",
 
+  "transfer.detail.title": "Transfer Detail",
+
   "global.confirm": "Confirm",
   "global.back": "Go Back",
   "global.receive": "Receive",

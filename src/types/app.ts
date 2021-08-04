@@ -14,6 +14,7 @@ export interface Message {
   from: string;
   to: string;
   value: number;
+  height: number;
   pending: boolean;
 }
 

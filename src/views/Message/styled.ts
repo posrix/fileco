@@ -1,23 +1,27 @@
 import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
 
 export const Container = styled.div`
   padding: 20px;
 `;
 
-export const StyleTextField = styled(TextField)`
-  margin: 10px 0 !important;
+export const MessageDetail = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 24px;
 `;
 
-export const TransferInfo = styled.div`
-  font-size: 12px;
+export const MessageDetailName = styled.div`
+  font-size: 14px;
   font-weight: 400;
   color: #757575;
 `;
 
-export const TransferInfoContainer = styled.div`
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+export const MessageDetailValue = styled.div`
+  font-size: 14px;
+  font-weight: 400;
+  color: #212121;
+  width: 247px;
+  overflow-wrap: break-word;
+  text-align: right;
 `;

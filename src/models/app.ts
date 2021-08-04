@@ -1,11 +1,7 @@
 import { createModel } from '@rematch/core';
 import { Network, Message } from 'src/types/app';
 import produce, { Draft } from 'immer';
-import {
-  WrappedLotusRPC,
-  getMessageByCid,
-  SearchMessageByCid,
-} from 'src/utils/app';
+import { WrappedLotusRPC, getMessageByCid, SearchMessage } from 'src/utils/app';
 import { sortBy, reverse, flatten, findIndex, remove } from 'lodash';
 import { Cid } from 'src/types/app';
 import { RootModel } from '.';
@@ -63,18 +59,15 @@ export const app = createModel<RootModel>()({
         );
       });
     },
-    setMessagePendingStatus(
-      state: AppState,
-      { cid, pending }: { cid: Cid; pending: boolean }
-    ) {
+    updateMessage(state: AppState, payload: Partial<Message>) {
       return produce(state, (draftState: Draft<AppState>) => {
         const index = findIndex(
           draftState.messages,
-          (message) => message.cid['/'] === cid['/']
+          (message) => message.cid['/'] === payload.cid['/']
         );
         draftState.messages[index] = {
           ...draftState.messages[index],
-          pending,
+          ...payload,
         };
       });
     },
@@ -114,12 +107,13 @@ export const app = createModel<RootModel>()({
     async incrementalPushMessage(message: Message, rootState) {
       dispatch.app.setMessages([message, ...rootState.app.messages]);
 
-      new SearchMessageByCid().exec({
+      new SearchMessage().byCid({
         cid: message.cid,
         enablePolling: true,
-        onSuccess: () => {
-          dispatch.app.setMessagePendingStatus({
+        onSuccess: (searchedMessage) => {
+          dispatch.app.updateMessage({
             cid: message.cid,
+            height: searchedMessage.Height,
             pending: false,
           });
         },

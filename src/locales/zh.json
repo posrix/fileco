@@ -42,6 +42,8 @@
   "transfer.form.info.balance.available": "可用余额: {balance}",
   "transfer.form.info.gas.estimate": "预估 Gas 费用: {gasEstimate}",
 
+  "transfer.detail.title": "发送详情",
+
   "global.confirm": "确认",
   "global.back": "返回",
   "global.receive": "接收",

@@ -82,6 +82,7 @@ const Transfer: React.FC = () => {
                 ...base,
                 cid,
                 datetime: moment().format('YYYY/MM/DD h:mm:ss'),
+                height: 0,
                 pending: true,
               });
               history.push('/home');

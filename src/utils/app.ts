@@ -128,10 +128,10 @@ export async function getEstimateGas(unsignedMessage: any): Promise<any> {
   };
 }
 
-export class SearchMessageByCid {
+export class SearchMessage {
   private elapse: number = 0;
 
-  public async exec({
+  public async byCid({
     cid,
     enablePolling = false,
     timeout = 5000,
@@ -157,7 +157,7 @@ export class SearchMessageByCid {
         }
         this.elapse += timeout;
         setTimeout(
-          () => this.exec({ cid, enablePolling, onSuccess, onError }),
+          () => this.byCid({ cid, enablePolling, onSuccess, onError }),
           timeout
         );
       } else {
@@ -184,7 +184,7 @@ export async function getMessageTimestampByHeight({
 }
 
 export async function getMessageByCid(cid: Cid): Promise<Message> {
-  const { Height, TipSet } = await new SearchMessageByCid().exec({ cid });
+  const { Height, TipSet } = await new SearchMessage().byCid({ cid });
   const messageFromGet = await WrappedLotusRPC.client.chainGetMessage(cid);
   const timestamp = await getMessageTimestampByHeight({ Height, TipSet });
   return {
@@ -193,6 +193,7 @@ export async function getMessageByCid(cid: Cid): Promise<Message> {
     to: messageFromGet['To'],
     value: messageFromGet['Value'],
     datetime: moment.unix(timestamp).format('YYYY/MM/DD h:mm:ss'),
+    height: Height,
     pending: false,
   };
 }
