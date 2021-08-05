@@ -43,6 +43,16 @@
   "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gasEstimate}",
 
   "transfer.detail.title": "Transfer Detail",
+  "transfer.detail.cid": "Trade ID",
+  "transfer.detail.height": "Height",
+  "transfer.detail.time": "Time",
+  "transfer.detail.sender": "Sender",
+  "transfer.detail.receiver": "Receiver",
+  "transfer.detail.amount": "Amount",
+  "transfer.detail.status": "Status",
+
+  "receive.qrcode": "Receive QrCode",
+  "receive.address": "Receive address",
 
   "global.confirm": "Confirm",
   "global.back": "Go Back",

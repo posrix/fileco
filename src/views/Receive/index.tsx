@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import Header from 'src/views/Header';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import CommonPageFooter from 'src/components/CommonPageFooter';
@@ -24,11 +25,15 @@ const Receive: React.FC = () => {
       <Header />
       <Container>
         <CommonPageHeader titleLocaleId="global.receive" gutter={20} />
-        <FieldTitle>收款二维码</FieldTitle>
+        <FieldTitle>
+          <FormattedMessage id="receive.qrcode" />
+        </FieldTitle>
         <QrCodeContainer>
           <QRCode value={address} size={120} />
         </QrCodeContainer>
-        <FieldTitle>收款地址</FieldTitle>
+        <FieldTitle>
+          <FormattedMessage id="receive.address" />
+        </FieldTitle>
         <CopyAddressContianer>
           <CopyAddress>{address} </CopyAddress>
           <CopyIconContianer>

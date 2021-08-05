@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import { getFilByUnit } from 'src/utils/app';
 import Header from 'src/views/Header';
 import CommonPageHeader from 'src/components/CommonPageHeader';
@@ -34,33 +35,47 @@ const Message: React.FC = () => {
       <Container>
         <CommonPageHeader titleLocaleId="transfer.detail.title" gutter={30} />
         <MessageDetail>
-          <MessageDetailName>交易ID</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.cid" />
+          </MessageDetailName>
           <MessageDetailValue>{selected.cid['/']}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
-          <MessageDetailName>高度</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.height" />
+          </MessageDetailName>
           <MessageDetailValue>{selected.height}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
-          <MessageDetailName>时间</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.time" />
+          </MessageDetailName>
           <MessageDetailValue>{selected.datetime}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
-          <MessageDetailName>发送方</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.sender" />
+          </MessageDetailName>
           <MessageDetailValue>{selected.from}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
-          <MessageDetailName>接收方</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.receiver" />
+          </MessageDetailName>
           <MessageDetailValue>{selected.to}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
-          <MessageDetailName>数量</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.amount" />
+          </MessageDetailName>
           <MessageDetailValue>
             {getFilByUnit(selected.value)}
           </MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
-          <MessageDetailName>状态</MessageDetailName>
+          <MessageDetailName>
+            <FormattedMessage id="transfer.detail.status" />
+          </MessageDetailName>
           <MessageDetailValue>
             {selected.pending ? 'PENDING' : 'COMPLETE'}
           </MessageDetailValue>

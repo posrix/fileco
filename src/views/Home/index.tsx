@@ -87,7 +87,7 @@ const Home: React.FC = () => {
       </ActionsContainer>
       <MessageListTitleContainer>
         <MessageListTitle>
-          <FormattedMessage id="home.message.list.title" />
+          <FormattedMessage id="home.message.list" />
           {isLoading && <ButtonSpinner glyph="spinner" />}
         </MessageListTitle>
       </MessageListTitleContainer>

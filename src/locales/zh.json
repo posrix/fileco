@@ -27,7 +27,7 @@
   "mnemonic.verify.wrong.order": "助记词顺序不正确",
 
   "home.network.current": "当前网络: {network}",
-  "home.message.list.title": "交易列表",
+  "home.message.list": "交易列表",
   "home.message.list.send": "发送",
   "home.message.list.receive": "接收",
   "home.message.list.from": "从",
@@ -43,6 +43,16 @@
   "transfer.form.info.gas.estimate": "预估 Gas 费用: {gasEstimate}",
 
   "transfer.detail.title": "发送详情",
+  "transfer.detail.cid": "交易ID",
+  "transfer.detail.height": "高度",
+  "transfer.detail.time": "时间",
+  "transfer.detail.sender": "发送方",
+  "transfer.detail.receiver": "接收方",
+  "transfer.detail.amount": "数量",
+  "transfer.detail.status": "状态",
+
+  "receive.qrcode": "收款二维码",
+  "receive.address": "收款地址",
 
   "global.confirm": "确认",
   "global.back": "返回",
