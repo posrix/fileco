@@ -60,8 +60,17 @@
   "user.dropdown.setting": "Setting",
   "user.dropdown.lock": "Lock",
 
+  "setting.mnemonic.view.title": "View account mnemonic",
+  "setting.mnemonic.view.subTitle": "The mnemonic phrase represents the ownership of your wallet assets",
+  "setting.language.title": "Current language",
+  "setting.about.title": "About",
+  "setting.about.subTitle": "Version, support center and contact information",
+  "setting.language.zh": "Simplified Chinese",
+  "setting.language.en": "English",
+
   "global.confirm": "Confirm",
   "global.back": "Go Back",
   "global.receive": "Receive",
-  "global.send": "Send"
+  "global.send": "Send",
+  "global.setting": "Setting"
 }

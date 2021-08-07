@@ -2,8 +2,8 @@ import React from 'react';
 import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Dispatch, RootState } from 'src/models/store';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import { Divider } from '@material-ui/core';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
@@ -32,6 +32,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   setAnchorEl,
 }) => {
   const dispatch = useDispatch<Dispatch>();
+  const history = useHistory();
 
   const { address, balance } = useSelector((state: RootState) => state.app);
 
@@ -91,7 +92,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       <DividerWrapper>
         <Divider />
       </DividerWrapper>
-      <MenuItem>
+      <MenuItem onClick={() => history.push('/setting')}>
         <Icon glyph="setting" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.setting" />

@@ -265,6 +265,12 @@ const GlyphsBase = {
     viewBox: '0 0 24 24',
     data: <path fill="#757575" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>,
   },
+  'arrow-right': {
+    viewBox: '0 0 24 24',
+    data: (
+      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path>
+    ),
+  },
 };
 
 type Glyphs = { [key in keyof typeof GlyphsBase]: IGlyph } & {

@@ -40,7 +40,7 @@ const Home: React.FC = () => {
     ['balance', address, selectedNetwork],
     () => WrappedLotusRPC.client.walletBalance(address),
     {
-      enabled: !!address && !!selectedNetwork,
+      enabled: !!address && !!selectedNetwork && !!WrappedLotusRPC.client,
     }
   );
 

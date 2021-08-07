@@ -60,8 +60,17 @@
   "user.dropdown.setting": "设置",
   "user.dropdown.lock": "锁定",
 
+  "setting.mnemonic.view.title": "查看账户助记词",
+  "setting.mnemonic.view.subTitle": "助记词代表您的钱包资产所有权",
+  "setting.language.title": "当前语言",
+  "setting.about.title": "关于",
+  "setting.about.subTitle": "版本、支持中心和联系方式",
+  "setting.language.zh": "中文(简体)",
+  "setting.language.en": "英文",
+
   "global.confirm": "确认",
   "global.back": "返回",
   "global.receive": "接收",
-  "global.send": "发送"
+  "global.send": "发送",
+  "global.setting": "设置"
 }

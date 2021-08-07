@@ -8,6 +8,7 @@ import Transfer from 'src/views/Transfer';
 import Unlock from 'src/views/Unlock';
 import Message from 'src/views/Message';
 import Receive from 'src/views/Receive';
+import Setting from 'src/views/Setting';
 import { RootState } from 'src/models/store';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
@@ -105,6 +106,7 @@ export default function App() {
                 <ProtectedRoute exact path="/home" component={Home} />
                 <ProtectedRoute exact path="/transfer" component={Transfer} />
                 <Route exact path="/unlock" component={Unlock} />
+                <Route exact path="/setting" component={Setting} />
                 <Route exact path="/receive" component={Receive} />
                 <Route path="/message/:cid" component={Message} />
               </Switch>
