@@ -54,6 +54,12 @@
   "receive.qrcode": "Receive QrCode",
   "receive.address": "Receive address",
 
+  "user.dropdown.account.my": "My Accounts",
+  "user.dropdown.account.add": "Add Account",
+  "user.dropdown.account.import": "Import Account",
+  "user.dropdown.setting": "Setting",
+  "user.dropdown.lock": "Lock",
+
   "global.confirm": "Confirm",
   "global.back": "Go Back",
   "global.receive": "Receive",

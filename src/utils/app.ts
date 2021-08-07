@@ -64,6 +64,9 @@ export function getAddressByNetwork(network: Network, address: string): string {
 }
 
 export function getFilByUnit(value: number, decimal: number = 4) {
+  if (value <= 0) {
+    return '0 FIL';
+  }
   const filScope = Math.pow(10, 18);
   const nanoScope = Math.pow(10, 9);
   const attoScope = 0;

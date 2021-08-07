@@ -1,68 +1,44 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Icon from 'src/components/Icon';
-import { Network } from 'src/types/app';
-import { Dispatch } from 'src/models/store';
 import { RootState } from 'src/models/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import SelectNetworkDropdown from './SelectNetworkDropdown';
+import UserDropdown from './UserDropdown';
 import { Container, NetworkSelector, Avatar } from './styled';
 
 const Header: React.FC = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const dispatch = useDispatch<Dispatch>();
+  const [selectNetworkAnchorEl, setSelectNetworkAnchorEl] =
+    useState<null | HTMLElement>(null);
+  const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
   const selectedNetwork = useSelector(
     (state: RootState) => state.app.selectedNetwork
   );
 
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
+  const handleNetworkSelectorClick = (event: React.MouseEvent<HTMLElement>) => {
+    setSelectNetworkAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleSetNetwork = (event: any) => {
-    dispatch.app.setSelectedNetwork(event.currentTarget.dataset.value);
-    handleClose();
+  const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {
+    setUserAnchorEl(event.currentTarget);
   };
 
   return (
     <Container>
       <Icon glyph="keystore" />
-      <NetworkSelector
-        aria-controls="simple-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
+      <NetworkSelector onClick={handleNetworkSelectorClick}>
         <FormattedMessage
           id="home.network.current"
           values={{ network: selectedNetwork }}
         />
         <Icon glyph="arrow-down" size={12} />
       </NetworkSelector>
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            width: '20ch',
-          },
-        }}
-      >
-        <MenuItem onClick={handleSetNetwork} data-value={Network.Calibration}>
-          {Network.Calibration}
-        </MenuItem>
-        <MenuItem onClick={handleSetNetwork} data-value={Network.Mainnet}>
-          {Network.Mainnet}
-        </MenuItem>
-      </Menu>
-      <Avatar></Avatar>
+      <Avatar onClick={handleUserClick}></Avatar>
+      <SelectNetworkDropdown
+        setAnchorEl={setSelectNetworkAnchorEl}
+        anchorEl={selectNetworkAnchorEl}
+      />
+      <UserDropdown setAnchorEl={setUserAnchorEl} anchorEl={userAnchorEl} />
     </Container>
   );
 };

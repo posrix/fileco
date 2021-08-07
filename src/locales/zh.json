@@ -54,6 +54,12 @@
   "receive.qrcode": "收款二维码",
   "receive.address": "收款地址",
 
+  "user.dropdown.account.my": "我的账号",
+  "user.dropdown.account.add": "新增账号",
+  "user.dropdown.account.import": "导入账号",
+  "user.dropdown.setting": "设置",
+  "user.dropdown.lock": "锁定",
+
   "global.confirm": "确认",
   "global.back": "返回",
   "global.receive": "接收",

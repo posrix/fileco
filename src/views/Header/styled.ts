@@ -24,4 +24,5 @@ export const Avatar = styled.div`
   height: 28px;
   background: #0075ff;
   border-radius: 12px;
+  cursor: pointer;
 `;

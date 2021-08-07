@@ -37,21 +37,30 @@ const Home: React.FC = () => {
   );
 
   const { data: balance = 0 } = useQuery(
-    ['balance', address],
+    ['balance', address, selectedNetwork],
     () => WrappedLotusRPC.client.walletBalance(address),
     {
-      enabled: !!address,
+      enabled: !!address && !!selectedNetwork,
     }
   );
 
   useEffect(() => {
     if (selectedNetwork) {
       dispatch.app.setAddress(getAddressByNetwork(selectedNetwork, address));
+      new WrappedLotusRPC(selectedNetwork);
     }
   }, [selectedNetwork]);
 
-  const { isLoading } = useQuery('messages', () =>
-    dispatch.app.fetchMessages(address)
+  useEffect(() => {
+    dispatch.app.setBalance(balance);
+  }, [balance]);
+
+  const { isLoading } = useQuery(
+    ['messages', address, selectedNetwork],
+    () => dispatch.app.fetchMessages(address),
+    {
+      enabled: !!address && !!selectedNetwork,
+    }
   );
 
   return (
