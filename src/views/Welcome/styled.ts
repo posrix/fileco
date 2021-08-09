@@ -12,7 +12,6 @@ export const Container = styled.div`
 `;
 
 export const CoverContainer = styled.div`
-  width: 360px;
   height: ${COVER_HEIGHT}px;
   background-color: #000;
   display: flex;

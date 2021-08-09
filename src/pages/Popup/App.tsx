@@ -91,8 +91,8 @@ export default function App() {
           <Provider store={store}>
             <HashRouter hashType="noslash">
               <Switch>
-                <Route exact path="/" component={Welcome} />
-                <Route exact path="/set-password" component={SetPassword} />
+                <InitializeRoute exact path="/" component={Welcome} />
+                <InitializeRoute exact path="/set-password" component={SetPassword} />
                 <InitializeRoute
                   exact
                   path="/mnemonic"
@@ -105,10 +105,10 @@ export default function App() {
                 />
                 <ProtectedRoute exact path="/home" component={Home} />
                 <ProtectedRoute exact path="/transfer" component={Transfer} />
-                <Route exact path="/unlock" component={Unlock} />
-                <Route exact path="/setting" component={Setting} />
-                <Route exact path="/receive" component={Receive} />
-                <Route path="/message/:cid" component={Message} />
+                <ProtectedRoute exact path="/unlock" component={Unlock} />
+                <ProtectedRoute exact path="/setting" component={Setting} />
+                <ProtectedRoute exact path="/receive" component={Receive} />
+                <ProtectedRoute path="/message/:cid" component={Message} />
               </Switch>
             </HashRouter>
           </Provider>
