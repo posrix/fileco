@@ -24,7 +24,7 @@ const ProduceMnemonic: React.FC = () => {
     const mnemonic = signer.generateMnemonic();
     const extendedKey = signer.keyDerive(mnemonic, PATH, '');
     setLocalStorage('address', extendedKey.address);
-    setLocalStorage('mnemonic', mnemonic);
+    setLocalStorage('temporary-mnemonic', mnemonic);
     setMnemonic(mnemonic);
   }, []);
 

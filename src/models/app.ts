@@ -44,10 +44,23 @@ export const app = createModel<RootModel>()({
         draftState.balance = balance;
       });
     },
-    setMessages(state: AppState, messages: Message[]) {
+    setMessages(
+      state: AppState,
+      {
+        messages,
+        keepPendingMessages = false,
+      }: { messages: Message[]; keepPendingMessages?: boolean }
+    ) {
       return produce(state, (draftState: Draft<AppState>) => {
+        const latestMessages = messages;
+        if (keepPendingMessages) {
+          const pendingMesasges = state.messages.filter(
+            (message) => message.pending
+          );
+          latestMessages.unshift(...pendingMesasges);
+        }
         draftState.messages = reverse(
-          sortBy(messages, (message) => message.datetime)
+          sortBy(latestMessages, (message) => message.datetime)
         );
       });
     },
@@ -73,7 +86,7 @@ export const app = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async fetchMessages(address: string) {
+    async fetchMessages(address: string, rootState) {
       // TODO get decent height for performance improvement
       const height = 73232;
       const relatedCids = (
@@ -100,13 +113,14 @@ export const app = createModel<RootModel>()({
             async (cid: Cid) => await getMessageByCid(cid)
           )
         );
-        dispatch.app.setMessages(messages);
+        dispatch.app.setMessages({ messages, keepPendingMessages: true });
         return messages;
       }
     },
     async incrementalPushMessage(message: Message, rootState) {
-      dispatch.app.setMessages([message, ...rootState.app.messages]);
-
+      dispatch.app.setMessages({
+        messages: [message, ...rootState.app.messages],
+      });
       new SearchMessage().byCid({
         cid: message.cid,
         enablePolling: true,

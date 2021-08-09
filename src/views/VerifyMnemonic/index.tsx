@@ -6,7 +6,16 @@ import { useHistory } from 'react-router-dom';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import { getLocalStorage, setLocalStorage } from 'src/utils/app';
+import {
+  getLocalStorage,
+  setLocalStorage,
+  getExtendedKeyBySeed,
+  getAddressByNetwork,
+  WrappedLotusRPC,
+} from 'src/utils/app';
+import { RootState, Dispatch } from 'src/models/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { shuffle } from 'lodash';
 import {
   Container,
   WordButton,
@@ -19,25 +28,37 @@ const passworder = require('browser-passworder');
 
 const VerifyMnemonic: React.FC = () => {
   const history = useHistory();
+  const dispatch = useDispatch<Dispatch>();
+
+  const selectedNetwork = useSelector(
+    (state: RootState) => state.app.selectedNetwork
+  );
 
   const password = getLocalStorage('password');
-  const mnemonic = getLocalStorage('mnemonic');
+  const mnemonic = getLocalStorage('temporary-mnemonic');
 
-  const [words, setWords] = useState(mnemonic.split(' '));
+  const [words, setWords] = useState(shuffle(mnemonic.split(' ')));
   const [sortedwords, setSortedWords] = useState([]);
   const [showError, setShowError] = React.useState(false);
 
   const handleConfirm = () => {
+    if (!sortedwords.length) {
+      return;
+    }
     const matchedOrder = sortedwords.join(' ') === mnemonic;
     if (matchedOrder) {
       window.localStorage.clear();
       passworder.encrypt(password, mnemonic).then(function (blob: any) {
         setLocalStorage('mnemonic', blob);
-        setLocalStorage('password', password);
+        getExtendedKeyBySeed(password).then((extendedKey) => {
+          dispatch.app.setAddress(
+            getAddressByNetwork(selectedNetwork, extendedKey.address)
+          );
+          dispatch.app.setExtendedKey(extendedKey);
+          new WrappedLotusRPC(selectedNetwork, true);
+          history.push('/home');
+        });
       });
-      history.push('/home');
-    } else if (words.length) {
-      return;
     } else {
       setShowError(true);
     }

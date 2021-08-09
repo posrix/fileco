@@ -58,7 +58,10 @@ export function getExtendedKeyBySeed(password: string): Promise<any> {
   });
 }
 
-export function getAddressByNetwork(network: Network, address: string): string {
+export function getAddressByNetwork(
+  network: Network,
+  address: string
+): string {
   return network === Network.Calibration
     ? address.indexOf('f') == 0
       ? address.replace('f', 't')

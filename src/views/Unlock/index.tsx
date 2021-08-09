@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import { Dispatch } from 'src/models/store';
-import { RootState } from 'src/models/store';
-import { WrappedLotusRPC } from 'src/utils/app';
+import React, { useEffect, useState } from 'react';
+import { RootState, Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
+import { WrappedLotusRPC } from 'src/utils/app';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from 'src/components/Button';
-import { getExtendedKeyBySeed, getAddressByNetwork } from 'src/utils/app';
+import {
+  getExtendedKeyBySeed,
+  getAddressByNetwork,
+  getLocalStorage,
+} from 'src/utils/app';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Container,
@@ -28,6 +31,12 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
   const dispatch = useDispatch<Dispatch>();
   const [password, setPassword] = useState('');
   const [isPasswordError, setIsPasswordError] = useState(false);
+
+  useEffect(() => {
+    if (!getLocalStorage('mnemonic')) {
+      history.replace('/');
+    }
+  }, []);
 
   const handleUnlock = () => {
     getExtendedKeyBySeed(password)

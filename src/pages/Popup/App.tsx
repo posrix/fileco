@@ -28,7 +28,7 @@ import { store } from 'src/models/store';
 import { Provider } from 'react-redux';
 import { StylesProvider } from '@material-ui/core/styles';
 
-const InitializeRoute: React.FC<RouteProps> = ({
+const InitializedRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
@@ -48,7 +48,7 @@ const InitializeRoute: React.FC<RouteProps> = ({
   );
 };
 
-const ProtectedRoute: React.FC<RouteProps> = ({
+const UnlockedRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
@@ -91,24 +91,28 @@ export default function App() {
           <Provider store={store}>
             <HashRouter hashType="noslash">
               <Switch>
-                <InitializeRoute exact path="/" component={Welcome} />
-                <InitializeRoute exact path="/set-password" component={SetPassword} />
-                <InitializeRoute
+                <InitializedRoute exact path="/" component={Welcome} />
+                <InitializedRoute
+                  exact
+                  path="/set-password"
+                  component={SetPassword}
+                />
+                <InitializedRoute
                   exact
                   path="/mnemonic"
                   component={ProduceMnemonic}
                 />
-                <InitializeRoute
+                <InitializedRoute
                   exact
                   path="/verify-mnemonic"
                   component={VerifyMnemonic}
                 />
-                <ProtectedRoute exact path="/home" component={Home} />
-                <ProtectedRoute exact path="/transfer" component={Transfer} />
-                <ProtectedRoute exact path="/unlock" component={Unlock} />
-                <ProtectedRoute exact path="/setting" component={Setting} />
-                <ProtectedRoute exact path="/receive" component={Receive} />
-                <ProtectedRoute path="/message/:cid" component={Message} />
+                <UnlockedRoute exact path="/home" component={Home} />
+                <UnlockedRoute exact path="/transfer" component={Transfer} />
+                <UnlockedRoute exact path="/setting" component={Setting} />
+                <UnlockedRoute exact path="/receive" component={Receive} />
+                <UnlockedRoute path="/message/:cid" component={Message} />
+                <Route exact path="/unlock" component={Unlock} />
               </Switch>
             </HashRouter>
           </Provider>
