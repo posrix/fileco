@@ -18,7 +18,7 @@ const StyledButton = styled(Button)`
   box-shadow: none;
   font-weight: 600;
   font-size: 16px;
-  
+
   ${(props) => (props.color === 'primary' ? primiaryColorMixin : null)}
 `;
 
@@ -28,6 +28,6 @@ const adapterProps = {
   disableFocusRipple: true,
 };
 
-export default (props: ButtonProps) => (
-  <StyledButton {...props} {...adapterProps} />
-);
+export default (
+  props: ButtonProps & React.HTMLAttributes<HTMLButtonElement>
+) => <StyledButton {...props} {...adapterProps} />;

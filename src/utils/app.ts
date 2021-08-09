@@ -45,11 +45,16 @@ export class WrappedLotusRPC {
 
 export function getExtendedKeyBySeed(password: string): Promise<any> {
   const blob = getLocalStorage('mnemonic');
-  return new Promise((resolve) => {
-    passworder.decrypt(password, blob).then((result: any) => {
-      const extendedKey = signer.keyDerive(result, PATH, '');
-      resolve(extendedKey);
-    });
+  return new Promise((resolve, reject) => {
+    passworder
+      .decrypt(password, blob)
+      .then((result: any) => {
+        const extendedKey = signer.keyDerive(result, PATH, '');
+        resolve(extendedKey);
+      })
+      .catch((error: string) => {
+        reject(error);
+      });
   });
 }
 

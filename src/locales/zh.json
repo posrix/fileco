@@ -5,6 +5,11 @@
   "welcome.wallet.entry.import.title.sub": "已拥有一个账户助记词",
   "welcome.slogan": "开始使用！",
 
+  "unlock.welcome.back.slogan": "欢迎回来!",
+  "unlock.wallet.password": "钱包密码",
+  "unlock.button": "解锁",
+  "unlock.password.validation.incorrect": "密码不正确",
+
   "password.create.form.title": "设置钱包访问密码",
   "password.create.form.subtitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
   "password.create.form.password": "8-20位密码",

@@ -5,6 +5,11 @@
   "welcome.wallet.entry.import.title.sub": "Already have an account mnemonic phrase",
   "welcome.slogan": "Welcome onboard!",
 
+  "unlock.welcome.back.slogan": "Welcome back!",
+  "unlock.wallet.password": "Wallet Password",
+  "unlock.button": "Unlock",
+  "unlock.password.validation.incorrect": "Password is incorrect",
+
   "password.create.form.title": "Set wallet access password",
   "password.create.form.subtitle": "Keystore Lite does not store your password on the server. Once you forget your password, you can only restore your wallet through the backup mnemonic.",
   "password.create.form.password": "8-20 digit password",
