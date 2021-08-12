@@ -8,6 +8,12 @@ export enum Network {
   Calibration = 'Calibration',
 }
 
+export enum MessageStatus {
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+  PENDING = 'PENDING',
+}
+
 export interface Message {
   cid: Cid;
   datetime: string;
@@ -15,7 +21,7 @@ export interface Message {
   to: string;
   value: number;
   height: number;
-  pending: boolean;
+  status: MessageStatus;
 }
 
 export type Cid = { '/': string };
@@ -38,4 +44,15 @@ export interface MsgLookup {
   Receipt: MessageReceipt;
   ReturnDec: any;
   TipSet: Cid[];
+}
+
+export interface AppState {
+  selectedNetwork: Network;
+  address: string;
+  extendedKey: { [key: string]: any };
+  balance: number;
+  messages: Message[];
+  fetchedMessages: Message[];
+  pendingMessages: Message[];
+  failedMessages: Message[];
 }

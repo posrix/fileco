@@ -4,7 +4,8 @@ import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browse
 //@ts-ignore
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
-import { Network, Cid, Message, MsgLookup } from 'src/types/app';
+import { Network, Cid, Message, MsgLookup, MessageStatus } from 'src/types/app';
+import { RootState, Dispatch } from 'src/models/store';
 import signer from 'src/utils/signer';
 
 const passworder = require('browser-passworder');
@@ -100,6 +101,51 @@ export function addressEllipsis(address: string) {
   return `${head}...${tail}`;
 }
 
+export function getRematchMessagesKeyByStatus(messageStatus: MessageStatus) {
+  switch (messageStatus) {
+    case MessageStatus.SUCCESS:
+      return 'fetchedMessages';
+    case MessageStatus.FAILED:
+      return 'failedMessages';
+    case MessageStatus.PENDING:
+      return 'pendingMessages';
+    default:
+      throw new Error('Message status not exist');
+  }
+}
+
+export function startPendingMessagePolling(
+  pendingMessage: Message,
+  dispatch: Dispatch,
+  rootState: RootState
+) {
+  new MessagePolling().byCid({
+    cid: pendingMessage.cid,
+    enablePolling: true,
+    onSuccess: () => {
+      dispatch.app.removeMessageByStatus(
+        pendingMessage.cid,
+        MessageStatus.PENDING
+      );
+      dispatch.app.fetchMessages({});
+    },
+    onError: () => {
+      dispatch.app.removeMessageByStatus(
+        pendingMessage.cid,
+        MessageStatus.PENDING
+      );
+      dispatch.app.setMessagesByStatus(
+        [
+          { ...pendingMessage, status: MessageStatus.FAILED },
+          ...rootState.app.failedMessages,
+        ],
+        MessageStatus.FAILED
+      );
+      dispatch.app.combineMessages();
+    },
+  });
+}
+
 export function constructUnsignedMessage({
   from,
   to,
@@ -135,7 +181,7 @@ export async function getEstimateGas(unsignedMessage: any): Promise<any> {
   };
 }
 
-export class SearchMessage {
+export class MessagePolling {
   private elapse: number = 0;
 
   public async byCid({
@@ -198,7 +244,7 @@ export function convertFilscoutMessages(rawMessages: any): Message[] {
     value: Number(rawMessage['value'].split(' ')[0]) * 1e18,
     datetime: rawMessage['timeFormat'],
     height: rawMessage['height'],
-    pending: false,
+    status: MessageStatus.SUCCESS,
   }));
 }
 

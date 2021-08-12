@@ -25,6 +25,7 @@ import {
   TransferInfoContainer,
   TransferInfo,
 } from './styled';
+import { MessageStatus } from 'src/types/app';
 
 const Transfer: React.FC = () => {
   const history = useHistory();
@@ -83,7 +84,7 @@ const Transfer: React.FC = () => {
                 cid,
                 datetime: moment().format('YYYY/MM/DD h:mm:ss'),
                 height: 0,
-                pending: true,
+                status: MessageStatus.PENDING,
               });
               history.push('/home');
             });

@@ -20,12 +20,13 @@ interface ParamTypes {
 
 const Message: React.FC = () => {
   const { cid } = useParams<ParamTypes>();
-  const selected = useSelector(
+  
+  const selectedMessage = useSelector(
     (state: RootState) =>
       state.app.messages.filter((message) => message.cid['/'] === cid)[0]
   );
 
-  if (!selected) {
+  if (!selectedMessage) {
     return null;
   }
 
@@ -38,47 +39,45 @@ const Message: React.FC = () => {
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.cid" />
           </MessageDetailName>
-          <MessageDetailValue>{selected.cid['/']}</MessageDetailValue>
+          <MessageDetailValue>{selectedMessage.cid['/']}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.height" />
           </MessageDetailName>
-          <MessageDetailValue>{selected.height}</MessageDetailValue>
+          <MessageDetailValue>{selectedMessage.height}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.time" />
           </MessageDetailName>
-          <MessageDetailValue>{selected.datetime}</MessageDetailValue>
+          <MessageDetailValue>{selectedMessage.datetime}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.sender" />
           </MessageDetailName>
-          <MessageDetailValue>{selected.from}</MessageDetailValue>
+          <MessageDetailValue>{selectedMessage.from}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.receiver" />
           </MessageDetailName>
-          <MessageDetailValue>{selected.to}</MessageDetailValue>
+          <MessageDetailValue>{selectedMessage.to}</MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.amount" />
           </MessageDetailName>
           <MessageDetailValue>
-            {getFilByUnit(selected.value)}
+            {getFilByUnit(selectedMessage.value)}
           </MessageDetailValue>
         </MessageDetail>
         <MessageDetail>
           <MessageDetailName>
             <FormattedMessage id="transfer.detail.status" />
           </MessageDetailName>
-          <MessageDetailValue>
-            {selected.pending ? 'PENDING' : 'COMPLETE'}
-          </MessageDetailValue>
+          <MessageDetailValue>{selectedMessage.status}</MessageDetailValue>
         </MessageDetail>
         <CommonPageFooter onlyBack />
       </Container>

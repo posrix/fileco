@@ -57,7 +57,7 @@ const Home: React.FC = () => {
 
   const { isLoading } = useQuery(
     ['messages', address, selectedNetwork],
-    () => dispatch.app.fetchMessages(address),
+    () => dispatch.app.fetchMessages({ firstTime: true }),
     {
       enabled: !!address && !!selectedNetwork,
     }

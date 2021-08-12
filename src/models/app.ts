@@ -1,23 +1,16 @@
 import { createModel } from '@rematch/core';
-import { Network, Message } from 'src/types/app';
+import { Network, Message, MessageStatus } from 'src/types/app';
 import produce, { Draft } from 'immer';
 import {
   WrappedLotusRPC,
   convertFilscoutMessages,
-  SearchMessage,
+  startPendingMessagePolling,
+  getRematchMessagesKeyByStatus,
 } from 'src/utils/app';
 import { sortBy, reverse, findIndex, remove } from 'lodash';
 import { getMessagesByAddress } from 'src/services/filscout';
-import { Cid } from 'src/types/app';
+import { Cid, AppState } from 'src/types/app';
 import { RootModel } from '.';
-
-interface AppState {
-  selectedNetwork: Network;
-  address: string;
-  extendedKey: { [key: string]: any };
-  balance: number;
-  messages: Message[];
-}
 
 export const app = createModel<RootModel>()({
   state: {
@@ -26,6 +19,9 @@ export const app = createModel<RootModel>()({
     extendedKey: {},
     balance: 0,
     messages: [],
+    fetchedMessages: [],
+    pendingMessages: [],
+    failedMessages: [],
   } as AppState,
   reducers: {
     setSelectedNetwork(state: AppState, selectedNetwork: Network) {
@@ -49,74 +45,111 @@ export const app = createModel<RootModel>()({
         draftState.balance = balance;
       });
     },
-    setMessages(
-      state: AppState,
-      {
-        messages,
-        keepPendingMessages = false,
-      }: { messages: Message[]; keepPendingMessages?: boolean }
-    ) {
+    combineMessages(state: AppState) {
       return produce(state, (draftState: Draft<AppState>) => {
-        const latestMessages = messages;
-        if (keepPendingMessages) {
-          const pendingMesasges = state.messages.filter(
-            (message) => message.pending
-          );
-          latestMessages.unshift(...pendingMesasges);
-        }
         draftState.messages = reverse(
-          sortBy(latestMessages, (message) => message.datetime)
+          sortBy(
+            [
+              ...state.fetchedMessages,
+              ...state.pendingMessages,
+              ...state.failedMessages,
+            ],
+            (message) => message.datetime
+          )
         );
       });
     },
-    removeMessage(state: AppState, cid: Cid) {
+    setMessagesByStatus(
+      state: AppState,
+      messages: Message[],
+      messageStatus: MessageStatus
+    ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.messages = remove(
-          draftState.messages,
+        const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
+        draftState[draftMessagesKey] = reverse(
+          sortBy(messages, (message) => message.datetime)
+        );
+      });
+    },
+    removeMessageByStatus(
+      state: AppState,
+      cid: Cid,
+      messageStatus: MessageStatus
+    ) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
+        draftState[draftMessagesKey] = remove(
+          draftState[draftMessagesKey],
           (message) => message.cid['/'] !== cid['/']
         );
       });
     },
-    updateMessage(state: AppState, payload: Partial<Message>) {
+    pruneDupMessages(state: AppState) {
       return produce(state, (draftState: Draft<AppState>) => {
+        draftState.fetchedMessages.forEach((fetchedMessage) => {
+          draftState.pendingMessages = remove(
+            draftState.pendingMessages,
+            (pendingMessage) =>
+              pendingMessage.cid['/'] !== fetchedMessage.cid['/']
+          );
+          draftState.failedMessages = remove(
+            draftState.failedMessages,
+            (failedMessage) =>
+              failedMessage.cid['/'] !== fetchedMessage.cid['/']
+          );
+        });
+      });
+    },
+    updateMessageByStatus(
+      state: AppState,
+      {
+        cid,
+        payload,
+        messageStatus,
+      }: {
+        cid: Cid;
+        payload: Partial<Message>;
+        messageStatus: MessageStatus;
+      }
+    ) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
         const index = findIndex(
-          draftState.messages,
-          (message) => message.cid['/'] === payload.cid['/']
+          draftState[draftMessagesKey],
+          (message) => message.cid['/'] === cid['/']
         );
-        draftState.messages[index] = {
-          ...draftState.messages[index],
+        draftState[draftMessagesKey][index] = {
+          ...draftState[draftMessagesKey][index],
           ...payload,
         };
       });
     },
   },
   effects: (dispatch) => ({
-    async fetchMessages(address: string) {
-      const rawMessages = (await getMessagesByAddress({ address })) || [];
+    async fetchMessages(
+      { firstTime = false }: { firstTime?: boolean },
+      rootState
+    ) {
+      const rawMessages =
+        (await getMessagesByAddress({ address: rootState.app.address })) || [];
       const messages = convertFilscoutMessages(rawMessages);
-      console.log('messages', messages);
-      dispatch.app.setMessages({ messages });
-      return messages;
+      dispatch.app.setMessagesByStatus(messages, MessageStatus.SUCCESS);
+      dispatch.app.pruneDupMessages();
+      dispatch.app.combineMessages();
+      if (firstTime) {
+        // if refresh page, all uncompleted pending messages will start polling
+        rootState.app.pendingMessages.forEach((pendingMessage) => {
+          startPendingMessagePolling(pendingMessage, dispatch, rootState);
+        });
+      }
     },
-    async incrementalPushMessage(message: Message, rootState) {
-      dispatch.app.setMessages({
-        messages: [message, ...rootState.app.messages],
-      });
-      new SearchMessage().byCid({
-        cid: message.cid,
-        enablePolling: true,
-        onSuccess: (searchedMessage) => {
-          dispatch.app.updateMessage({
-            cid: message.cid,
-            height: searchedMessage.Height,
-            pending: false,
-          });
-        },
-        onError: () => {
-          // remove message if failed
-          dispatch.app.removeMessage(message.cid);
-        },
-      });
+    async incrementalPushMessage(pendingMessage: Message, rootState) {
+      dispatch.app.setMessagesByStatus(
+        [pendingMessage, ...rootState.app.pendingMessages],
+        MessageStatus.PENDING
+      );
+      dispatch.app.combineMessages();
+      startPendingMessagePolling(pendingMessage, dispatch, rootState);
     },
   }),
 });

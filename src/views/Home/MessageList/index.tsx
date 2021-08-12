@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { addressEllipsis, getFilByUnit } from 'src/utils/app';
 import { RootState } from 'src/models/store';
 import { useSelector } from 'react-redux';
+import { MessageStatus } from 'src/types/app';
 import List from 'react-virtualized/dist/commonjs/List';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import {
@@ -48,7 +49,8 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
                       <MessageListSegment>
                         <Title>
                           <FormattedMessage id="home.message.list.send" />
-                          {message.pending && ' / PENDING'}
+                          {message.status !== MessageStatus.SUCCESS &&
+                            ` / ${message.status}`}
                         </Title>
                         <OrderFrom>
                           <FormattedMessage id="home.message.list.to" />
@@ -62,7 +64,8 @@ const MessageList: React.FC<MessageListProps> = ({ address }) => {
                       <MessageListSegment>
                         <Title>
                           <FormattedMessage id="home.message.list.receive" />
-                          {message.pending && ' / PENDING'}
+                          {message.status !== MessageStatus.SUCCESS &&
+                            ` / ${message.status}`}
                         </Title>
                         <OrderFrom>
                           <FormattedMessage id="home.message.list.from" />
