@@ -5,7 +5,6 @@ import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browse
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
 import { Network, Cid, Message, MsgLookup } from 'src/types/app';
-import moment from 'moment';
 import signer from 'src/utils/signer';
 
 const passworder = require('browser-passworder');
@@ -58,10 +57,7 @@ export function getExtendedKeyBySeed(password: string): Promise<any> {
   });
 }
 
-export function getAddressByNetwork(
-  network: Network,
-  address: string
-): string {
+export function getAddressByNetwork(network: Network, address: string): string {
   return network === Network.Calibration
     ? address.indexOf('f') == 0
       ? address.replace('f', 't')
@@ -194,19 +190,16 @@ export async function getMessageTimestampByHeight({
   return tipSet.Blocks[0].Timestamp;
 }
 
-export async function getMessageByCid(cid: Cid): Promise<Message> {
-  const { Height, TipSet } = await new SearchMessage().byCid({ cid });
-  const messageFromGet = await WrappedLotusRPC.client.chainGetMessage(cid);
-  const timestamp = await getMessageTimestampByHeight({ Height, TipSet });
-  return {
-    cid: messageFromGet['CID'],
-    from: messageFromGet['From'],
-    to: messageFromGet['To'],
-    value: messageFromGet['Value'],
-    datetime: moment.unix(timestamp).format('YYYY/MM/DD h:mm:ss'),
-    height: Height,
+export function convertFilscoutMessages(rawMessages: any): Message[] {
+  return rawMessages.map((rawMessage: any) => ({
+    cid: { '/': rawMessage['cid'] },
+    from: rawMessage['from'],
+    to: rawMessage['to'],
+    value: Number(rawMessage['value'].split(' ')[0]) * 1e18,
+    datetime: rawMessage['timeFormat'],
+    height: rawMessage['height'],
     pending: false,
-  };
+  }));
 }
 
 export async function sendSignedMessage({

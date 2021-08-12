@@ -26,6 +26,7 @@ export const CopyAddress = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: #212121;
+  overflow-wrap: break-word;
 `;
 
 export const QrCodeContainer = styled.div`

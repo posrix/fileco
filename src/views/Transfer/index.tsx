@@ -49,7 +49,7 @@ const Transfer: React.FC = () => {
           constructUnsignedMessage({
             from: address,
             to: formik.values.address,
-            value: Number(formik.values.amount),
+            value: Number(formik.values.amount) * 1e18,
           })
         ).then((estimateGas) => {
           setGasEstimate(estimateGas.gasFeeCap);
@@ -72,7 +72,7 @@ const Transfer: React.FC = () => {
             const base = {
               from: address,
               to: values.address,
-              value: Number(values.amount),
+              value: Number(values.amount) * 1e18,
             };
             sendSignedMessage({
               ...base,

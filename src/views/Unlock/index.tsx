@@ -29,13 +29,14 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
     (state: RootState) => state.app.selectedNetwork
   );
   const dispatch = useDispatch<Dispatch>();
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('12');
   const [isPasswordError, setIsPasswordError] = useState(false);
 
   useEffect(() => {
     if (!getLocalStorage('mnemonic')) {
       history.replace('/');
     }
+    handleUnlock()
   }, []);
 
   const handleUnlock = () => {

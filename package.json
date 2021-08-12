@@ -27,6 +27,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/yup": "^0.29.11",
     "aes-js": "^3.1.2",
+    "axios": "^0.21.1",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
     "bignumber.js": "^9.0.1",

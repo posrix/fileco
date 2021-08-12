@@ -1,8 +1,13 @@
 import { createModel } from '@rematch/core';
 import { Network, Message } from 'src/types/app';
 import produce, { Draft } from 'immer';
-import { WrappedLotusRPC, getMessageByCid, SearchMessage } from 'src/utils/app';
-import { sortBy, reverse, flatten, findIndex, remove } from 'lodash';
+import {
+  WrappedLotusRPC,
+  convertFilscoutMessages,
+  SearchMessage,
+} from 'src/utils/app';
+import { sortBy, reverse, findIndex, remove } from 'lodash';
+import { getMessagesByAddress } from 'src/services/filscout';
 import { Cid } from 'src/types/app';
 import { RootModel } from '.';
 
@@ -86,36 +91,12 @@ export const app = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async fetchMessages(address: string, rootState) {
-      // TODO get decent height for performance improvement
-      const height = 73232;
-      const relatedCids = (
-        (await Promise.all([
-          WrappedLotusRPC.client.stateListMessages(
-            {
-              From: address,
-            },
-            [],
-            height
-          ),
-          WrappedLotusRPC.client.stateListMessages(
-            {
-              To: address,
-            },
-            [],
-            height
-          ),
-        ])) as any[]
-      ).filter((i) => i);
-      if (relatedCids.length) {
-        const messages = await Promise.all(
-          flatten(relatedCids).map(
-            async (cid: Cid) => await getMessageByCid(cid)
-          )
-        );
-        dispatch.app.setMessages({ messages, keepPendingMessages: true });
-        return messages;
-      }
+    async fetchMessages(address: string) {
+      const rawMessages = (await getMessagesByAddress({ address })) || [];
+      const messages = convertFilscoutMessages(rawMessages);
+      console.log('messages', messages);
+      dispatch.app.setMessages({ messages });
+      return messages;
     },
     async incrementalPushMessage(message: Message, rootState) {
       dispatch.app.setMessages({
