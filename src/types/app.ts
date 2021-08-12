@@ -46,13 +46,17 @@ export interface MsgLookup {
   TipSet: Cid[];
 }
 
+interface Messages {
+  combined: Message[];
+  fetchedMessages: Message[];
+  pendingMessages: Message[];
+  failedMessages: Message[];
+}
+
 export interface AppState {
   selectedNetwork: Network;
   address: string;
   extendedKey: { [key: string]: any };
   balance: number;
-  messages: Message[];
-  fetchedMessages: Message[];
-  pendingMessages: Message[];
-  failedMessages: Message[];
+  messages: Record<keyof typeof Network, Messages>;
 }

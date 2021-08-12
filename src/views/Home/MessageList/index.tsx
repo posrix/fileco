@@ -17,14 +17,15 @@ import {
   OrderFrom,
 } from './styled';
 
-interface MessageListProps {
-  address: string;
-}
-
-const MessageList: React.FC<MessageListProps> = ({ address }) => {
+const MessageList: React.FC = () => {
   const history = useHistory();
 
-  const { messages } = useSelector((state: RootState) => state.app);
+  const { messages, address } = useSelector((state: RootState) => {
+    return {
+      messages: state.app.messages[state.app.selectedNetwork].combined,
+      address: state.app.selectedNetwork,
+    };
+  });
 
   return (
     <AutoSizer>

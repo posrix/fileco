@@ -137,7 +137,8 @@ export function startPendingMessagePolling(
       dispatch.app.setMessagesByStatus(
         [
           { ...pendingMessage, status: MessageStatus.FAILED },
-          ...rootState.app.failedMessages,
+          ...rootState.app.messages[rootState.app.selectedNetwork]
+            .failedMessages,
         ],
         MessageStatus.FAILED
       );

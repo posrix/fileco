@@ -18,10 +18,20 @@ export const app = createModel<RootModel>()({
     address: '',
     extendedKey: {},
     balance: 0,
-    messages: [],
-    fetchedMessages: [],
-    pendingMessages: [],
-    failedMessages: [],
+    messages: {
+      [Network.Calibration]: {
+        combined: [],
+        fetchedMessages: [],
+        pendingMessages: [],
+        failedMessages: [],
+      },
+      [Network.Mainnet]: {
+        combined: [],
+        fetchedMessages: [],
+        pendingMessages: [],
+        failedMessages: [],
+      },
+    },
   } as AppState,
   reducers: {
     setSelectedNetwork(state: AppState, selectedNetwork: Network) {
@@ -47,12 +57,13 @@ export const app = createModel<RootModel>()({
     },
     combineMessages(state: AppState) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.messages = reverse(
+        const messagesByNetwork = state.messages[state.selectedNetwork];
+        draftState.messages[state.selectedNetwork].combined = reverse(
           sortBy(
             [
-              ...state.fetchedMessages,
-              ...state.pendingMessages,
-              ...state.failedMessages,
+              ...messagesByNetwork.fetchedMessages,
+              ...messagesByNetwork.pendingMessages,
+              ...messagesByNetwork.failedMessages,
             ],
             (message) => message.datetime
           )
@@ -66,7 +77,7 @@ export const app = createModel<RootModel>()({
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
-        draftState[draftMessagesKey] = reverse(
+        draftState.messages[state.selectedNetwork][draftMessagesKey] = reverse(
           sortBy(messages, (message) => message.datetime)
         );
       });
@@ -77,23 +88,27 @@ export const app = createModel<RootModel>()({
       messageStatus: MessageStatus
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
+        const draftMessagesByNetwork =
+          draftState.messages[state.selectedNetwork];
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
-        draftState[draftMessagesKey] = remove(
-          draftState[draftMessagesKey],
+        draftMessagesByNetwork[draftMessagesKey] = remove(
+          draftMessagesByNetwork[draftMessagesKey],
           (message) => message.cid['/'] !== cid['/']
         );
       });
     },
     pruneDupMessages(state: AppState) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.fetchedMessages.forEach((fetchedMessage) => {
-          draftState.pendingMessages = remove(
-            draftState.pendingMessages,
+        const draftMessagesByNetwork =
+          draftState.messages[state.selectedNetwork];
+        draftMessagesByNetwork.fetchedMessages.forEach((fetchedMessage) => {
+          draftMessagesByNetwork.pendingMessages = remove(
+            draftMessagesByNetwork.pendingMessages,
             (pendingMessage) =>
               pendingMessage.cid['/'] !== fetchedMessage.cid['/']
           );
-          draftState.failedMessages = remove(
-            draftState.failedMessages,
+          draftMessagesByNetwork.failedMessages = remove(
+            draftMessagesByNetwork.failedMessages,
             (failedMessage) =>
               failedMessage.cid['/'] !== fetchedMessage.cid['/']
           );
@@ -114,12 +129,14 @@ export const app = createModel<RootModel>()({
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
+        const draftMessagesByNetwork =
+          draftState.messages[state.selectedNetwork];
         const index = findIndex(
-          draftState[draftMessagesKey],
+          draftMessagesByNetwork[draftMessagesKey],
           (message) => message.cid['/'] === cid['/']
         );
-        draftState[draftMessagesKey][index] = {
-          ...draftState[draftMessagesKey][index],
+        draftMessagesByNetwork[draftMessagesKey][index] = {
+          ...draftMessagesByNetwork[draftMessagesKey][index],
           ...payload,
         };
       });
@@ -138,14 +155,20 @@ export const app = createModel<RootModel>()({
       dispatch.app.combineMessages();
       if (firstTime) {
         // if refresh page, all uncompleted pending messages will start polling
-        rootState.app.pendingMessages.forEach((pendingMessage) => {
+        rootState.app.messages[
+          rootState.app.selectedNetwork
+        ].pendingMessages.forEach((pendingMessage) => {
           startPendingMessagePolling(pendingMessage, dispatch, rootState);
         });
       }
     },
     async incrementalPushMessage(pendingMessage: Message, rootState) {
       dispatch.app.setMessagesByStatus(
-        [pendingMessage, ...rootState.app.pendingMessages],
+        [
+          pendingMessage,
+          ...rootState.app.messages[rootState.app.selectedNetwork]
+            .pendingMessages,
+        ],
         MessageStatus.PENDING
       );
       dispatch.app.combineMessages();

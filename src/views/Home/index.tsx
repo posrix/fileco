@@ -100,7 +100,7 @@ const Home: React.FC = () => {
           {isLoading && <ButtonSpinner glyph="spinner" />}
         </MessageListTitle>
       </MessageListTitleContainer>
-      <MessageList address={address} />
+      <MessageList />
     </>
   );
 };

@@ -20,10 +20,12 @@ interface ParamTypes {
 
 const Message: React.FC = () => {
   const { cid } = useParams<ParamTypes>();
-  
+
   const selectedMessage = useSelector(
     (state: RootState) =>
-      state.app.messages.filter((message) => message.cid['/'] === cid)[0]
+      state.app.messages[state.app.selectedNetwork].combined.filter(
+        (message) => message.cid['/'] === cid
+      )[0]
   );
 
   if (!selectedMessage) {
