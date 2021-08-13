@@ -6,6 +6,7 @@ import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
 import { Network, Cid, Message, MsgLookup, MessageStatus } from 'src/types/app';
 import { RootState, Dispatch } from 'src/models/store';
+import { store } from 'src/models/store';
 import signer from 'src/utils/signer';
 
 const passworder = require('browser-passworder');
@@ -22,13 +23,12 @@ export const removeLocalStorage = (storageName: string) => {
   window.localStorage.removeItem(storageName);
 };
 
-export class WrappedLotusRPC {
-  static client: any;
+export class LotusRPCAdaptor {
+  static client:
+    | Record<keyof typeof Network, LotusRPC>
+    | { [K in any]: never } = {};
 
-  constructor(network: Network, skipSingleton: boolean = false) {
-    if (WrappedLotusRPC.client && !skipSingleton) {
-      return WrappedLotusRPC.client;
-    }
+  constructor(network: Network) {
     const provider = new BrowserProvider(
       network === Network.Mainnet
         ? LOTUS_RPC_ENDPOINT.MAINNET
@@ -37,7 +37,7 @@ export class WrappedLotusRPC {
         token: LOTUS_AUTH_TOKEN,
       }
     );
-    WrappedLotusRPC.client = new LotusRPC(provider, {
+    LotusRPCAdaptor.client[network] = new LotusRPC(provider, {
       schema: mainnet.fullNode,
     });
   }
@@ -68,7 +68,10 @@ export function getAddressByNetwork(network: Network, address: string): string {
     : address;
 }
 
-export function getFilByUnit(value: number, decimal: number = 4) {
+export function getFilByUnit(value: number | string, decimal: number = 4) {
+  if (typeof value === 'string') {
+    value = Number(value);
+  }
   if (value <= 0) {
     return '0 FIL';
   }
@@ -114,34 +117,38 @@ export function getRematchMessagesKeyByStatus(messageStatus: MessageStatus) {
   }
 }
 
-export function startPendingMessagePolling(
+export function pollingPendingMessage(
+  messagePolling: MessagePolling,
+  network: Network,
   pendingMessage: Message,
   dispatch: Dispatch,
   rootState: RootState
 ) {
-  new MessagePolling().byCid({
+  messagePolling.byCid({
     cid: pendingMessage.cid,
     enablePolling: true,
     onSuccess: () => {
-      dispatch.app.removeMessageByStatus(
-        pendingMessage.cid,
-        MessageStatus.PENDING
-      );
+      dispatch.app.removeMessageByStatus({
+        cid: pendingMessage.cid,
+        messageStatus: MessageStatus.PENDING,
+        network,
+      });
       dispatch.app.fetchMessages({});
     },
     onError: () => {
-      dispatch.app.removeMessageByStatus(
-        pendingMessage.cid,
-        MessageStatus.PENDING
-      );
-      dispatch.app.setMessagesByStatus(
-        [
+      dispatch.app.removeMessageByStatus({
+        cid: pendingMessage.cid,
+        messageStatus: MessageStatus.PENDING,
+        network,
+      });
+      dispatch.app.setMessagesByStatus({
+        messages: [
           { ...pendingMessage, status: MessageStatus.FAILED },
-          ...rootState.app.messages[rootState.app.selectedNetwork]
-            .failedMessages,
+          ...rootState.app.messages[network].failedMessages,
         ],
-        MessageStatus.FAILED
-      );
+        messageStatus: MessageStatus.FAILED,
+        network,
+      });
       dispatch.app.combineMessages();
     },
   });
@@ -170,11 +177,9 @@ export function constructUnsignedMessage({
 }
 
 export async function getEstimateGas(unsignedMessage: any): Promise<any> {
-  const estimateMessageGas = await WrappedLotusRPC.client.gasEstimateMessageGas(
-    unsignedMessage,
-    { MaxFee: '0' },
-    []
-  );
+  const estimateMessageGas = await LotusRPCAdaptor.client[
+    store.getState().app.selectedNetwork
+  ].gasEstimateMessageGas(unsignedMessage, { MaxFee: '0' }, []);
   return {
     gasFeeCap: estimateMessageGas.GasFeeCap,
     gasLimit: estimateMessageGas.GasLimit,
@@ -183,7 +188,13 @@ export async function getEstimateGas(unsignedMessage: any): Promise<any> {
 }
 
 export class MessagePolling {
+  constructor(lotusRPCClient: LotusRPC) {
+    this.lotusRPCClient = lotusRPCClient;
+  }
+
   private elapse: number = 0;
+
+  private lotusRPCClient: LotusRPC;
 
   public async byCid({
     cid,
@@ -198,7 +209,7 @@ export class MessagePolling {
     onSuccess?: (message: MsgLookup) => void;
     onError?: () => void;
   }): Promise<MsgLookup> {
-    const searchedMessage = await WrappedLotusRPC.client.stateSearchMsg(cid);
+    const searchedMessage = await this.lotusRPCClient.stateSearchMsg(cid);
     if (!searchedMessage) {
       if (enablePolling) {
         // polling will be over after 5 mins
@@ -230,10 +241,9 @@ export async function getMessageTimestampByHeight({
   Height,
   TipSet,
 }: Pick<MsgLookup, 'Height' | 'TipSet'>): Promise<number> {
-  const tipSet = await WrappedLotusRPC.client.chainGetTipSetByHeight(
-    Height,
-    TipSet
-  );
+  const tipSet = await LotusRPCAdaptor.client[
+    store.getState().app.selectedNetwork
+  ].chainGetTipSetByHeight(Height, TipSet);
   return tipSet.Blocks[0].Timestamp;
 }
 
@@ -261,10 +271,11 @@ export async function sendSignedMessage({
   privateKey: string;
 }) {
   const unsignedMessage = constructUnsignedMessage({ from, to, value });
-
+  const LotusRPCClient =
+    LotusRPCAdaptor.client[store.getState().app.selectedNetwork];
   // get nonce and compare value with balance
-  const actor = await WrappedLotusRPC.client.StateGetActor(from, []);
-  if (actor.Balance < value) {
+  const actor = await LotusRPCClient.stateGetActor(from, []);
+  if (Number(actor.Balance) < value) {
     throw new Error('transfer amount is greater than balance');
   }
   unsignedMessage.Nonce = actor.Nonce;
@@ -282,5 +293,5 @@ export async function sendSignedMessage({
     unsignedMessage,
     privateKey
   );
-  return await WrappedLotusRPC.client.mpoolPush(signedMessage);
+  return await LotusRPCClient.mpoolPush(signedMessage);
 }

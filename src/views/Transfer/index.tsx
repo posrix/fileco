@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import {
-  WrappedLotusRPC,
+  LotusRPCAdaptor,
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
@@ -33,11 +33,13 @@ const Transfer: React.FC = () => {
 
   const dispatch = useDispatch<Dispatch>();
   const [gasEstimate, setGasEstimate] = useState(0);
-  const { address, extendedKey } = useSelector((state: RootState) => state.app);
+  const { address, extendedKey, selectedNetwork } = useSelector(
+    (state: RootState) => state.app
+  );
 
   const { data: balance = 0 } = useQuery(
     ['balance', address],
-    () => WrappedLotusRPC.client.walletBalance(address),
+    () => LotusRPCAdaptor.client[selectedNetwork].walletBalance(address),
     {
       enabled: !!address,
     }
@@ -79,7 +81,7 @@ const Transfer: React.FC = () => {
               ...base,
               privateKey: extendedKey.privateKey,
             }).then((cid) => {
-              dispatch.app.incrementalPushMessage({
+              dispatch.app.pushAndPollingPendingMessage({
                 ...base,
                 cid,
                 datetime: moment().format('YYYY/MM/DD h:mm:ss'),

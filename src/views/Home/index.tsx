@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import Button from 'src/components/Button';
 import {
-  WrappedLotusRPC,
+  LotusRPCAdaptor,
   getAddressByNetwork,
   getFilByUnit,
   addressEllipsis,
@@ -38,21 +38,23 @@ const Home: React.FC = () => {
 
   const { data: balance = 0 } = useQuery(
     ['balance', address, selectedNetwork],
-    () => WrappedLotusRPC.client.walletBalance(address),
+    () => LotusRPCAdaptor.client[selectedNetwork].walletBalance(address),
     {
-      enabled: !!address && !!selectedNetwork && !!WrappedLotusRPC.client,
+      enabled:
+        !!address &&
+        !!selectedNetwork &&
+        !!LotusRPCAdaptor.client[selectedNetwork],
     }
   );
 
   useEffect(() => {
     if (selectedNetwork) {
       dispatch.app.setAddress(getAddressByNetwork(selectedNetwork, address));
-      new WrappedLotusRPC(selectedNetwork);
     }
   }, [selectedNetwork]);
 
   useEffect(() => {
-    dispatch.app.setBalance(balance);
+    dispatch.app.setBalance(Number(balance));
   }, [balance]);
 
   const { isLoading } = useQuery(

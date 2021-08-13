@@ -11,8 +11,9 @@ import {
   setLocalStorage,
   getExtendedKeyBySeed,
   getAddressByNetwork,
-  WrappedLotusRPC,
+  LotusRPCAdaptor,
 } from 'src/utils/app';
+import { Network } from 'src/types/app';
 import { RootState, Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { shuffle } from 'lodash';
@@ -55,7 +56,8 @@ const VerifyMnemonic: React.FC = () => {
             getAddressByNetwork(selectedNetwork, extendedKey.address)
           );
           dispatch.app.setExtendedKey(extendedKey);
-          new WrappedLotusRPC(selectedNetwork, true);
+          new LotusRPCAdaptor(Network.Calibration);
+          new LotusRPCAdaptor(Network.Mainnet);
           history.push('/home');
         });
       });

@@ -2,10 +2,11 @@ import { createModel } from '@rematch/core';
 import { Network, Message, MessageStatus } from 'src/types/app';
 import produce, { Draft } from 'immer';
 import {
-  WrappedLotusRPC,
+  LotusRPCAdaptor,
   convertFilscoutMessages,
-  startPendingMessagePolling,
+  pollingPendingMessage,
   getRematchMessagesKeyByStatus,
+  MessagePolling,
 } from 'src/utils/app';
 import { sortBy, reverse, findIndex, remove } from 'lodash';
 import { getMessagesByAddress } from 'src/services/filscout';
@@ -40,7 +41,6 @@ export const app = createModel<RootModel>()({
       });
     },
     setAddress(state: AppState, address: string) {
-      new WrappedLotusRPC(state.selectedNetwork, true);
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.address = address;
       });
@@ -72,24 +72,33 @@ export const app = createModel<RootModel>()({
     },
     setMessagesByStatus(
       state: AppState,
-      messages: Message[],
-      messageStatus: MessageStatus
+      {
+        messages,
+        messageStatus,
+        network,
+      }: { messages: Message[]; messageStatus: MessageStatus; network: Network }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
-        draftState.messages[state.selectedNetwork][draftMessagesKey] = reverse(
+        draftState.messages[network][draftMessagesKey] = reverse(
           sortBy(messages, (message) => message.datetime)
         );
       });
     },
     removeMessageByStatus(
       state: AppState,
-      cid: Cid,
-      messageStatus: MessageStatus
+      {
+        cid,
+        messageStatus,
+        network,
+      }: {
+        cid: Cid;
+        messageStatus: MessageStatus;
+        network: Network;
+      }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        const draftMessagesByNetwork =
-          draftState.messages[state.selectedNetwork];
+        const draftMessagesByNetwork = draftState.messages[network];
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
         draftMessagesByNetwork[draftMessagesKey] = remove(
           draftMessagesByNetwork[draftMessagesKey],
@@ -119,18 +128,19 @@ export const app = createModel<RootModel>()({
       state: AppState,
       {
         cid,
+        network,
         payload,
         messageStatus,
       }: {
         cid: Cid;
+        network: Network;
         payload: Partial<Message>;
         messageStatus: MessageStatus;
       }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
-        const draftMessagesByNetwork =
-          draftState.messages[state.selectedNetwork];
+        const draftMessagesByNetwork = draftState.messages[network];
         const index = findIndex(
           draftMessagesByNetwork[draftMessagesKey],
           (message) => message.cid['/'] === cid['/']
@@ -149,30 +159,47 @@ export const app = createModel<RootModel>()({
     ) {
       const rawMessages =
         (await getMessagesByAddress({ address: rootState.app.address })) || [];
-      const messages = convertFilscoutMessages(rawMessages);
-      dispatch.app.setMessagesByStatus(messages, MessageStatus.SUCCESS);
+      const network = rootState.app.selectedNetwork;
+      dispatch.app.setMessagesByStatus({
+        messages: convertFilscoutMessages(rawMessages),
+        messageStatus: MessageStatus.SUCCESS,
+        network,
+      });
       dispatch.app.pruneDupMessages();
       dispatch.app.combineMessages();
       if (firstTime) {
         // if refresh page, all uncompleted pending messages will start polling
-        rootState.app.messages[
-          rootState.app.selectedNetwork
-        ].pendingMessages.forEach((pendingMessage) => {
-          startPendingMessagePolling(pendingMessage, dispatch, rootState);
-        });
+        rootState.app.messages[network].pendingMessages.forEach(
+          (pendingMessage) => {
+            pollingPendingMessage(
+              new MessagePolling(LotusRPCAdaptor.client[network]),
+              network,
+              pendingMessage,
+              dispatch,
+              rootState
+            );
+          }
+        );
       }
     },
-    async incrementalPushMessage(pendingMessage: Message, rootState) {
-      dispatch.app.setMessagesByStatus(
-        [
+    async pushAndPollingPendingMessage(pendingMessage: Message, rootState) {
+      const network = rootState.app.selectedNetwork;
+      dispatch.app.setMessagesByStatus({
+        messages: [
           pendingMessage,
-          ...rootState.app.messages[rootState.app.selectedNetwork]
-            .pendingMessages,
+          ...rootState.app.messages[network].pendingMessages,
         ],
-        MessageStatus.PENDING
-      );
+        messageStatus: MessageStatus.PENDING,
+        network,
+      });
       dispatch.app.combineMessages();
-      startPendingMessagePolling(pendingMessage, dispatch, rootState);
+      pollingPendingMessage(
+        new MessagePolling(LotusRPCAdaptor.client[network]),
+        network,
+        pendingMessage,
+        dispatch,
+        rootState
+      );
     },
   }),
 });

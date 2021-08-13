@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { RootState, Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { WrappedLotusRPC } from 'src/utils/app';
+import { LotusRPCAdaptor } from 'src/utils/app';
+import { Network } from 'src/types/app';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from 'src/components/Button';
@@ -36,7 +37,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
     if (!getLocalStorage('mnemonic')) {
       history.replace('/');
     }
-    handleUnlock()
+    handleUnlock();
   }, []);
 
   const handleUnlock = () => {
@@ -46,7 +47,9 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
           getAddressByNetwork(selectedNetwork, extendedKey.address)
         );
         dispatch.app.setExtendedKey(extendedKey);
-        new WrappedLotusRPC(selectedNetwork, true);
+        console.log(Network.Calibration);
+        new LotusRPCAdaptor(Network.Calibration);
+        new LotusRPCAdaptor(Network.Mainnet);
         history.replace(
           location.state && location.state.from
             ? location.state.from.pathname
