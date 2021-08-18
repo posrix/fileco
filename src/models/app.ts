@@ -214,69 +214,69 @@ export const app = createModel<RootModel>()({
       {
         password,
         accountId,
-        onSuccess,
-        onError,
       }: {
         password: string;
         accountId?: number;
-        onSuccess?: Function;
-        onError?: Function;
       },
       rootState
     ) {
-      let newAccountIndex: number;
-      if (typeof accountId === 'undefined') {
-        if (rootState.app.accounts.length) {
-          const accountIds = rootState.app.accounts.map(
-            (account) => account.accountId
-          );
-          newAccountIndex = max(accountIds) + 1;
+      return new Promise((resolve, reject) => {
+        let newAccountIndex: number;
+        if (typeof accountId === 'undefined') {
+          if (rootState.app.accounts.length) {
+            const accountIds = rootState.app.accounts.map(
+              (account) => account.accountId
+            );
+            newAccountIndex = max(accountIds) + 1;
+          } else {
+            newAccountIndex = rootState.app.selectedAccountId;
+          }
         } else {
-          newAccountIndex = rootState.app.selectedAccountId;
+          newAccountIndex = accountId;
         }
-      } else {
-        newAccountIndex = accountId;
-      }
-      getExtendedKeyBySeed(password, newAccountIndex)
-        .then((extendedKey) => {
-          const address = getAddressByNetwork(
-            rootState.app.selectedNetwork,
-            extendedKey.address
-          );
-          dispatch.app.addAccount({
-            ...accountInitialState,
-            accountId: newAccountIndex,
-            address,
-            extendedKey,
+        getExtendedKeyBySeed(password, newAccountIndex)
+          .then((extendedKey) => {
+            const address = getAddressByNetwork(
+              rootState.app.selectedNetwork,
+              extendedKey.address
+            );
+            dispatch.app.addAccount({
+              ...accountInitialState,
+              accountId: newAccountIndex,
+              address,
+              extendedKey,
+            });
+            dispatch.app.setSelectedAccountId(newAccountIndex);
+            resolve(extendedKey);
+          })
+          .catch((error) => {
+            reject(error);
           });
-          dispatch.app.setSelectedAccountId(newAccountIndex);
-          onSuccess && onSuccess(extendedKey);
-        })
-        .catch((error) => {
-          onError && onError(error);
-        });
+      });
     },
     async fetchMessages(
-      { firstTime = false }: { firstTime?: boolean },
+      {
+        firstTime = false,
+        accountId,
+      }: { firstTime?: boolean; accountId: number },
       rootState
     ) {
-      const { selectedAccountId } = rootState.app;
       const rawMessages =
         (await getMessagesByAddress({
-          address: rootState.app.accounts[selectedAccountId].address,
+          address: rootState.app.accounts[accountId].address,
         })) || [];
       const network = rootState.app.selectedNetwork;
       dispatch.app.setMessagesByStatus({
-        accountId: selectedAccountId,
+        accountId,
         messages: convertFilscoutMessages(rawMessages),
         messageStatus: MessageStatus.SUCCESS,
         network,
       });
-      dispatch.app.pruneDupMessages({ accountId: selectedAccountId });
-      dispatch.app.combineMessages({ accountId: selectedAccountId });
+      dispatch.app.pruneDupMessages({ accountId });
+      dispatch.app.combineMessages({ accountId });
       if (firstTime) {
         // if refresh page, all uncompleted pending messages will start polling
-        rootState.app.accounts[selectedAccountId].messages[
+        rootState.app.accounts[accountId].messages[
           network
         ].pendingMessages.forEach((pendingMessage) => {
           pollingPendingMessage({
@@ -284,7 +284,7 @@ export const app = createModel<RootModel>()({
               LotusRPCAdaptor.client[network]
             ),
             network,
-            accountId: selectedAccountId,
+            accountId,
             pendingMessage,
             dispatch,
             rootState,

@@ -174,8 +174,12 @@ function transactionSignRaw(unsignedMessage, privateKey) {
     unsignedMessage = Buffer.from(unsignedMessage, 'hex');
   }
 
-  // verify format and convert to buffer if needed
-  privateKey = tryToPrivateKeyBuffer(privateKey);
+  if (privateKey.type === 'Buffer') {
+    privateKey = new Uint8Array(privateKey.data);
+  } else {
+    // verify format and convert to buffer if needed
+    privateKey = tryToPrivateKeyBuffer(privateKey);
+  }
 
   const messageDigest = getDigest(unsignedMessage);
   const signature = secp256k1.ecdsaSign(messageDigest, privateKey);

@@ -22,9 +22,9 @@ import {
   RouteProps,
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { getLocalStorage } from 'src/utils/app';
+import { getLocalStorage, LotusRPCAdaptor } from 'src/utils/app';
 import { localeMessages } from 'src/locales';
-import { Language } from 'src/types/app';
+import { Language, Network } from 'src/types/app';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { StylesProvider } from '@material-ui/core/styles';
@@ -87,6 +87,9 @@ const queryClient = new QueryClient({
 
 export default function App() {
   const locale = (getLocalStorage('locale') as Language) || Language.zh;
+  
+  new LotusRPCAdaptor(Network.Calibration);
+  new LotusRPCAdaptor(Network.Mainnet);
 
   return (
     <QueryClientProvider client={queryClient}>

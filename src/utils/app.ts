@@ -3,7 +3,7 @@ import { LotusRPC } from '@filecoin-shipyard/lotus-client-rpc';
 import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browser';
 //@ts-ignore
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
-import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
+import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN } from './constants';
 import {
   Network,
   Cid,
@@ -14,8 +14,8 @@ import {
 } from 'src/types/app';
 import { RootState, Dispatch } from 'src/models/store';
 import { store } from 'src/models/store';
-import signer from 'src/utils/signer';
 import { findIndex } from 'lodash';
+import signer from 'src/utils/signer';
 
 const passworder = require('browser-passworder');
 
@@ -163,7 +163,7 @@ export function pollingPendingMessage({
         messageStatus: MessageStatus.PENDING,
         network,
       });
-      dispatch.app.fetchMessages({});
+      dispatch.app.fetchMessages({ accountId });
     },
     onError: () => {
       dispatch.app.removeMessageByStatus({
@@ -181,7 +181,7 @@ export function pollingPendingMessage({
         messageStatus: MessageStatus.FAILED,
         network,
       });
-      dispatch.app.combineMessages();
+      dispatch.app.combineMessages({ accountId });
     },
   });
 }
@@ -246,9 +246,7 @@ export class MessagePolling {
       if (enablePolling) {
         // polling will be over after 5 mins
         if (this.elapse >= 5 * 60 * 1000) {
-          if (onError) {
-            onError();
-          }
+          onError && onError();
           this.elapse = 0;
           throw new Error('Message can not be sent');
         }
@@ -261,9 +259,7 @@ export class MessagePolling {
         throw new Error('Message not exist');
       }
     } else {
-      if (onSuccess) {
-        onSuccess(searchedMessage);
-      }
+      onSuccess && onSuccess(searchedMessage);
       return searchedMessage;
     }
   }

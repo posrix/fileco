@@ -6,12 +6,7 @@ import { useHistory } from 'react-router-dom';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import {
-  getLocalStorage,
-  setLocalStorage,
-  LotusRPCAdaptor,
-} from 'src/utils/app';
-import { Network } from 'src/types/app';
+import { getLocalStorage, setLocalStorage } from 'src/utils/app';
 import { Dispatch } from 'src/models/store';
 import { useDispatch } from 'react-redux';
 import { shuffle } from 'lodash';
@@ -37,25 +32,20 @@ const VerifyMnemonic: React.FC = () => {
   const [showError, setShowError] = React.useState(false);
 
   const handleConfirm = () => {
-    if (!sortedwords.length) {
-      return;
-    }
-    const matchedOrder = sortedwords.join(' ') === mnemonic;
-    if (matchedOrder) {
-      window.localStorage.clear();
-      passworder.encrypt(password, mnemonic).then(function (blob: any) {
-        setLocalStorage('mnemonic', blob);
-        dispatch.app.createAccount({
-          password,
-          onSuccess: () => {
-            new LotusRPCAdaptor(Network.Calibration);
-            new LotusRPCAdaptor(Network.Mainnet);
-            history.push('/home');
-          },
+    if (sortedwords.length) {
+      const matchedOrder = sortedwords.join(' ') === mnemonic;
+      if (matchedOrder) {
+        window.localStorage.clear();
+        passworder.encrypt(password, mnemonic).then(async (blob: any) => {
+          setLocalStorage('mnemonic', blob);
+          await dispatch.app.createAccount({
+            password,
+          });
+          history.push('/home');
         });
-      });
-    } else {
-      setShowError(true);
+      } else {
+        setShowError(true);
+      }
     }
   };
 

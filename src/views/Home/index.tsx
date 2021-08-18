@@ -3,7 +3,6 @@ import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import Button from 'src/components/Button';
 import {
-  LotusRPCAdaptor,
   getAddressByNetwork,
   getFilByUnit,
   addressEllipsis,
@@ -32,12 +31,13 @@ import {
 const Home: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
-  const { address, selectedNetwork, balance } = useSelector(
+  const { address, selectedNetwork, balance, accountId } = useSelector(
     (state: RootState) => {
       const account = state.app.accounts[state.app.selectedAccountId];
       return {
         address: account.address,
         balance: account.balance,
+        accountId: account.accountId,
         selectedNetwork: state.app.selectedNetwork,
       };
     }
@@ -47,10 +47,7 @@ const Home: React.FC = () => {
     ['balance', address, selectedNetwork],
     () => dispatch.app.fetchBalance({ selectedNetwork, address }),
     {
-      enabled:
-        !!address &&
-        !!selectedNetwork &&
-        !!LotusRPCAdaptor.client[selectedNetwork],
+      enabled: !!address && !!selectedNetwork,
     }
   );
 
@@ -62,7 +59,7 @@ const Home: React.FC = () => {
 
   const { isLoading } = useQuery(
     ['messages', address, selectedNetwork],
-    () => dispatch.app.fetchMessages({ firstTime: true }),
+    () => dispatch.app.fetchMessages({ firstTime: true, accountId }),
     {
       enabled: !!address && !!selectedNetwork,
     }

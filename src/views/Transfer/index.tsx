@@ -33,22 +33,23 @@ const Transfer: React.FC = () => {
 
   const dispatch = useDispatch<Dispatch>();
   const [gasEstimate, setGasEstimate] = useState(0);
-  const { address, extendedKey, selectedNetwork } = useSelector(
+  const { address, balance, extendedKey, selectedNetwork } = useSelector(
     (state: RootState) => {
       const account = state.app.accounts[state.app.selectedAccountId];
       return {
         address: account.address,
+        balance: account.balance,
         extendedKey: account.extendedKey,
         selectedNetwork: state.app.selectedNetwork,
       };
     }
   );
 
-  const { data: balance = 0 } = useQuery(
-    ['balance', address],
-    () => LotusRPCAdaptor.client[selectedNetwork].walletBalance(address),
+  useQuery(
+    ['balance', address, selectedNetwork],
+    () => dispatch.app.fetchBalance({ selectedNetwork, address }),
     {
-      enabled: !!address,
+      enabled: !!address && !!selectedNetwork,
     }
   );
 
