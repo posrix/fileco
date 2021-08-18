@@ -4,10 +4,18 @@ import { BrowserProvider } from '@filecoin-shipyard/lotus-client-provider-browse
 //@ts-ignore
 import { mainnet } from '@filecoin-shipyard/lotus-client-schema';
 import { LOTUS_RPC_ENDPOINT, LOTUS_AUTH_TOKEN, PATH } from './constants';
-import { Network, Cid, Message, MsgLookup, MessageStatus } from 'src/types/app';
+import {
+  Network,
+  Cid,
+  Message,
+  MsgLookup,
+  MessageStatus,
+  Account,
+} from 'src/types/app';
 import { RootState, Dispatch } from 'src/models/store';
 import { store } from 'src/models/store';
 import signer from 'src/utils/signer';
+import { findIndex } from 'lodash';
 
 const passworder = require('browser-passworder');
 
@@ -43,19 +51,32 @@ export class LotusRPCAdaptor {
   }
 }
 
-export function getExtendedKeyBySeed(password: string): Promise<any> {
-  const blob = getLocalStorage('mnemonic');
+export function getExtendedKeyBySeed(
+  password: string,
+  accountId: number
+): Promise<any> {
   return new Promise((resolve, reject) => {
     passworder
-      .decrypt(password, blob)
+      .decrypt(password, getLocalStorage('mnemonic'))
       .then((result: any) => {
-        const extendedKey = signer.keyDerive(result, PATH, '');
+        const extendedKey = signer.keyDerive(
+          result,
+          `m/44'/461'/${accountId}'/0/0`,
+          ''
+        );
         resolve(extendedKey);
       })
       .catch((error: string) => {
         reject(error);
       });
   });
+}
+
+export function getAccountIndex(
+  accounts: Account[],
+  accountId: number
+): number {
+  return findIndex(accounts, (account) => account.accountId === accountId);
 }
 
 export function getAddressByNetwork(network: Network, address: string): string {
@@ -117,18 +138,27 @@ export function getRematchMessagesKeyByStatus(messageStatus: MessageStatus) {
   }
 }
 
-export function pollingPendingMessage(
-  messagePolling: MessagePolling,
-  network: Network,
-  pendingMessage: Message,
-  dispatch: Dispatch,
-  rootState: RootState
-) {
-  messagePolling.byCid({
+export function pollingPendingMessage({
+  messagePollingInstance,
+  network,
+  accountId,
+  pendingMessage,
+  dispatch,
+  rootState,
+}: {
+  messagePollingInstance: MessagePolling;
+  network: Network;
+  accountId: number;
+  pendingMessage: Message;
+  dispatch: Dispatch;
+  rootState: RootState;
+}) {
+  messagePollingInstance.byCid({
     cid: pendingMessage.cid,
     enablePolling: true,
     onSuccess: () => {
       dispatch.app.removeMessageByStatus({
+        accountId,
         cid: pendingMessage.cid,
         messageStatus: MessageStatus.PENDING,
         network,
@@ -137,14 +167,16 @@ export function pollingPendingMessage(
     },
     onError: () => {
       dispatch.app.removeMessageByStatus({
+        accountId,
         cid: pendingMessage.cid,
         messageStatus: MessageStatus.PENDING,
         network,
       });
       dispatch.app.setMessagesByStatus({
+        accountId,
         messages: [
           { ...pendingMessage, status: MessageStatus.FAILED },
-          ...rootState.app.messages[network].failedMessages,
+          ...rootState.app.accounts[accountId].messages[network].failedMessages,
         ],
         messageStatus: MessageStatus.FAILED,
         network,

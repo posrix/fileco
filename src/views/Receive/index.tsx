@@ -18,7 +18,10 @@ import {
 } from './styled';
 
 const Receive: React.FC = () => {
-  const address = useSelector((state: RootState) => state.app.address);
+  const address = useSelector(
+    (state: RootState) =>
+      state.app.accounts[state.app.selectedAccountId].address
+  );
 
   return (
     <>

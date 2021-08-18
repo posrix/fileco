@@ -9,12 +9,21 @@ interface Props {
   width?: number;
   count?: number;
   color?: string;
+  hide?: boolean;
   onClick?(): void;
 }
 
 class Icon extends React.Component<Props> {
   render() {
-    const { size, count, color, glyph, onClick, ...rest } = this.props;
+    const {
+      size,
+      count,
+      color,
+      glyph,
+      hide = false,
+      onClick,
+      ...rest
+    } = this.props;
     let { height, width } = this.props;
     if (!size) {
       height = 30;
@@ -24,7 +33,14 @@ class Icon extends React.Component<Props> {
       width = size;
     }
     return (
-      <SvgWrapper width={width} height={height} count={count} onClick={onClick} {...rest}>
+      <SvgWrapper
+        width={width}
+        height={height}
+        hide={hide}
+        count={count}
+        onClick={onClick}
+        {...rest}
+      >
         <InlineSvg
           color={color}
           fillRule="evenodd"

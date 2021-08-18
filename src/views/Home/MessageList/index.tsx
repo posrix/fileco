@@ -21,8 +21,9 @@ const MessageList: React.FC = () => {
   const history = useHistory();
 
   const { messages, address } = useSelector((state: RootState) => {
+    const account = state.app.accounts[state.app.selectedAccountId];
     return {
-      messages: state.app.messages[state.app.selectedNetwork].combined,
+      messages: account.messages[state.app.selectedNetwork].combined,
       address: state.app.selectedNetwork,
     };
   });

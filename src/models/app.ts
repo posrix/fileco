@@ -6,35 +6,54 @@ import {
   convertFilscoutMessages,
   pollingPendingMessage,
   getRematchMessagesKeyByStatus,
+  getExtendedKeyBySeed,
+  getAddressByNetwork,
+  getAccountIndex,
   MessagePolling,
 } from 'src/utils/app';
-import { sortBy, reverse, findIndex, remove } from 'lodash';
+import { sortBy, reverse, findIndex, remove, max } from 'lodash';
 import { getMessagesByAddress } from 'src/services/filscout';
-import { Cid, AppState } from 'src/types/app';
+import { Cid, AppState, Account } from 'src/types/app';
 import { RootModel } from '.';
+
+const accountInitialState = {
+  address: '',
+  accountId: 0,
+  extendedKey: {},
+  balance: 0,
+  messages: {
+    [Network.Calibration]: {
+      combined: [],
+      fetchedMessages: [],
+      pendingMessages: [],
+      failedMessages: [],
+    },
+    [Network.Mainnet]: {
+      combined: [],
+      fetchedMessages: [],
+      pendingMessages: [],
+      failedMessages: [],
+    },
+  },
+} as Account;
 
 export const app = createModel<RootModel>()({
   state: {
     selectedNetwork: Network.Calibration,
-    address: '',
-    extendedKey: {},
-    balance: 0,
-    messages: {
-      [Network.Calibration]: {
-        combined: [],
-        fetchedMessages: [],
-        pendingMessages: [],
-        failedMessages: [],
-      },
-      [Network.Mainnet]: {
-        combined: [],
-        fetchedMessages: [],
-        pendingMessages: [],
-        failedMessages: [],
-      },
-    },
+    selectedAccountId: 0,
+    accounts: [],
   } as AppState,
   reducers: {
+    setSelectedAccountId(state: AppState, selectedAccountId: number) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.selectedAccountId = selectedAccountId;
+      });
+    },
+    addAccount(state: AppState, account: Account) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.accounts = [...state.accounts, account];
+      });
+    },
     setSelectedNetwork(state: AppState, selectedNetwork: Network) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.selectedNetwork = selectedNetwork;
@@ -42,23 +61,30 @@ export const app = createModel<RootModel>()({
     },
     setAddress(state: AppState, address: string) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.address = address;
+        draftState.accounts[state.selectedAccountId].address = address;
       });
     },
     setExtendedKey(state: AppState, extendedKey: { [key: string]: any }) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.extendedKey = extendedKey;
+        draftState.accounts[state.selectedAccountId].extendedKey = extendedKey;
       });
     },
-    setBalance(state: AppState, balance: number) {
+    setBalance(
+      state: AppState,
+      { accountId, balance }: { accountId: number; balance: number }
+    ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.balance = balance;
+        draftState.accounts[accountId].balance = balance;
       });
     },
-    combineMessages(state: AppState) {
+    combineMessages(state: AppState, { accountId }: { accountId: number }) {
       return produce(state, (draftState: Draft<AppState>) => {
-        const messagesByNetwork = state.messages[state.selectedNetwork];
-        draftState.messages[state.selectedNetwork].combined = reverse(
+        const accountIndex = getAccountIndex(state.accounts, accountId);
+        const messagesByNetwork =
+          state.accounts[accountIndex].messages[state.selectedNetwork];
+        draftState.accounts[accountIndex].messages[
+          state.selectedNetwork
+        ].combined = reverse(
           sortBy(
             [
               ...messagesByNetwork.fetchedMessages,
@@ -76,13 +102,19 @@ export const app = createModel<RootModel>()({
         messages,
         messageStatus,
         network,
-      }: { messages: Message[]; messageStatus: MessageStatus; network: Network }
+        accountId,
+      }: {
+        messages: Message[];
+        messageStatus: MessageStatus;
+        network: Network;
+        accountId: number;
+      }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
+        const accountIndex = getAccountIndex(state.accounts, accountId);
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
-        draftState.messages[network][draftMessagesKey] = reverse(
-          sortBy(messages, (message) => message.datetime)
-        );
+        draftState.accounts[accountIndex].messages[network][draftMessagesKey] =
+          reverse(sortBy(messages, (message) => message.datetime));
       });
     },
     removeMessageByStatus(
@@ -91,14 +123,18 @@ export const app = createModel<RootModel>()({
         cid,
         messageStatus,
         network,
+        accountId,
       }: {
         cid: Cid;
         messageStatus: MessageStatus;
         network: Network;
+        accountId: number;
       }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        const draftMessagesByNetwork = draftState.messages[network];
+        const accountIndex = getAccountIndex(state.accounts, accountId);
+        const draftMessagesByNetwork =
+          draftState.accounts[accountIndex].messages[network];
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
         draftMessagesByNetwork[draftMessagesKey] = remove(
           draftMessagesByNetwork[draftMessagesKey],
@@ -106,10 +142,11 @@ export const app = createModel<RootModel>()({
         );
       });
     },
-    pruneDupMessages(state: AppState) {
+    pruneDupMessages(state: AppState, { accountId }: { accountId: number }) {
       return produce(state, (draftState: Draft<AppState>) => {
+        const accountIndex = getAccountIndex(state.accounts, accountId);
         const draftMessagesByNetwork =
-          draftState.messages[state.selectedNetwork];
+          draftState.accounts[accountIndex].messages[state.selectedNetwork];
         draftMessagesByNetwork.fetchedMessages.forEach((fetchedMessage) => {
           draftMessagesByNetwork.pendingMessages = remove(
             draftMessagesByNetwork.pendingMessages,
@@ -131,16 +168,20 @@ export const app = createModel<RootModel>()({
         network,
         payload,
         messageStatus,
+        accountId,
       }: {
         cid: Cid;
         network: Network;
         payload: Partial<Message>;
         messageStatus: MessageStatus;
+        accountId: number;
       }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
+        const accountIndex = getAccountIndex(state.accounts, accountId);
         const draftMessagesKey = getRematchMessagesKeyByStatus(messageStatus);
-        const draftMessagesByNetwork = draftState.messages[network];
+        const draftMessagesByNetwork =
+          draftState.accounts[accountIndex].messages[network];
         const index = findIndex(
           draftMessagesByNetwork[draftMessagesKey],
           (message) => message.cid['/'] === cid['/']
@@ -153,53 +194,127 @@ export const app = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
+    async fetchBalance(
+      {
+        selectedNetwork,
+        address,
+      }: {
+        selectedNetwork: Network;
+        address: string;
+      },
+      rootState
+    ) {
+      const accountId = rootState.app.selectedAccountId;
+      const balance = await LotusRPCAdaptor.client[
+        selectedNetwork
+      ].walletBalance(address);
+      dispatch.app.setBalance({ accountId, balance: Number(balance) });
+    },
+    async createAccount(
+      {
+        password,
+        accountId,
+        onSuccess,
+        onError,
+      }: {
+        password: string;
+        accountId?: number;
+        onSuccess?: Function;
+        onError?: Function;
+      },
+      rootState
+    ) {
+      let newAccountIndex: number;
+      if (typeof accountId === 'undefined') {
+        if (rootState.app.accounts.length) {
+          const accountIds = rootState.app.accounts.map(
+            (account) => account.accountId
+          );
+          newAccountIndex = max(accountIds) + 1;
+        } else {
+          newAccountIndex = rootState.app.selectedAccountId;
+        }
+      } else {
+        newAccountIndex = accountId;
+      }
+      getExtendedKeyBySeed(password, newAccountIndex)
+        .then((extendedKey) => {
+          const address = getAddressByNetwork(
+            rootState.app.selectedNetwork,
+            extendedKey.address
+          );
+          dispatch.app.addAccount({
+            ...accountInitialState,
+            accountId: newAccountIndex,
+            address,
+            extendedKey,
+          });
+          dispatch.app.setSelectedAccountId(newAccountIndex);
+          onSuccess && onSuccess(extendedKey);
+        })
+        .catch((error) => {
+          onError && onError(error);
+        });
+    },
     async fetchMessages(
       { firstTime = false }: { firstTime?: boolean },
       rootState
     ) {
+      const { selectedAccountId } = rootState.app;
       const rawMessages =
-        (await getMessagesByAddress({ address: rootState.app.address })) || [];
+        (await getMessagesByAddress({
+          address: rootState.app.accounts[selectedAccountId].address,
+        })) || [];
       const network = rootState.app.selectedNetwork;
       dispatch.app.setMessagesByStatus({
+        accountId: selectedAccountId,
         messages: convertFilscoutMessages(rawMessages),
         messageStatus: MessageStatus.SUCCESS,
         network,
       });
-      dispatch.app.pruneDupMessages();
-      dispatch.app.combineMessages();
+      dispatch.app.pruneDupMessages({ accountId: selectedAccountId });
+      dispatch.app.combineMessages({ accountId: selectedAccountId });
       if (firstTime) {
         // if refresh page, all uncompleted pending messages will start polling
-        rootState.app.messages[network].pendingMessages.forEach(
-          (pendingMessage) => {
-            pollingPendingMessage(
-              new MessagePolling(LotusRPCAdaptor.client[network]),
-              network,
-              pendingMessage,
-              dispatch,
-              rootState
-            );
-          }
-        );
+        rootState.app.accounts[selectedAccountId].messages[
+          network
+        ].pendingMessages.forEach((pendingMessage) => {
+          pollingPendingMessage({
+            messagePollingInstance: new MessagePolling(
+              LotusRPCAdaptor.client[network]
+            ),
+            network,
+            accountId: selectedAccountId,
+            pendingMessage,
+            dispatch,
+            rootState,
+          });
+        });
       }
     },
     async pushAndPollingPendingMessage(pendingMessage: Message, rootState) {
-      const network = rootState.app.selectedNetwork;
+      const { selectedNetwork, selectedAccountId } = rootState.app;
       dispatch.app.setMessagesByStatus({
+        accountId: selectedAccountId,
         messages: [
           pendingMessage,
-          ...rootState.app.messages[network].pendingMessages,
+          ...rootState.app.accounts[selectedAccountId].messages[selectedNetwork]
+            .pendingMessages,
         ],
         messageStatus: MessageStatus.PENDING,
-        network,
+        network: selectedNetwork,
       });
-      dispatch.app.combineMessages();
-      pollingPendingMessage(
-        new MessagePolling(LotusRPCAdaptor.client[network]),
-        network,
+      dispatch.app.combineMessages({ accountId: selectedAccountId });
+      pollingPendingMessage({
+        messagePollingInstance: new MessagePolling(
+          LotusRPCAdaptor.client[selectedNetwork]
+        ),
+        accountId: selectedAccountId,
+        network: selectedNetwork,
         pendingMessage,
         dispatch,
-        rootState
-      );
+        rootState,
+      });
     },
   }),
 });

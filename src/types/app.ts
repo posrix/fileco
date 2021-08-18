@@ -53,10 +53,16 @@ interface Messages {
   failedMessages: Message[];
 }
 
-export interface AppState {
-  selectedNetwork: Network;
+export interface Account {
   address: string;
   extendedKey: { [key: string]: any };
   balance: number;
   messages: Record<keyof typeof Network, Messages>;
+  accountId: number;
+}
+
+export interface AppState {
+  selectedNetwork: Network;
+  selectedAccountId: number;
+  accounts: Account[];
 }

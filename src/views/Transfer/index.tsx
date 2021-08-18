@@ -34,7 +34,14 @@ const Transfer: React.FC = () => {
   const dispatch = useDispatch<Dispatch>();
   const [gasEstimate, setGasEstimate] = useState(0);
   const { address, extendedKey, selectedNetwork } = useSelector(
-    (state: RootState) => state.app
+    (state: RootState) => {
+      const account = state.app.accounts[state.app.selectedAccountId];
+      return {
+        address: account.address,
+        extendedKey: account.extendedKey,
+        selectedNetwork: state.app.selectedNetwork,
+      };
+    }
   );
 
   const { data: balance = 0 } = useQuery(

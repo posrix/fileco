@@ -6,11 +6,7 @@ import { Network } from 'src/types/app';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from 'src/components/Button';
-import {
-  getExtendedKeyBySeed,
-  getAddressByNetwork,
-  getLocalStorage,
-} from 'src/utils/app';
+import { getLocalStorage } from 'src/utils/app';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Container,
@@ -26,12 +22,14 @@ interface UnlockProps {
 const Unlock: React.FC<UnlockProps> = ({ location }) => {
   const history = useHistory();
   const intl = useIntl();
-  const selectedNetwork = useSelector(
-    (state: RootState) => state.app.selectedNetwork
-  );
+
   const dispatch = useDispatch<Dispatch>();
   const [password, setPassword] = useState('12');
   const [isPasswordError, setIsPasswordError] = useState(false);
+
+  const selectedAccountId = useSelector(
+    (state: RootState) => state.app.selectedAccountId
+  );
 
   useEffect(() => {
     if (!getLocalStorage('mnemonic')) {
@@ -41,13 +39,10 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
   }, []);
 
   const handleUnlock = () => {
-    getExtendedKeyBySeed(password)
-      .then((extendedKey) => {
-        dispatch.app.setAddress(
-          getAddressByNetwork(selectedNetwork, extendedKey.address)
-        );
-        dispatch.app.setExtendedKey(extendedKey);
-        console.log(Network.Calibration);
+    dispatch.app.createAccount({
+      password,
+      accountId: selectedAccountId,
+      onSuccess: () => {
         new LotusRPCAdaptor(Network.Calibration);
         new LotusRPCAdaptor(Network.Mainnet);
         history.replace(
@@ -55,10 +50,11 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
             ? location.state.from.pathname
             : 'home'
         );
-      })
-      .catch(() => {
+      },
+      onError: () => {
         setIsPasswordError(true);
-      });
+      },
+    });
   };
 
   return (

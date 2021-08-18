@@ -23,9 +23,9 @@ const Message: React.FC = () => {
 
   const selectedMessage = useSelector(
     (state: RootState) =>
-      state.app.messages[state.app.selectedNetwork].combined.filter(
-        (message) => message.cid['/'] === cid
-      )[0]
+      state.app.accounts[state.app.selectedAccountId].messages[
+        state.app.selectedNetwork
+      ].combined.filter((message) => message.cid['/'] === cid)[0]
   );
 
   if (!selectedMessage) {

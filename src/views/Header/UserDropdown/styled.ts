@@ -12,6 +12,12 @@ export const AccountTitle = styled.div`
   margin-bottom: 20px;
 `;
 
+export const AccountSelectWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
 export const AccountSelectContainer = styled.div`
   display: flex;
   align-items: center;
@@ -30,7 +36,7 @@ export const Avatar = styled.div`
   width: 28px;
   height: 28px;
   background: #0075ff;
-  border-radius: 12px;
+  border-radius: 21px;
   cursor: pointer;
 `;
 

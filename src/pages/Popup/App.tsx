@@ -9,7 +9,9 @@ import Unlock from 'src/views/Unlock';
 import Message from 'src/views/Message';
 import Receive from 'src/views/Receive';
 import Setting from 'src/views/Setting';
-import { RootState } from 'src/models/store';
+import { RootState, store } from 'src/models/store';
+import { getPersistor } from '@rematch/persist';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import {
@@ -24,7 +26,6 @@ import { getLocalStorage } from 'src/utils/app';
 import { localeMessages } from 'src/locales';
 import { Language } from 'src/types/app';
 import { IntlProvider } from 'react-intl';
-import { store } from 'src/models/store';
 import { Provider } from 'react-redux';
 import { StylesProvider } from '@material-ui/core/styles';
 
@@ -52,12 +53,15 @@ const UnlockedRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
-  const extendedKey = useSelector((state: RootState) => state.app.extendedKey);
+  const account = useSelector(
+    (state: RootState) => state.app.accounts[state.app.selectedAccountId]
+  );
+  const hasExtendedKey = account ? !isEmpty(account.extendedKey) : false;
   return (
     <Route
       {...rest}
       render={(props: any) =>
-        !isEmpty(extendedKey) ? (
+        hasExtendedKey ? (
           <Component {...props} />
         ) : (
           <Redirect
@@ -89,32 +93,34 @@ export default function App() {
       <IntlProvider messages={localeMessages[locale]} locale={locale}>
         <StylesProvider injectFirst>
           <Provider store={store}>
-            <HashRouter hashType="noslash">
-              <Switch>
-                <InitializedRoute exact path="/" component={Welcome} />
-                <InitializedRoute
-                  exact
-                  path="/set-password"
-                  component={SetPassword}
-                />
-                <InitializedRoute
-                  exact
-                  path="/mnemonic"
-                  component={ProduceMnemonic}
-                />
-                <InitializedRoute
-                  exact
-                  path="/verify-mnemonic"
-                  component={VerifyMnemonic}
-                />
-                <UnlockedRoute exact path="/home" component={Home} />
-                <UnlockedRoute exact path="/transfer" component={Transfer} />
-                <UnlockedRoute exact path="/setting" component={Setting} />
-                <UnlockedRoute exact path="/receive" component={Receive} />
-                <UnlockedRoute path="/message/:cid" component={Message} />
-                <Route exact path="/unlock" component={Unlock} />
-              </Switch>
-            </HashRouter>
+            <PersistGate persistor={getPersistor()}>
+              <HashRouter hashType="noslash">
+                <Switch>
+                  <InitializedRoute exact path="/" component={Welcome} />
+                  <InitializedRoute
+                    exact
+                    path="/set-password"
+                    component={SetPassword}
+                  />
+                  <InitializedRoute
+                    exact
+                    path="/mnemonic"
+                    component={ProduceMnemonic}
+                  />
+                  <InitializedRoute
+                    exact
+                    path="/verify-mnemonic"
+                    component={VerifyMnemonic}
+                  />
+                  <UnlockedRoute exact path="/home" component={Home} />
+                  <UnlockedRoute exact path="/transfer" component={Transfer} />
+                  <UnlockedRoute exact path="/setting" component={Setting} />
+                  <UnlockedRoute exact path="/receive" component={Receive} />
+                  <UnlockedRoute path="/message/:cid" component={Message} />
+                  <Route exact path="/unlock" component={Unlock} />
+                </Switch>
+              </HashRouter>
+            </PersistGate>
           </Provider>
         </StylesProvider>
       </IntlProvider>

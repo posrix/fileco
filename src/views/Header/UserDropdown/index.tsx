@@ -12,6 +12,7 @@ import {
   AccountContainer,
   AccountTitle,
   AccountSelectContainer,
+  AccountSelectWrapper,
   MenuName,
   Avatar,
   Address,
@@ -34,7 +35,10 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   const dispatch = useDispatch<Dispatch>();
   const history = useHistory();
 
-  const { address, balance } = useSelector((state: RootState) => state.app);
+  const { accounts, selectedAccountId } = useSelector((state: RootState) => ({
+    accounts: state.app.accounts,
+    selectedAccountId: state.app.selectedAccountId,
+  }));
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -64,20 +68,38 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         <AccountTitle>
           <FormattedMessage id="user.dropdown.account.my" />
         </AccountTitle>
-        <AccountSelectContainer>
-          <Icon glyph="check" size={24} />
-          <Avatar />
-          <AddressContainer>
-            <Address>{addressEllipsis(address)}</Address>
-            <Balance>{getFilByUnit(balance)}</Balance>
-          </AddressContainer>
-        </AccountSelectContainer>
-        <AccountSelectContainer></AccountSelectContainer>
+        <AccountSelectWrapper>
+          {accounts.map((account) => (
+            <AccountSelectContainer
+              key={account.accountId}
+              onClick={() => {
+                dispatch.app.setSelectedAccountId(account.accountId);
+              }}
+            >
+              <Icon
+                glyph="check"
+                size={24}
+                hide={!(selectedAccountId === account.accountId)}
+              />
+              <Avatar />
+              <AddressContainer>
+                <Address>{addressEllipsis(account.address)}</Address>
+                <Balance>{getFilByUnit(account.balance)}</Balance>
+              </AddressContainer>
+            </AccountSelectContainer>
+          ))}
+        </AccountSelectWrapper>
       </AccountContainer>
       <DividerWrapper>
         <Divider />
       </DividerWrapper>
-      <MenuItem>
+      <MenuItem
+        onClick={async () => {
+          dispatch.app.createAccount({
+            password: '12',
+          });
+        }}
+      >
         <Icon glyph="add" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.account.add" />

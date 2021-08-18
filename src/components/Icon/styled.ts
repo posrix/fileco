@@ -16,6 +16,7 @@ interface SvgWrapperProps {
   height?: number;
   width?: number;
   count?: number;
+  hide?: boolean;
 }
 
 export const SvgWrapper = styled.div<SvgWrapperProps>`
@@ -24,4 +25,5 @@ export const SvgWrapper = styled.div<SvgWrapperProps>`
   height: ${(props) => (props.height ? `${props.height}px` : '30px')};
   position: relative;
   cursor: pointer;
+  visibility: ${(props) => (props.hide ? 'hidden' : 'visible')};
 `;

@@ -9,13 +9,11 @@ import Alert from '@material-ui/lab/Alert';
 import {
   getLocalStorage,
   setLocalStorage,
-  getExtendedKeyBySeed,
-  getAddressByNetwork,
   LotusRPCAdaptor,
 } from 'src/utils/app';
 import { Network } from 'src/types/app';
-import { RootState, Dispatch } from 'src/models/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'src/models/store';
+import { useDispatch } from 'react-redux';
 import { shuffle } from 'lodash';
 import {
   Container,
@@ -30,10 +28,6 @@ const passworder = require('browser-passworder');
 const VerifyMnemonic: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
-
-  const selectedNetwork = useSelector(
-    (state: RootState) => state.app.selectedNetwork
-  );
 
   const password = getLocalStorage('password');
   const mnemonic = getLocalStorage('temporary-mnemonic');
@@ -51,14 +45,13 @@ const VerifyMnemonic: React.FC = () => {
       window.localStorage.clear();
       passworder.encrypt(password, mnemonic).then(function (blob: any) {
         setLocalStorage('mnemonic', blob);
-        getExtendedKeyBySeed(password).then((extendedKey) => {
-          dispatch.app.setAddress(
-            getAddressByNetwork(selectedNetwork, extendedKey.address)
-          );
-          dispatch.app.setExtendedKey(extendedKey);
-          new LotusRPCAdaptor(Network.Calibration);
-          new LotusRPCAdaptor(Network.Mainnet);
-          history.push('/home');
+        dispatch.app.createAccount({
+          password,
+          onSuccess: () => {
+            new LotusRPCAdaptor(Network.Calibration);
+            new LotusRPCAdaptor(Network.Mainnet);
+            history.push('/home');
+          },
         });
       });
     } else {

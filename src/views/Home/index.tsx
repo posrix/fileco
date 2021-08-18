@@ -32,13 +32,20 @@ import {
 const Home: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
-  const { address, selectedNetwork } = useSelector(
-    (state: RootState) => state.app
+  const { address, selectedNetwork, balance } = useSelector(
+    (state: RootState) => {
+      const account = state.app.accounts[state.app.selectedAccountId];
+      return {
+        address: account.address,
+        balance: account.balance,
+        selectedNetwork: state.app.selectedNetwork,
+      };
+    }
   );
 
-  const { data: balance = 0 } = useQuery(
+  useQuery(
     ['balance', address, selectedNetwork],
-    () => LotusRPCAdaptor.client[selectedNetwork].walletBalance(address),
+    () => dispatch.app.fetchBalance({ selectedNetwork, address }),
     {
       enabled:
         !!address &&
@@ -52,10 +59,6 @@ const Home: React.FC = () => {
       dispatch.app.setAddress(getAddressByNetwork(selectedNetwork, address));
     }
   }, [selectedNetwork]);
-
-  useEffect(() => {
-    dispatch.app.setBalance(Number(balance));
-  }, [balance]);
 
   const { isLoading } = useQuery(
     ['messages', address, selectedNetwork],
