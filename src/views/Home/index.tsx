@@ -34,11 +34,12 @@ const Home: React.FC = () => {
   const { address, selectedNetwork, balance, accountId } = useSelector(
     (state: RootState) => {
       const account = state.app.accounts[state.app.selectedAccountId];
+      const selectedNetwork = state.app.selectedNetwork;
       return {
         address: account.address,
-        balance: account.balance,
+        balance: account.balances[selectedNetwork],
         accountId: account.accountId,
-        selectedNetwork: state.app.selectedNetwork,
+        selectedNetwork,
       };
     }
   );

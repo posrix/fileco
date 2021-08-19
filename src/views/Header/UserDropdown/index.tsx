@@ -35,10 +35,13 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   const dispatch = useDispatch<Dispatch>();
   const history = useHistory();
 
-  const { accounts, selectedAccountId } = useSelector((state: RootState) => ({
-    accounts: state.app.accounts,
-    selectedAccountId: state.app.selectedAccountId,
-  }));
+  const { accounts, selectedAccountId, selectedNetwork } = useSelector(
+    (state: RootState) => ({
+      accounts: state.app.accounts,
+      selectedAccountId: state.app.selectedAccountId,
+      selectedNetwork: state.app.selectedNetwork,
+    })
+  );
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -84,7 +87,9 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
               <Avatar />
               <AddressContainer>
                 <Address>{addressEllipsis(account.address)}</Address>
-                <Balance>{getFilByUnit(account.balance)}</Balance>
+                <Balance>
+                  {getFilByUnit(account.balances[selectedNetwork])}
+                </Balance>
               </AddressContainer>
             </AccountSelectContainer>
           ))}

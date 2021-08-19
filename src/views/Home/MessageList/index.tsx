@@ -23,7 +23,7 @@ const MessageList: React.FC = () => {
   const { messages, address } = useSelector((state: RootState) => {
     const account = state.app.accounts[state.app.selectedAccountId];
     return {
-      messages: account.messages[state.app.selectedNetwork].combined,
+      messages: account.messages[state.app.selectedNetwork].combinedMessages,
       address: state.app.selectedNetwork,
     };
   });

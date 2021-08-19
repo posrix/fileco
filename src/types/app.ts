@@ -47,7 +47,7 @@ export interface MsgLookup {
 }
 
 interface Messages {
-  combined: Message[];
+  combinedMessages: Message[];
   fetchedMessages: Message[];
   pendingMessages: Message[];
   failedMessages: Message[];
@@ -56,7 +56,7 @@ interface Messages {
 export interface Account {
   address: string;
   extendedKey: { [key: string]: any };
-  balance: number;
+  balances: Record<keyof typeof Network, number>;
   messages: Record<keyof typeof Network, Messages>;
   accountId: number;
 }

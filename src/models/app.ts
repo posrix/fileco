@@ -20,16 +20,16 @@ const accountInitialState = {
   address: '',
   accountId: 0,
   extendedKey: {},
-  balance: 0,
+  balances: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   messages: {
     [Network.Calibration]: {
-      combined: [],
+      combinedMessages: [],
       fetchedMessages: [],
       pendingMessages: [],
       failedMessages: [],
     },
     [Network.Mainnet]: {
-      combined: [],
+      combinedMessages: [],
       fetchedMessages: [],
       pendingMessages: [],
       failedMessages: [],
@@ -71,10 +71,14 @@ export const app = createModel<RootModel>()({
     },
     setBalance(
       state: AppState,
-      { accountId, balance }: { accountId: number; balance: number }
+      {
+        accountId,
+        balance,
+        network,
+      }: { accountId: number; balance: number; network: Network }
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.accounts[accountId].balance = balance;
+        draftState.accounts[accountId].balances[network] = balance;
       });
     },
     combineMessages(state: AppState, { accountId }: { accountId: number }) {
@@ -84,7 +88,7 @@ export const app = createModel<RootModel>()({
           state.accounts[accountIndex].messages[state.selectedNetwork];
         draftState.accounts[accountIndex].messages[
           state.selectedNetwork
-        ].combined = reverse(
+        ].combinedMessages = reverse(
           sortBy(
             [
               ...messagesByNetwork.fetchedMessages,
@@ -208,7 +212,11 @@ export const app = createModel<RootModel>()({
       const balance = await LotusRPCAdaptor.client[
         selectedNetwork
       ].walletBalance(address);
-      dispatch.app.setBalance({ accountId, balance: Number(balance) });
+      dispatch.app.setBalance({
+        accountId,
+        balance: Number(balance),
+        network: selectedNetwork,
+      });
     },
     async createAccount(
       {

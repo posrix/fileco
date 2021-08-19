@@ -25,7 +25,7 @@ const Message: React.FC = () => {
     (state: RootState) =>
       state.app.accounts[state.app.selectedAccountId].messages[
         state.app.selectedNetwork
-      ].combined.filter((message) => message.cid['/'] === cid)[0]
+      ].combinedMessages.filter((message) => message.cid['/'] === cid)[0]
   );
 
   if (!selectedMessage) {

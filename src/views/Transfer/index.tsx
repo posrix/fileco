@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import {
-  LotusRPCAdaptor,
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
@@ -36,11 +35,12 @@ const Transfer: React.FC = () => {
   const { address, balance, extendedKey, selectedNetwork } = useSelector(
     (state: RootState) => {
       const account = state.app.accounts[state.app.selectedAccountId];
+      const selectedNetwork = state.app.selectedNetwork;
       return {
         address: account.address,
-        balance: account.balance,
+        balance: account.balances[selectedNetwork],
         extendedKey: account.extendedKey,
-        selectedNetwork: state.app.selectedNetwork,
+        selectedNetwork,
       };
     }
   );
