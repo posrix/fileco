@@ -15,11 +15,14 @@ export default function request(url: string, options: AxiosRequestConfig) {
     });
 }
 
-export const getFILPrice = ({ symbol = 'FIL' }: { symbol: string }) => {
+export const getCoinPriceList = ({  }: {  }) => {
   return request('/v1/cryptocurrency/listings/latest', {
     method: 'get',
     params: {
-      symbol,
+
+    },
+    headers: {
+      'X-CMC_PRO_API_KEY': '144854fa-b1a0-455e-ba79-c6ce777616ed',
     },
   });
 };

@@ -11,8 +11,9 @@ import {
   getAccountIndex,
   MessagePolling,
 } from 'src/utils/app';
-import { sortBy, reverse, findIndex, remove, max } from 'lodash';
+import { sortBy, reverse, findIndex, remove, max, find } from 'lodash';
 import { getMessagesByAddress } from 'src/services/filscout';
+import { getCoinPriceList } from 'src/services/coinmarketcap';
 import { Cid, AppState, Account } from 'src/types/app';
 import { RootModel } from '.';
 
@@ -21,6 +22,7 @@ const accountInitialState = {
   accountId: 0,
   extendedKey: {},
   balances: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
+  balancesUSD: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   messages: {
     [Network.Calibration]: {
       combinedMessages: [],
@@ -41,9 +43,15 @@ export const app = createModel<RootModel>()({
   state: {
     selectedNetwork: Network.Calibration,
     selectedAccountId: 0,
+    priceInfo: null,
     accounts: [],
   } as AppState,
   reducers: {
+    setPriceInfo(state: AppState, priceInfo: { [K in any]: any }) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.priceInfo = priceInfo;
+      });
+    },
     setSelectedAccountId(state: AppState, selectedAccountId: number) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.selectedAccountId = selectedAccountId;
@@ -67,6 +75,18 @@ export const app = createModel<RootModel>()({
     setExtendedKey(state: AppState, extendedKey: { [key: string]: any }) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.accounts[state.selectedAccountId].extendedKey = extendedKey;
+      });
+    },
+    setBalanceUSD(
+      state: AppState,
+      { accountId, network }: { accountId: number; network: Network }
+    ) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        const balance = state.accounts[accountId].balances[network];
+        const balanceUSD =
+          state.priceInfo.price * (balance * Math.pow(10, -18));
+        draftState.accounts[accountId].balancesUSD[network] =
+          Math.floor(balanceUSD * Math.pow(10, 4)) / Math.pow(10, 4);
       });
     },
     setBalance(
@@ -198,24 +218,41 @@ export const app = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async fetchBalance(
+    async fetchBalanceUSD(
       {
-        selectedNetwork,
-        address,
+        accountId,
+        network,
       }: {
-        selectedNetwork: Network;
-        address: string;
+        accountId: number;
+        network: Network;
       },
       rootState
     ) {
-      const accountId = rootState.app.selectedAccountId;
-      const balance = await LotusRPCAdaptor.client[
-        selectedNetwork
-      ].walletBalance(address);
+      if (!rootState.app.priceInfo) {
+        const {
+          data: { data: prices },
+        } = await getCoinPriceList({});
+        const filPrice = find(prices, (price) => price.symbol === 'FIL');
+        dispatch.app.setPriceInfo(filPrice.quote.USD);
+      }
+      dispatch.app.setBalanceUSD({ accountId, network });
+    },
+    async fetchBalance({
+      accountId,
+      network,
+      address,
+    }: {
+      accountId: number;
+      network: Network;
+      address: string;
+    }) {
+      const balance = await LotusRPCAdaptor.client[network].walletBalance(
+        address
+      );
       dispatch.app.setBalance({
         accountId,
         balance: Number(balance),
-        network: selectedNetwork,
+        network,
       });
     },
     async createAccount(

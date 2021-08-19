@@ -57,11 +57,13 @@ export interface Account {
   address: string;
   extendedKey: { [key: string]: any };
   balances: Record<keyof typeof Network, number>;
+  balancesUSD: Record<keyof typeof Network, number>;
   messages: Record<keyof typeof Network, Messages>;
   accountId: number;
 }
 
 export interface AppState {
+  priceInfo: { [K in any]: any };
   selectedNetwork: Network;
   selectedAccountId: number;
   accounts: Account[];

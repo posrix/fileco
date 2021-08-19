@@ -31,24 +31,41 @@ import {
 const Home: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
-  const { address, selectedNetwork, balance, accountId } = useSelector(
-    (state: RootState) => {
+  const { address, selectedNetwork, balance, balanceUSD, accountId } =
+    useSelector((state: RootState) => {
       const account = state.app.accounts[state.app.selectedAccountId];
       const selectedNetwork = state.app.selectedNetwork;
       return {
         address: account.address,
         balance: account.balances[selectedNetwork],
+        balanceUSD: account.balancesUSD[selectedNetwork],
         accountId: account.accountId,
         selectedNetwork,
       };
+    });
+
+  useQuery(
+    ['balance', address, selectedNetwork],
+    () =>
+      dispatch.app.fetchBalance({
+        network: selectedNetwork,
+        address,
+        accountId,
+      }),
+    {
+      enabled: !!address && !!selectedNetwork,
     }
   );
 
   useQuery(
-    ['balance', address, selectedNetwork],
-    () => dispatch.app.fetchBalance({ selectedNetwork, address }),
+    ['price', address, selectedNetwork, balance],
+    () =>
+      dispatch.app.fetchBalanceUSD({
+        network: selectedNetwork,
+        accountId,
+      }),
     {
-      enabled: !!address && !!selectedNetwork,
+      enabled: !!balance,
     }
   );
 
@@ -78,7 +95,7 @@ const Home: React.FC = () => {
         <BalanceFilecoin>
           <TextEllipsis>{getFilByUnit(balance)}</TextEllipsis>
         </BalanceFilecoin>
-        <BalanceDollar>$12345.67 USD</BalanceDollar>
+        <BalanceDollar>${balanceUSD} USD</BalanceDollar>
       </BalanceContainer>
       <ActionsContainer>
         <Button
