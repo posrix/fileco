@@ -77,5 +77,6 @@
   "global.back": "Go Back",
   "global.receive": "Receive",
   "global.send": "Send",
-  "global.setting": "Setting"
+  "global.setting": "Setting",
+  "global.copied": "Copied"
 }

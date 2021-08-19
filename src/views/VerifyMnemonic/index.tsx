@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
 import CommonPageFooter from 'src/components/CommonPageFooter';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
+import Alert from 'src/components/Alert';
 import { getLocalStorage, setLocalStorage } from 'src/utils/app';
 import { Dispatch } from 'src/models/store';
 import { useDispatch } from 'react-redux';
@@ -85,24 +83,11 @@ const VerifyMnemonic: React.FC = () => {
         ))}
       </WordsContainer>
       <CommonPageFooter onConfirm={handleConfirm} />
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
+      <Alert
         open={showError}
-        autoHideDuration={3000}
-        onClose={(_, reason) => {
-          if (reason === 'clickaway') {
-            return;
-          }
-          setShowError(false);
-        }}
-      >
-        <Alert severity="error">
-          <FormattedMessage id="mnemonic.verify.wrong.order" />
-        </Alert>
-      </Snackbar>
+        setOpen={setShowError}
+        textLocalId="mnemonic.verify.wrong.order"
+      />
     </Container>
   );
 };

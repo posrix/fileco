@@ -77,5 +77,6 @@
   "global.back": "返回",
   "global.receive": "接收",
   "global.send": "发送",
-  "global.setting": "设置"
+  "global.setting": "设置",
+  "global.copied": "已复制"
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import Button from 'src/components/Button';
@@ -14,8 +14,11 @@ import { Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
 import MessageList from './MessageList';
 import Icon from 'src/components/Icon';
+import Alert from 'src/components/Alert';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   AccountContainer,
+  AccountSelectionContainer,
   LotusAccount,
   Account,
   BalanceContainer,
@@ -29,6 +32,7 @@ import {
 } from './styled';
 
 const Home: React.FC = () => {
+  const [copied, setCopied] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
   const { address, selectedNetwork, balance, balanceUSD, accountId } =
@@ -87,8 +91,12 @@ const Home: React.FC = () => {
     <>
       <Header />
       <AccountContainer>
-        <LotusAccount>F012689</LotusAccount>
-        <Account>{addressEllipsis(address)}</Account>
+        <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
+          <AccountSelectionContainer>
+            <LotusAccount>F012689</LotusAccount>
+            <Account>{addressEllipsis(address)}</Account>
+          </AccountSelectionContainer>
+        </CopyToClipboard>
       </AccountContainer>
       <BalanceContainer>
         <Icon glyph="filecoin" size={32} />
@@ -121,6 +129,12 @@ const Home: React.FC = () => {
         </MessageListTitle>
       </MessageListTitleContainer>
       <MessageList />
+      <Alert
+        open={copied}
+        setOpen={setCopied}
+        autoHideDuration={1000}
+        textLocalId="global.copied"
+      />
     </>
   );
 };

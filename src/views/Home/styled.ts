@@ -37,6 +37,16 @@ export const AccountContainer = styled.div`
   box-shadow: 0px 1px 0px 0px #e0e0e0;
 `;
 
+export const AccountSelectionContainer = styled.div`
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: #f0f1f2;
+  }
+`;
+
 export const Account = styled.div`
   font-size: 12px;
   font-weight: 400;

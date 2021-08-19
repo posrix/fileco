@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Header from 'src/views/Header';
 import CommonPageHeader from 'src/components/CommonPageHeader';
@@ -8,6 +8,7 @@ import { RootState } from 'src/models/store';
 import { useSelector } from 'react-redux';
 import QRCode from 'react-qr-code';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Alert from 'src/components/Alert';
 import {
   Container,
   QrCodeContainer,
@@ -18,6 +19,7 @@ import {
 } from './styled';
 
 const Receive: React.FC = () => {
+  const [copied, setCopied] = useState(false);
   const address = useSelector(
     (state: RootState) =>
       state.app.accounts[state.app.selectedAccountId].address
@@ -38,14 +40,20 @@ const Receive: React.FC = () => {
           <FormattedMessage id="receive.address" />
         </FieldTitle>
         <CopyAddressContianer>
-          <CopyAddress>{address} </CopyAddress>
+          <CopyAddress>{address}</CopyAddress>
           <CopyIconContianer>
-            <CopyToClipboard text={address}>
+            <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
               <Icon glyph="copy" size={22} />
             </CopyToClipboard>
           </CopyIconContianer>
         </CopyAddressContianer>
         <CommonPageFooter onlyBack />
+        <Alert
+          open={copied}
+          setOpen={setCopied}
+          autoHideDuration={1000}
+          textLocalId="global.copied"
+        />
       </Container>
     </>
   );
