@@ -35,7 +35,7 @@ const Welcome = () => {
               <FormattedMessage id="welcome.wallet.entry.create.title" />
             </WalletEntryTitle>
             <WalletEntrySubTitle>
-              <FormattedMessage id="welcome.wallet.entry.create.title.sub" />
+              <FormattedMessage id="welcome.wallet.entry.create.subTitle" />
             </WalletEntrySubTitle>
           </Box>
         </WalletEntryContainer>
@@ -46,7 +46,7 @@ const Welcome = () => {
               <FormattedMessage id="welcome.wallet.entry.import.title" />
             </WalletEntryTitle>
             <WalletEntrySubTitle>
-              <FormattedMessage id="welcome.wallet.entry.import.title.sub" />
+              <FormattedMessage id="welcome.wallet.entry.import.subTitle" />
             </WalletEntrySubTitle>
           </Box>
         </WalletEntryContainer>

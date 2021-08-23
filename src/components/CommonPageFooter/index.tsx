@@ -7,9 +7,14 @@ import { ActionContainer } from './styled';
 export interface CommonPageFooterProps {
   onConfirm?: () => void;
   onlyBack?: boolean;
+  confirmTextLocaleId?: string;
 }
 
-const CommonPageFooter: React.FC<CommonPageFooterProps> = ({ onConfirm, onlyBack }) => {
+const CommonPageFooter: React.FC<CommonPageFooterProps> = ({
+  onConfirm,
+  onlyBack,
+  confirmTextLocaleId = 'global.confirm',
+}) => {
   const history = useHistory();
   return (
     <ActionContainer>
@@ -24,7 +29,7 @@ const CommonPageFooter: React.FC<CommonPageFooterProps> = ({ onConfirm, onlyBack
           color="primary"
           onClick={() => (onConfirm ? onConfirm() : null)}
         >
-          <FormattedMessage id="global.confirm" />
+          <FormattedMessage id={confirmTextLocaleId} />
         </Button>
       )}
     </ActionContainer>

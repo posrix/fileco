@@ -32,7 +32,7 @@ const ProduceMnemonic: React.FC = () => {
     <Container>
       <CommonPageHeader
         titleLocaleId="mnemonic.produce.title"
-        subtitleLocaleId="mnemonic.produce.subtitle"
+        subTitleLocaleId="mnemonic.produce.subTitle"
       />
       {lock ? (
         <MnemonicLockedPlaceholder onClick={() => setLock(false)}>

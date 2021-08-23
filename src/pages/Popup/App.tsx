@@ -9,6 +9,8 @@ import Unlock from 'src/views/Unlock';
 import Message from 'src/views/Message';
 import Receive from 'src/views/Receive';
 import Setting from 'src/views/Setting';
+import ViewMnemonic from 'src/views/Setting/ViewMnemonic';
+import About from 'src/views/Setting/About';
 import { RootState, store } from 'src/models/store';
 import { getPersistor } from '@rematch/persist';
 import { PersistGate } from 'redux-persist/lib/integration/react';
@@ -87,7 +89,7 @@ const queryClient = new QueryClient({
 
 export default function App() {
   const locale = (getLocalStorage('locale') as Language) || Language.zh;
-  
+
   new LotusRPCAdaptor(Network.Calibration);
   new LotusRPCAdaptor(Network.Mainnet);
 
@@ -118,6 +120,16 @@ export default function App() {
                   <UnlockedRoute exact path="/home" component={Home} />
                   <UnlockedRoute exact path="/transfer" component={Transfer} />
                   <UnlockedRoute exact path="/setting" component={Setting} />
+                  <UnlockedRoute
+                    exact
+                    path="/setting/about"
+                    component={About}
+                  />
+                  <UnlockedRoute
+                    exact
+                    path="/setting/view-mnemonic"
+                    component={ViewMnemonic}
+                  />
                   <UnlockedRoute exact path="/receive" component={Receive} />
                   <UnlockedRoute path="/message/:cid" component={Message} />
                   <Route exact path="/unlock" component={Unlock} />

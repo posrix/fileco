@@ -8,13 +8,13 @@ export const SegmentContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const SegmentTitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  cursor: pointer;
 `;
 
 export const SegmentTitle = styled.div`

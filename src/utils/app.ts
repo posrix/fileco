@@ -51,6 +51,19 @@ export class LotusRPCAdaptor {
   }
 }
 
+export function getMnenomicByPassword(password: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    passworder
+      .decrypt(password, getLocalStorage('mnemonic'))
+      .then((mnemonic: string) => {
+        resolve(mnemonic);
+      })
+      .catch((error: string) => {
+        reject(error);
+      });
+  });
+}
+
 export function getExtendedKeyBySeed(
   password: string,
   accountId: number
@@ -58,9 +71,9 @@ export function getExtendedKeyBySeed(
   return new Promise((resolve, reject) => {
     passworder
       .decrypt(password, getLocalStorage('mnemonic'))
-      .then((result: any) => {
+      .then((mnemonic: string) => {
         const extendedKey = signer.keyDerive(
-          result,
+          mnemonic,
           `m/44'/461'/${accountId}'/0/0`,
           ''
         );

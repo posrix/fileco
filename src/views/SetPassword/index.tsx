@@ -16,7 +16,7 @@ const SetPassword: React.FC = () => {
     <Container>
       <CommonPageHeader
         titleLocaleId="password.create.form.title"
-        subtitleLocaleId="password.create.form.subtitle"
+        subTitleLocaleId="password.create.form.subTitle"
         gutter={50}
       />
       <Formik

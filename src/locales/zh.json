@@ -1,8 +1,8 @@
 {
   "welcome.wallet.entry.create.title": "创建身份钱包",
   "welcome.wallet.entry.import.title": "导入身份钱包",
-  "welcome.wallet.entry.create.title.sub": "创建新的账户助记词",
-  "welcome.wallet.entry.import.title.sub": "已拥有一个账户助记词",
+  "welcome.wallet.entry.create.subTitle": "创建新的账户助记词",
+  "welcome.wallet.entry.import.subTitle": "已拥有一个账户助记词",
   "welcome.slogan": "开始使用！",
 
   "unlock.welcome.back.slogan": "欢迎回来!",
@@ -11,7 +11,7 @@
   "unlock.password.validation.incorrect": "密码不正确",
 
   "password.create.form.title": "设置钱包访问密码",
-  "password.create.form.subtitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
+  "password.create.form.subTitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
   "password.create.form.password": "8-20位密码",
   "password.create.form.confirm": "确认密码",
   "password.create.form.password.validaton.required": "请输入密码",
@@ -21,14 +21,14 @@
   "password.create.form.password.validaton.max": "密码长度最大8位",
 
   "mnemonic.produce.title": "备份助记词",
-  "mnemonic.produce.subtitle": "请按顺序在纸上抄写助记词并妥善保管，我们将在下一个屏幕确认",
+  "mnemonic.produce.subTitle": "请按顺序在纸上抄写助记词并妥善保管，我们将在下一个屏幕确认",
   "mnemonic.produce.warning1": "· 助记词代表您的钱包所有权，请勿泄漏给任何人",
   "mnemonic.produce.warning2": "· 助记词一旦丢失，资产将无法恢复",
   "mnemonic.produce.warning3": "· 请勿通过截屏，网络传输的方式进行备份保存",
   "mnemonic.produce.lock": "点击此处显示密语",
 
   "mnemonic.verify.title": "验证助记词",
-  "mnemonic.verify.subtitle": "请选择每个单词以确保它是正确的",
+  "mnemonic.verify.subTitle": "请选择每个单词以确保它是正确的",
   "mnemonic.verify.wrong.order": "助记词顺序不正确",
 
   "home.network.current": "当前网络: {network}",
@@ -65,16 +65,29 @@
   "user.dropdown.setting": "设置",
   "user.dropdown.lock": "锁定",
 
-  "setting.mnemonic.view.title": "查看账户助记词",
-  "setting.mnemonic.view.subTitle": "助记词代表您的钱包资产所有权",
-  "setting.language.title": "当前语言",
-  "setting.about.title": "关于",
-  "setting.about.subTitle": "版本、支持中心和联系方式",
+  "setting.menu.mnemonic.view.title": "查看账户助记词",
+  "setting.menu.mnemonic.view.subTitle": "助记词代表您的钱包资产所有权",
+  "setting.menu.language.title": "当前语言",
+  "setting.menu.about.title": "关于",
+  "setting.menu.about.subTitle": "版本、支持中心和联系方式",
   "setting.language.zh": "中文(简体)",
   "setting.language.en": "英文",
 
+  "setting.view.mnemonic.title": "账户助记词",
+  "setting.view.mnemonic.subTitle": "如果您更换浏览器或电脑，您将需要用助记词恢复您的账户，请将其保存到安全和保密的地方。",
+  "setting.view.mnemonic.warning": "助记词代表您的钱包资产所有权，请勿泄漏给任何人",
+  "setting.view.mnemonic.display.title": "您的助记词",
+
+  "setting.about.version.title": "Keystore Lite 版本",
+  "setting.about.version.subTitle": "Keystore Lite在XXX设计和实现",
+  "setting.about.link.title": "链接",
+  "setting.about.link.privacy": "隐私政策",
+  "setting.about.link.terms": "使用条款",
+  "setting.about.link.website": "访问我们的网站",
+
   "global.confirm": "确认",
   "global.back": "返回",
+  "global.view": "查看",
   "global.receive": "接收",
   "global.send": "发送",
   "global.setting": "设置",

@@ -4,13 +4,13 @@ import { TitleContainer, Title, SubTitle } from './styled';
 
 export interface CommonPageHeaderProps {
   titleLocaleId: string;
-  subtitleLocaleId?: string;
+  subTitleLocaleId?: string;
   gutter?: number;
 }
 
 const CommonPageHeader: React.FC<CommonPageHeaderProps> = ({
   titleLocaleId,
-  subtitleLocaleId,
+  subTitleLocaleId,
   gutter,
 }) => {
   return (
@@ -18,9 +18,9 @@ const CommonPageHeader: React.FC<CommonPageHeaderProps> = ({
       <Title>
         <FormattedMessage id={titleLocaleId} />
       </Title>
-      {subtitleLocaleId && (
+      {subTitleLocaleId && (
         <SubTitle>
-          <FormattedMessage id={subtitleLocaleId} />
+          <FormattedMessage id={subTitleLocaleId} />
         </SubTitle>
       )}
     </TitleContainer>

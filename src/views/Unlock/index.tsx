@@ -20,11 +20,11 @@ interface UnlockProps {
 const Unlock: React.FC<UnlockProps> = ({ location }) => {
   const history = useHistory();
   const intl = useIntl();
-
-  const dispatch = useDispatch<Dispatch>();
+  
   const [password, setPassword] = useState('12');
   const [isPasswordError, setIsPasswordError] = useState(false);
 
+  const dispatch = useDispatch<Dispatch>();
   const selectedAccountId = useSelector(
     (state: RootState) => state.app.selectedAccountId
   );

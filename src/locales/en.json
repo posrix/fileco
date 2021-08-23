@@ -1,8 +1,8 @@
 {
   "welcome.wallet.entry.create.title": "Create an identity wallet",
   "welcome.wallet.entry.import.title": "Create a new account mnemonic phrase",
-  "welcome.wallet.entry.create.title.sub": "Import identity wallet",
-  "welcome.wallet.entry.import.title.sub": "Already have an account mnemonic phrase",
+  "welcome.wallet.entry.create.subTitle": "Import identity wallet",
+  "welcome.wallet.entry.import.subTitle": "Already have an account mnemonic phrase",
   "welcome.slogan": "Welcome onboard!",
 
   "unlock.welcome.back.slogan": "Welcome back!",
@@ -11,7 +11,7 @@
   "unlock.password.validation.incorrect": "Password is incorrect",
 
   "password.create.form.title": "Set wallet access password",
-  "password.create.form.subtitle": "Keystore Lite does not store your password on the server. Once you forget your password, you can only restore your wallet through the backup mnemonic.",
+  "password.create.form.subTitle": "Keystore Lite does not store your password on the server. Once you forget your password, you can only restore your wallet through the backup mnemonic.",
   "password.create.form.password": "8-20 digit password",
   "password.create.form.confirm": "Confirm password",
   "password.create.form.password.validaton.required": "password is required",
@@ -21,14 +21,14 @@
   "password.create.form.password.validaton.max": "Password is too long, should be 8 digits maximum",
 
   "mnemonic.produce.title": "Please backup your mnemonic",
-  "mnemonic.produce.subtitle": "Please copy the mnemonic words on the paper in order and keep them in a safe place, we will confirm on the next screen",
+  "mnemonic.produce.subTitle": "Please copy the mnemonic words on the paper in order and keep them in a safe place, we will confirm on the next screen",
   "mnemonic.produce.warning1": "· The mnemonic phrase represents the ownership of your wallet, please do not disclose it to anyone",
   "mnemonic.produce.warning2": "· Once the mnemonic phrase is lost, the assets cannot be recovered",
   "mnemonic.produce.warning3": "· Do not use screenshots, network transmission methods to backup and save",
   "mnemonic.produce.lock": "Click here to show mnemonic",
 
   "mnemonic.verify.title": "Please confirm your mnemonic",
-  "mnemonic.verify.subtitle": "Please select each word to ensure it is correct",
+  "mnemonic.verify.subTitle": "Please select each word to ensure it is correct",
   "mnemonic.verify.wrong.order": "Mnemonic phrsae order is incorrect",
 
   "home.network.current": "Current Network: {network}",
@@ -65,16 +65,29 @@
   "user.dropdown.setting": "Setting",
   "user.dropdown.lock": "Lock",
 
-  "setting.mnemonic.view.title": "View account mnemonic",
-  "setting.mnemonic.view.subTitle": "The mnemonic phrase represents the ownership of your wallet assets",
-  "setting.language.title": "Current language",
-  "setting.about.title": "About",
-  "setting.about.subTitle": "Version, support center and contact information",
+  "setting.menu.mnemonic.view.title": "View account mnemonic",
+  "setting.menu.mnemonic.view.subTitle": "The mnemonic phrase represents the ownership of your wallet assets",
+  "setting.menu.language.title": "Current language",
+  "setting.menu.about.title": "About",
+  "setting.menu.about.subTitle": "Version, support center and contact information",
   "setting.language.zh": "Simplified Chinese",
   "setting.language.en": "English",
 
+  "setting.view.mnemonic.title": "Account Mnemonic Phrase",
+  "setting.view.mnemonic.subTitle": "If you change your browser or computer, you will need to use the mnemonic phrase to restore your account, please save it in a safe and confidential place.",
+  "setting.view.mnemonic.warning": "The mnemonic phrase represents the ownership of your wallet assets, please do not disclose it to anyone",
+  "setting.view.mnemonic.display.title": "Your Mnemonic",
+
+  "setting.about.version.title": "Keystore Lite Version",
+  "setting.about.version.subTitle": "Keystore Lite Design and Implement",
+  "setting.about.link.title": "Links",
+  "setting.about.link.privacy": "Privacy Policy",
+  "setting.about.link.terms": "Terms Of Use",
+  "setting.about.link.website": "Visit Our Website",
+
   "global.confirm": "Confirm",
   "global.back": "Go Back",
+  "global.view": "View",
   "global.receive": "Receive",
   "global.send": "Send",
   "global.setting": "Setting",

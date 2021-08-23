@@ -10,6 +10,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { Language } from 'src/types/app';
 import { getLocalStorage, setLocalStorage } from 'src/utils/app';
+import { useHistory } from 'react-router';
 import {
   Container,
   SegmentContainer,
@@ -21,19 +22,22 @@ import {
 } from './styled';
 
 const Setting: React.FC = () => {
+  const history = useHistory();
   const locale = getLocalStorage('locale') || Language.zh;
   return (
     <>
       <Header />
       <Container>
         <CommonPageHeader titleLocaleId="global.setting" gutter={20} />
-        <SegmentContainer>
+        <SegmentContainer
+          onClick={() => history.push('/setting/view-mnemonic')}
+        >
           <SegmentTitleContainer>
             <SegmentTitle>
-              <FormattedMessage id="setting.mnemonic.view.title" />
+              <FormattedMessage id="setting.menu.mnemonic.view.title" />
             </SegmentTitle>
             <SegmentSubTitle>
-              <FormattedMessage id="setting.mnemonic.view.subTitle" />
+              <FormattedMessage id="setting.menu.mnemonic.view.subTitle" />
             </SegmentSubTitle>
           </SegmentTitleContainer>
           <Icon glyph="arrow-right" />
@@ -46,7 +50,7 @@ const Setting: React.FC = () => {
         <SegmentContainer>
           <SegmentTitleContainer>
             <SegmentTitle>
-              <FormattedMessage id="setting.language.title" />
+              <FormattedMessage id="setting.menu.language.title" />
             </SegmentTitle>
             <SegmentSubTitle>
               <FormattedMessage id="setting.language.zh" />
@@ -76,13 +80,13 @@ const Setting: React.FC = () => {
           <Divider />
         </DividerWrapper>
 
-        <SegmentContainer>
+        <SegmentContainer onClick={() => history.push('/setting/about')}>
           <SegmentTitleContainer>
             <SegmentTitle>
-              <FormattedMessage id="setting.about.title" />
+              <FormattedMessage id="setting.menu.about.title" />
             </SegmentTitle>
             <SegmentSubTitle>
-              <FormattedMessage id="setting.about.subTitle" />
+              <FormattedMessage id="setting.menu.about.subTitle" />
             </SegmentSubTitle>
           </SegmentTitleContainer>
           <Icon glyph="arrow-right" />

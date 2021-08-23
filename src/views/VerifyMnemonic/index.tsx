@@ -51,7 +51,7 @@ const VerifyMnemonic: React.FC = () => {
     <Container>
       <CommonPageHeader
         titleLocaleId="mnemonic.verify.title"
-        subtitleLocaleId="mnemonic.verify.subtitle"
+        subTitleLocaleId="mnemonic.verify.subTitle"
       />
       <SortedWordsContainer hasWords={!!sortedwords.length}>
         {sortedwords.map((word, i) => (
