@@ -88,9 +88,20 @@ export const app = createModel<RootModel>()({
         draftState.accounts[accountId].address = address;
       });
     },
-    setExtendedKey(state: AppState, extendedKey: { [key: string]: any }) {
+    setExtendedKey(
+      state: AppState,
+      {
+        accountId,
+        extendedKey,
+      }: { accountId: number; extendedKey: { [key: string]: any } }
+    ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.accounts[state.selectedAccountId].extendedKey = extendedKey;
+        draftState.accounts[accountId].extendedKey = extendedKey;
+      });
+    },
+    removeExtendedKey(state: AppState) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.accounts[state.selectedAccountId].extendedKey = {};
       });
     },
     setBalanceUSD(
@@ -288,7 +299,7 @@ export const app = createModel<RootModel>()({
         network,
       });
     },
-    async createAccount(
+    async createAccountOrSetExtendedKey(
       {
         password,
         accountId,
@@ -318,12 +329,23 @@ export const app = createModel<RootModel>()({
               rootState.app.selectedNetwork,
               extendedKey.address
             );
-            dispatch.app.addAccount({
-              ...accountInitialState,
+            const index = findIndex(rootState.app.accounts, {
               accountId: newAccountIndex,
-              address,
-              extendedKey,
             });
+            // if account already exist, only set extendedKey
+            if (index >= 0) {
+              dispatch.app.setExtendedKey({
+                accountId: rootState.app.accounts[index].accountId,
+                extendedKey,
+              });
+            } else {
+              dispatch.app.addAccount({
+                ...accountInitialState,
+                accountId: newAccountIndex,
+                address,
+                extendedKey,
+              });
+            }
             dispatch.app.setSelectedAccountId(newAccountIndex);
             resolve(extendedKey);
           })

@@ -84,11 +84,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 size={24}
                 hide={!(selectedAccountId === account.accountId)}
               />
-              <Avatar
-                name={account.address}
-                round
-                size="28"
-              />
+              <Avatar name={account.address} round size="28" />
               <AddressContainer>
                 <Address>{addressEllipsis(account.address)}</Address>
                 <Balance>
@@ -104,7 +100,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       </DividerWrapper>
       <MenuItem
         onClick={async () => {
-          dispatch.app.createAccount({
+          dispatch.app.createAccountOrSetExtendedKey({
             password: '12',
           });
         }}
@@ -130,7 +126,12 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </MenuName>
       </MenuItem>
       <LockContainer>
-        <LockButton variant="contained">
+        <LockButton
+          variant="contained"
+          onClick={() => {
+            dispatch.app.removeExtendedKey();
+          }}
+        >
           <FormattedMessage id="user.dropdown.lock" />
         </LockButton>
       </LockContainer>

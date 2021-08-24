@@ -20,8 +20,8 @@ interface UnlockProps {
 const Unlock: React.FC<UnlockProps> = ({ location }) => {
   const history = useHistory();
   const intl = useIntl();
-  
-  const [password, setPassword] = useState('12');
+
+  const [password, setPassword] = useState('');
   const [isPasswordError, setIsPasswordError] = useState(false);
 
   const dispatch = useDispatch<Dispatch>();
@@ -33,12 +33,11 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
     if (!getLocalStorage('mnemonic')) {
       history.replace('/');
     }
-    handleUnlock();
   }, []);
 
   const handleUnlock = async () => {
     try {
-      await dispatch.app.createAccount({
+      await dispatch.app.createAccountOrSetExtendedKey({
         password,
         accountId: selectedAccountId,
       });

@@ -36,7 +36,7 @@ const VerifyMnemonic: React.FC = () => {
         window.localStorage.clear();
         passworder.encrypt(password, mnemonic).then(async (blob: any) => {
           setLocalStorage('mnemonic', blob);
-          await dispatch.app.createAccount({
+          await dispatch.app.createAccountOrSetExtendedKey({
             password,
           });
           history.push('/home');
