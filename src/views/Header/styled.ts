@@ -2,9 +2,11 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   background-color: #e0e0e0;
-  padding: 10px 16px;
+  height: 48px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
 `;
 
 export const NetworkSelector = styled.div`
