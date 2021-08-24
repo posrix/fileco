@@ -45,6 +45,7 @@
     "moment": "^2.29.1",
     "pbkdf2": "^3.1.2",
     "react": "^17.0.1",
+    "react-avatar": "^3.10.0",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",

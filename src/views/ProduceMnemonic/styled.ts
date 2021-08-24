@@ -16,8 +16,7 @@ export const Mnemonic = styled.div`
 export const MnemonicLockedPlaceholder = styled.div`
   background-color: #5b5b5b;
   border-radius: 4px;
-  width: 317px;
-  height: 117px;
+  min-height: 167px;
   font-size: 14px;
   text-align: center;
   color: #fff;

@@ -67,9 +67,12 @@ export const app = createModel<RootModel>()({
         draftState.selectedNetwork = selectedNetwork;
       });
     },
-    setAddress(state: AppState, address: string) {
+    setAddress(
+      state: AppState,
+      { accountId, address }: { accountId: number; address: string }
+    ) {
       return produce(state, (draftState: Draft<AppState>) => {
-        draftState.accounts[state.selectedAccountId].address = address;
+        draftState.accounts[accountId].address = address;
       });
     },
     setExtendedKey(state: AppState, extendedKey: { [key: string]: any }) {

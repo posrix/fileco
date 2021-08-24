@@ -35,11 +35,12 @@ const Home: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
-  const { address, selectedNetwork, balance, balanceUSD, accountId } =
+  const { address, selectedNetwork, balance, balanceUSD, accountId, accounts } =
     useSelector((state: RootState) => {
       const account = state.app.accounts[state.app.selectedAccountId];
       const selectedNetwork = state.app.selectedNetwork;
       return {
+        accounts: state.app.accounts,
         address: account.address,
         balance: account.balances[selectedNetwork],
         balanceUSD: account.balancesUSD[selectedNetwork],
@@ -75,7 +76,12 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (selectedNetwork) {
-      dispatch.app.setAddress(getAddressByNetwork(selectedNetwork, address));
+      accounts.forEach((account) =>
+        dispatch.app.setAddress({
+          accountId: account.accountId,
+          address: getAddressByNetwork(selectedNetwork, account.address),
+        })
+      );
     }
   }, [selectedNetwork]);
 

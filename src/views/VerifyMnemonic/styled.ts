@@ -5,31 +5,32 @@ export const Container = styled.div`
 `;
 
 const BaseWordMixin = css`
-  width: 88px;
-  height: 30px;
-  padding: 4px;
+  padding: 6px 12px;
   border-radius: 3px;
   font-size: 16px;
   font-weight: bolder;
   cursor: pointer;
   display: flex;
-
   align-items: center;
 `;
 
 export const WordButton = styled.div`
   ${BaseWordMixin}
   justify-content: center;
-  color: #5cc1cb;
-  border: 1px solid #5cc1cb;
+  color: #212121;
+  font-weight: 600;
+  border: 1px solid #bdbdbd;
+  font-size: 14px;
   background-color: #fff;
 `;
 
 export const SortedWordButton = styled.div`
   ${BaseWordMixin}
   justify-content: space-around;
-  color: #000;
-  border: 1px solid #c5c5c5;
+  color: #757575;
+  border: 1px solid #e0e0e0;
+  font-weight: 600;
+  font-size: 14px;
   background-color: #fff;
 `;
 

@@ -8,13 +8,14 @@ import { Divider } from '@material-ui/core';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
 import { getFilByUnit, addressEllipsis } from 'src/utils/app';
+import Avatar from 'react-avatar';
 import {
   AccountContainer,
   AccountTitle,
   AccountSelectContainer,
   AccountSelectWrapper,
   MenuName,
-  Avatar,
+  // Avatar,
   Address,
   Balance,
   AddressContainer,
@@ -62,7 +63,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       }}
       PaperProps={{
         style: {
-          width: '224px',
+          width: '280px',
           padding: '15px 0',
         },
       }}
@@ -84,7 +85,11 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 size={24}
                 hide={!(selectedAccountId === account.accountId)}
               />
-              <Avatar />
+              <Avatar
+                name={account.address}
+                round
+                size="28"
+              />
               <AddressContainer>
                 <Address>{addressEllipsis(account.address)}</Address>
                 <Balance>

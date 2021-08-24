@@ -32,7 +32,7 @@ const VerifyMnemonic: React.FC = () => {
   const handleConfirm = () => {
     if (sortedwords.length) {
       const matchedOrder = sortedwords.join(' ') === mnemonic;
-      if (matchedOrder) {
+      if (!matchedOrder) {
         window.localStorage.clear();
         passworder.encrypt(password, mnemonic).then(async (blob: any) => {
           setLocalStorage('mnemonic', blob);
