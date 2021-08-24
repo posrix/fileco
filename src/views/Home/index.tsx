@@ -35,24 +35,45 @@ const Home: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch<Dispatch>();
-  const { address, selectedNetwork, balance, balanceUSD, accountId, accounts } =
-    useSelector((state: RootState) => {
-      const account = state.app.accounts[state.app.selectedAccountId];
-      const selectedNetwork = state.app.selectedNetwork;
-      return {
-        accounts: state.app.accounts,
-        address: account.address,
-        balance: account.balances[selectedNetwork],
-        balanceUSD: account.balancesUSD[selectedNetwork],
-        accountId: account.accountId,
-        selectedNetwork,
-      };
-    });
+  const {
+    address,
+    idAddress,
+    selectedNetwork,
+    balance,
+    balanceUSD,
+    accountId,
+    accounts,
+  } = useSelector((state: RootState) => {
+    const account = state.app.accounts[state.app.selectedAccountId];
+    const selectedNetwork = state.app.selectedNetwork;
+    return {
+      accounts: state.app.accounts,
+      idAddress: account.idAddresses[selectedNetwork],
+      address: account.address,
+      balance: account.balances[selectedNetwork],
+      balanceUSD: account.balancesUSD[selectedNetwork],
+      accountId: account.accountId,
+      selectedNetwork,
+    };
+  });
 
   useQuery(
     ['balance', address, selectedNetwork],
     () =>
       dispatch.app.fetchBalance({
+        network: selectedNetwork,
+        address,
+        accountId,
+      }),
+    {
+      enabled: !!address && !!selectedNetwork,
+    }
+  );
+
+  useQuery(
+    ['idAddress', address, selectedNetwork],
+    () =>
+      dispatch.app.fetchIdAddress({
         network: selectedNetwork,
         address,
         accountId,
@@ -99,7 +120,7 @@ const Home: React.FC = () => {
       <AccountContainer>
         <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
           <AccountSelectionContainer>
-            <LotusAccount>F012689</LotusAccount>
+            <LotusAccount>{idAddress || '-'}</LotusAccount>
             <Account>{addressEllipsis(address)}</Account>
           </AccountSelectionContainer>
         </CopyToClipboard>

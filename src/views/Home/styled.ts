@@ -57,6 +57,7 @@ export const LotusAccount = styled.div`
   font-size: 16px;
   font-weight: 600;
   color: #212121;
+  text-align: center;
 `;
 
 export const BalanceContainer = styled.div`

@@ -2,8 +2,8 @@ import React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Network } from 'src/types/app';
-import { Dispatch } from 'src/models/store';
-import { useDispatch } from 'react-redux';
+import { Dispatch, RootState } from 'src/models/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface SelectNetworkDropdownProps {
   anchorEl: null | HTMLElement;
@@ -15,6 +15,10 @@ const SelectNetworkDropdown: React.FC<SelectNetworkDropdownProps> = ({
   setAnchorEl,
 }) => {
   const dispatch = useDispatch<Dispatch>();
+  const selectedNetwork = useSelector(
+    (state: RootState) => state.app.selectedNetwork
+  );
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -35,16 +39,20 @@ const SelectNetworkDropdown: React.FC<SelectNetworkDropdownProps> = ({
       onClose={handleClose}
       PaperProps={{
         style: {
-          width: '20ch',
+          width: '22ch',
         },
       }}
     >
-      <MenuItem onClick={handleSetNetwork} data-value={Network.Calibration}>
-        {Network.Calibration}
-      </MenuItem>
-      <MenuItem onClick={handleSetNetwork} data-value={Network.Mainnet}>
-        {Network.Mainnet}
-      </MenuItem>
+      {Object.keys(Network).map((network) => (
+        <MenuItem
+          key={network}
+          onClick={handleSetNetwork}
+          selected={network === selectedNetwork}
+          data-value={network}
+        >
+          {network}
+        </MenuItem>
+      ))}
     </Menu>
   );
 };

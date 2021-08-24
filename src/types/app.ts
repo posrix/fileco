@@ -54,6 +54,7 @@ interface Messages {
 }
 
 export interface Account {
+  idAddresses: Record<keyof typeof Network, string>;
   address: string;
   extendedKey: { [key: string]: any };
   balances: Record<keyof typeof Network, number>;

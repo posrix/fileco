@@ -18,6 +18,7 @@ import { Cid, AppState, Account } from 'src/types/app';
 import { RootModel } from '.';
 
 const accountInitialState = {
+  idAddresses: { [Network.Calibration]: '', [Network.Mainnet]: '' },
   address: '',
   accountId: 0,
   extendedKey: {},
@@ -65,6 +66,18 @@ export const app = createModel<RootModel>()({
     setSelectedNetwork(state: AppState, selectedNetwork: Network) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.selectedNetwork = selectedNetwork;
+      });
+    },
+    setIdAddress(
+      state: AppState,
+      {
+        accountId,
+        idAddress,
+        network,
+      }: { accountId: number; idAddress: string; network: Network }
+    ) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.accounts[accountId].idAddresses[network] = idAddress;
       });
     },
     setAddress(
@@ -221,6 +234,23 @@ export const app = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
+    async fetchIdAddress({
+      accountId,
+      network,
+      address,
+    }: {
+      accountId: number;
+      network: Network;
+      address: string;
+    }) {
+      try {
+        const idAddress = await LotusRPCAdaptor.client[network].stateLookupID(
+          address,
+          []
+        );
+        dispatch.app.setIdAddress({ accountId, idAddress, network });
+      } catch (error) {}
+    },
     async fetchBalanceUSD(
       {
         accountId,
