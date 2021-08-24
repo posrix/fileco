@@ -32,14 +32,6 @@ export const MenuName = styled.div`
   margin-left: 12px;
 `;
 
-export const Avatar = styled.div`
-  width: 28px;
-  height: 28px;
-  background: #0075ff;
-  border-radius: 21px;
-  cursor: pointer;
-`;
-
 export const Address = styled.div`
   font-size: 14px;
   font-weight: 600;

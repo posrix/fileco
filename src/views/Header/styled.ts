@@ -18,11 +18,3 @@ export const NetworkSelector = styled.div`
   cursor: pointer;
   align-items: center;
 `;
-
-export const Avatar = styled.div`
-  width: 28px;
-  height: 28px;
-  background: #0075ff;
-  border-radius: 12px;
-  cursor: pointer;
-`;

@@ -3,23 +3,29 @@ import { FormattedMessage } from 'react-intl';
 import Icon from 'src/components/Icon';
 import { RootState } from 'src/models/store';
 import { useSelector } from 'react-redux';
+import Avatar from 'react-avatar';
 import SelectNetworkDropdown from './SelectNetworkDropdown';
 import UserDropdown from './UserDropdown';
-import { Container, NetworkSelector, Avatar } from './styled';
+import { Container, NetworkSelector } from './styled';
 
 const Header: React.FC = () => {
   const [selectNetworkAnchorEl, setSelectNetworkAnchorEl] =
     useState<null | HTMLElement>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
-  const selectedNetwork = useSelector(
-    (state: RootState) => state.app.selectedNetwork
-  );
+
+  const { address, selectedNetwork } = useSelector((state: RootState) => {
+    const account = state.app.accounts[state.app.selectedAccountId];
+    return {
+      address: account.address,
+      selectedNetwork: state.app.selectedNetwork,
+    };
+  });
 
   const handleNetworkSelectorClick = (event: React.MouseEvent<HTMLElement>) => {
     setSelectNetworkAnchorEl(event.currentTarget);
   };
 
-  const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleUserClick = (event: React.SyntheticEvent<any, Event>) => {
     setUserAnchorEl(event.currentTarget);
   };
 
@@ -33,7 +39,13 @@ const Header: React.FC = () => {
         />
         <Icon glyph="arrow-down" size={12} />
       </NetworkSelector>
-      <Avatar onClick={handleUserClick}></Avatar>
+      <Avatar
+        name={address}
+        round
+        size="28"
+        style={{ cursor: 'pointer' }}
+        onClick={handleUserClick}
+      />
       <SelectNetworkDropdown
         setAnchorEl={setSelectNetworkAnchorEl}
         anchorEl={selectNetworkAnchorEl}

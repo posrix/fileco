@@ -15,7 +15,6 @@ import {
   AccountSelectContainer,
   AccountSelectWrapper,
   MenuName,
-  // Avatar,
   Address,
   Balance,
   AddressContainer,
