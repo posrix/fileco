@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from 'src/components/Button';
-import { getLocalStorage } from 'src/utils/app';
+import { getLocalStorage, setLocalStorage } from 'src/utils/app';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Container,
@@ -28,7 +28,6 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
   const selectedAccountId = useSelector(
     (state: RootState) => state.app.selectedAccountId
   );
-
   useEffect(() => {
     if (!getLocalStorage('mnemonic')) {
       history.replace('/');
@@ -41,6 +40,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
         password,
         accountId: selectedAccountId,
       });
+      setLocalStorage('temp-password', password);
       history.replace(
         location.state && location.state.from
           ? location.state.from.pathname

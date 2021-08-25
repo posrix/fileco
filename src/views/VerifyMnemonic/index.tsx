@@ -86,6 +86,7 @@ const VerifyMnemonic: React.FC = () => {
       <Alert
         open={showError}
         setOpen={setShowError}
+        severity="error"
         textLocalId="mnemonic.verify.wrong.order"
       />
     </Container>
