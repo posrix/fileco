@@ -40,7 +40,6 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
         password,
         accountId: selectedAccountId,
       });
-      setLocalStorage('temp-password', password);
       history.replace(
         location.state && location.state.from
           ? location.state.from.pathname

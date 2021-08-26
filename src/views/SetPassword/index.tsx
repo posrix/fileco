@@ -6,7 +6,8 @@ import { Formik, Form, Field } from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import { setLocalStorage } from 'src/utils/app';
 import * as yup from 'yup';
-import { Container, StyleTextField } from './styled';
+import TextField from '@material-ui/core/TextField';
+import { Container, FormFieldsContainer } from './styled';
 
 const SetPassword: React.FC = () => {
   const history = useHistory();
@@ -38,7 +39,7 @@ const SetPassword: React.FC = () => {
               })
             )
             .max(
-              8,
+              30,
               intl.formatMessage({
                 id: 'password.create.form.password.validaton.max',
               })
@@ -65,30 +66,32 @@ const SetPassword: React.FC = () => {
       >
         {(formik) => (
           <Form autoComplete="off">
-            <Field
-              id="password"
-              type="password"
-              label={intl.formatMessage({
-                id: 'password.create.form.password',
-              })}
-              fullWidth
-              {...formik.getFieldProps('password')}
-              error={!!(formik.touched.password && formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              component={StyleTextField}
-            />
-            <Field
-              id="confirm"
-              type="password"
-              label={intl.formatMessage({
-                id: 'password.create.form.confirm',
-              })}
-              fullWidth
-              {...formik.getFieldProps('confirm')}
-              error={!!(formik.touched.confirm && formik.errors.confirm)}
-              helperText={formik.touched.confirm && formik.errors.confirm}
-              component={StyleTextField}
-            />
+            <FormFieldsContainer>
+              <Field
+                id="password"
+                type="password"
+                label={intl.formatMessage({
+                  id: 'password.create.form.password',
+                })}
+                fullWidth
+                {...formik.getFieldProps('password')}
+                error={!!(formik.touched.password && formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+                component={TextField}
+              />
+              <Field
+                id="confirm"
+                type="password"
+                label={intl.formatMessage({
+                  id: 'password.create.form.confirm',
+                })}
+                fullWidth
+                {...formik.getFieldProps('confirm')}
+                error={!!(formik.touched.confirm && formik.errors.confirm)}
+                helperText={formik.touched.confirm && formik.errors.confirm}
+                component={TextField}
+              />
+            </FormFieldsContainer>
             <CommonPageFooter />
           </Form>
         )}

@@ -11,6 +11,7 @@ import Receive from 'src/views/Receive';
 import Setting from 'src/views/Setting';
 import ViewMnemonic from 'src/views/Setting/ViewMnemonic';
 import About from 'src/views/Setting/About';
+import ImportAccount from 'src/views/ImportAccount';
 import { RootState, store } from 'src/models/store';
 import { getPersistor } from '@rematch/persist';
 import { PersistGate } from 'redux-persist/lib/integration/react';
@@ -106,6 +107,11 @@ export default function App() {
                     exact
                     path="/set-password"
                     component={SetPassword}
+                  />
+                  <InitializedRoute
+                    exact
+                    path="/import-account"
+                    component={ImportAccount}
                   />
                   <InitializedRoute
                     exact

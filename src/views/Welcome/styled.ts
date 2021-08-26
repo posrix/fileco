@@ -1,19 +1,22 @@
 import styled from 'styled-components';
 
-const PADDING = 20;
-const COVER_HEIGHT = 320;
-
 export const Container = styled.div`
-  padding: ${PADDING}px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+export const ContentContainer = styled.div`
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: ${600 - COVER_HEIGHT - PADDING}px;
+  flex: 1 1 auto;
 `;
 
 export const CoverContainer = styled.div`
-  height: ${COVER_HEIGHT}px;
-  background-color: #000;
+  height: 320px;
+  background: no-repeat center url('home.png');
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,6 +37,12 @@ export const Slogan = styled.div`
   font-family: verdana;
 `;
 
+export const WalletEntryFlexWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
 export const WalletEntryContainer = styled.div`
   padding: 15px;
   border-radius: 4px;
@@ -42,6 +51,7 @@ export const WalletEntryContainer = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
 `;
 

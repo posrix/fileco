@@ -8,7 +8,7 @@ export const Container = styled.div`
 
 export const CoverContainer = styled.div`
   height: 320px;
-  background-color: #000;
+  background: no-repeat center url('home.png');
   display: flex;
   justify-content: center;
   align-items: center;

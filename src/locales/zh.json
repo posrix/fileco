@@ -10,6 +10,14 @@
   "unlock.button": "解锁",
   "unlock.password.validation.incorrect": "密码不正确",
 
+  "account.import.form.title": "导入身份钱包",
+  "account.import.form.subTitle": "输入24个单词组成的账户助记词恢复您的账户。",
+  "account.import.form.mnemonic": "输入助记词单词，并使用空格分离 ",
+  "account.import.form.mnemonic.validaton.required": "请输入助记词",
+  "account.import.form.terms.read": "我已阅读并同意",
+  "account.import.form.terms.validaton.required": "请确认使用条款",
+  "account.import.form.terms": "使用条款",
+   
   "password.create.form.title": "设置钱包访问密码",
   "password.create.form.subTitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
   "password.create.form.password": "8-20位密码",

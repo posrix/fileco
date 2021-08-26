@@ -10,6 +10,14 @@
   "unlock.button": "Unlock",
   "unlock.password.validation.incorrect": "Password is incorrect",
 
+  "account.import.form.title": "Import identity wallet",
+  "account.import.form.subTitle": "Enter the account mnemonic composed of 24 words to restore your account.",
+  "account.import.form.mnemonic": "Enter the mnemonic words and separate them with spaces ",
+  "account.import.form.mnemonic.validaton.required": "Please enter the mnemonic phrase",
+  "account.import.form.terms.read": "I have read and agree",
+  "account.import.form.terms.validaton.required": "Please confirm the terms of use",
+  "account.import.form.terms": "Terms of use",
+
   "password.create.form.title": "Set wallet access password",
   "password.create.form.subTitle": "Keystore Lite does not store your password on the server. Once you forget your password, you can only restore your wallet through the backup mnemonic.",
   "password.create.form.password": "8-20 digit password",

@@ -1,14 +1,15 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Box from '@material-ui/core/Box';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
 import {
   Container,
+  ContentContainer,
   WalletEntryContainer,
   WalletEntryTitle,
   WalletEntrySubTitle,
   CoverContainer,
+  WalletEntryFlexWrapper,
   Title,
   Slogan,
 } from './styled';
@@ -17,41 +18,47 @@ const Welcome = () => {
   const history = useHistory();
 
   return (
-    <>
+    <Container>
       <CoverContainer>
-        <Box>
+        <div>
           <Title>Keystore</Title>
           <Title>Lite</Title>
           <Slogan>
             <FormattedMessage id="welcome.slogan" />
           </Slogan>
-        </Box>
+        </div>
       </CoverContainer>
-      <Container>
+      <ContentContainer>
         <WalletEntryContainer onClick={() => history.push('/set-password')}>
-          <Icon glyph="add-wallet" width={26} height={21} />
-          <Box>
-            <WalletEntryTitle>
-              <FormattedMessage id="welcome.wallet.entry.create.title" />
-            </WalletEntryTitle>
-            <WalletEntrySubTitle>
-              <FormattedMessage id="welcome.wallet.entry.create.subTitle" />
-            </WalletEntrySubTitle>
-          </Box>
+          <WalletEntryFlexWrapper>
+            <Icon glyph="add-wallet" size={32} />
+            <div>
+              <WalletEntryTitle>
+                <FormattedMessage id="welcome.wallet.entry.create.title" />
+              </WalletEntryTitle>
+              <WalletEntrySubTitle>
+                <FormattedMessage id="welcome.wallet.entry.create.subTitle" />
+              </WalletEntrySubTitle>
+            </div>
+          </WalletEntryFlexWrapper>
+          <Icon glyph="arrow-right" size={24} color="#BDBDBD" />
         </WalletEntryContainer>
-        <WalletEntryContainer>
-          <Icon glyph="import-wallet" width={26} height={21} />
-          <Box>
-            <WalletEntryTitle>
-              <FormattedMessage id="welcome.wallet.entry.import.title" />
-            </WalletEntryTitle>
-            <WalletEntrySubTitle>
-              <FormattedMessage id="welcome.wallet.entry.import.subTitle" />
-            </WalletEntrySubTitle>
-          </Box>
+        <WalletEntryContainer onClick={() => history.push('/import-account')}>
+          <WalletEntryFlexWrapper>
+            <Icon glyph="import-wallet" size={32} />
+            <div>
+              <WalletEntryTitle>
+                <FormattedMessage id="welcome.wallet.entry.import.title" />
+              </WalletEntryTitle>
+              <WalletEntrySubTitle>
+                <FormattedMessage id="welcome.wallet.entry.import.subTitle" />
+              </WalletEntrySubTitle>
+            </div>
+          </WalletEntryFlexWrapper>
+          <Icon glyph="arrow-right" size={24} color="#BDBDBD" />
         </WalletEntryContainer>
-      </Container>
-    </>
+      </ContentContainer>
+    </Container>
   );
 };
 
