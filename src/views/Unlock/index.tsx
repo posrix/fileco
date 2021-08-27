@@ -40,6 +40,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
         password,
         accountId: selectedAccountId,
       });
+      chrome.runtime.sendMessage({ type: 'SET_PASSWORD', password });
       history.replace(
         location.state && location.state.from
           ? location.state.from.pathname

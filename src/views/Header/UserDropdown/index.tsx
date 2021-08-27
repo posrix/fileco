@@ -7,7 +7,7 @@ import { useHistory } from 'react-router';
 import { Divider } from '@material-ui/core';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
-import { getFilByUnit, addressEllipsis, getLocalStorage } from 'src/utils/app';
+import { getFilByUnit, addressEllipsis } from 'src/utils/app';
 import Avatar from 'react-avatar';
 import {
   AccountContainer,
@@ -100,8 +100,12 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       </DividerWrapper>
       <MenuItem
         onClick={async () => {
-          dispatch.app.createAccountOrSetExtendedKey({
-            password: getLocalStorage('temp-password'),
+          chrome.runtime.sendMessage({ type: 'GET_PASSWORD' }, (response) => {
+            if (response.password) {
+              dispatch.app.createAccountOrSetExtendedKey({
+                password: response.password,
+              });
+            }
           });
         }}
       >

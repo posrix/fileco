@@ -45,7 +45,7 @@ const ImportAccount: React.FC = () => {
         onSubmit={({ password, mnemonic }) => {
           passworder.encrypt(password, mnemonic).then(async (blob: any) => {
             setLocalStorage('mnemonic', blob);
-            setLocalStorage('temp-password', password);
+            chrome.runtime.sendMessage({ type: 'SET_PASSWORD', password });
             await dispatch.app.createAccountOrSetExtendedKey({
               password,
             });
