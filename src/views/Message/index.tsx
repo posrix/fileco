@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { getFilByUnit } from 'src/utils/app';
+import { useHistory } from 'react-router';
 import Header from 'src/views/Header';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import CommonPageFooter from 'src/components/CommonPageFooter';
@@ -19,6 +20,7 @@ interface ParamTypes {
 }
 
 const Message: React.FC = () => {
+  const history = useHistory();
   const { cid } = useParams<ParamTypes>();
 
   const selectedMessage = useSelector(
@@ -29,6 +31,7 @@ const Message: React.FC = () => {
   );
 
   if (!selectedMessage) {
+    history.goBack();
     return null;
   }
 
