@@ -10,18 +10,16 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-      "js": ["contentScript.bundle.js"],
-      "css": ["content.styles.css"]
-    }
-  ],
   "web_accessible_resources": [
     {
-      "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
+      "resources": ["home.png", "icon-128.png", "icon-34.png"],
       "matches": []
     }
   ],
-  "permissions": ["storage", "activeTab", "scripting"]
+  "permissions": [],
+  "host_permissions": [
+    "http://192.168.1.233:1301/*",
+    "http://192.168.1.233:1234/*",
+    "https://pro-api.coinmarketcap.com/*"
+  ]
 }
