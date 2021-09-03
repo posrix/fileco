@@ -7,7 +7,12 @@ import { useHistory } from 'react-router';
 import { Divider } from '@material-ui/core';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
-import { getFilByUnit, addressEllipsis } from 'src/utils/app';
+import {
+  getFilByUnit,
+  addressEllipsis,
+  getPersistenceMemory,
+  setPersistenceMemory,
+} from 'src/utils/app';
 import Avatar from 'react-avatar';
 import {
   AccountContainer,
@@ -34,7 +39,6 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
 }) => {
   const dispatch = useDispatch<Dispatch>();
   const history = useHistory();
-
   const { accounts, selectedAccountId, selectedNetwork } = useSelector(
     (state: RootState) => ({
       accounts: state.app.accounts,
@@ -45,6 +49,25 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const createAccount = () => {
+    getPersistenceMemory({
+      event: 'GET_PASSWORD',
+      key: 'password',
+    }).then((password) => {
+      dispatch.app.createAccountOrGetExtendedKey({
+        password,
+      });
+    });
+  };
+
+  const lockAccount = () => {
+    setPersistenceMemory({
+      event: 'SET_PASSWORD',
+      entity: { password: '' },
+    });
+    history.push('/unlock');
   };
 
   return (
@@ -98,17 +121,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       <DividerWrapper>
         <Divider />
       </DividerWrapper>
-      <MenuItem
-        onClick={async () => {
-          chrome.runtime.sendMessage({ type: 'GET_PASSWORD' }, (response) => {
-            if (response.password) {
-              dispatch.app.createAccountOrSetExtendedKey({
-                password: response.password,
-              });
-            }
-          });
-        }}
-      >
+      <MenuItem onClick={createAccount}>
         <Icon glyph="add" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.account.add" />
@@ -130,12 +143,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </MenuName>
       </MenuItem>
       <LockContainer>
-        <LockButton
-          variant="contained"
-          onClick={() => {
-            dispatch.app.removeExtendedKey();
-          }}
-        >
+        <LockButton variant="contained" onClick={lockAccount}>
           <FormattedMessage id="user.dropdown.lock" />
         </LockButton>
       </LockContainer>

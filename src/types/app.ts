@@ -56,7 +56,6 @@ interface Messages {
 export interface Account {
   idAddresses: Record<keyof typeof Network, string>;
   address: string;
-  extendedKey: { [key: string]: any };
   balances: Record<keyof typeof Network, number>;
   balancesUSD: Record<keyof typeof Network, number>;
   messages: Record<keyof typeof Network, Messages>;
@@ -68,4 +67,14 @@ export interface AppState {
   selectedNetwork: Network;
   selectedAccountId: number;
   accounts: Account[];
+}
+
+export interface SetPersistenceMemory {
+  event: 'SET_PASSWORD';
+  entity: { [key: string]: string };
+}
+
+export interface GetPersistenceMemory {
+  event: 'GET_PASSWORD';
+  key: string;
 }

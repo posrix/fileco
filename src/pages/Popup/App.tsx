@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import SetPassword from 'src/views/SetPassword';
 import Welcome from 'src/views/Welcome';
 import ProduceMnemonic from 'src/views/ProduceMnemonic';
@@ -13,10 +13,9 @@ import ViewMnemonic from 'src/views/Setting/ViewMnemonic';
 import About from 'src/views/Setting/About';
 import ImportAccount from 'src/views/ImportAccount';
 import { RootState, store } from 'src/models/store';
+import { useSelector } from 'react-redux';
 import { getPersistor } from '@rematch/persist';
 import { PersistGate } from 'redux-persist/lib/integration/react';
-import { useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
 import {
   HashRouter,
   Route,
@@ -24,8 +23,9 @@ import {
   Redirect,
   RouteProps,
 } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { getLocalStorage, LotusRPCAdaptor } from 'src/utils/app';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { getLocalStorage, getPersistenceMemory } from 'src/utils/app';
+import { LotusRPCAdaptor } from 'src/utils/lotus';
 import { localeMessages } from 'src/locales';
 import { Language, Network } from 'src/types/app';
 import { IntlProvider } from 'react-intl';
@@ -56,23 +56,44 @@ const UnlockedRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
+  const [hasExtendedKey, setHasExtendedKey] = useState(true);
+  const [isWaitingFromMemory, setWaitingFromMemory] = useState(true);
+
   const account = useSelector(
     (state: RootState) => state.app.accounts[state.app.selectedAccountId]
   );
-  const hasExtendedKey = account ? !isEmpty(account.extendedKey) : false;
+
+  useEffect(() => {
+    const getPersistenceMemoryHandle = async () => {
+      try {
+        await getPersistenceMemory({
+          event: 'GET_PASSWORD',
+          key: 'password',
+        });
+      } catch (error) {
+        setHasExtendedKey(false);
+      }
+      setWaitingFromMemory(false);
+    };
+    getPersistenceMemoryHandle();
+  }, []);
+
   return (
     <Route
       {...rest}
-      render={(props: any) =>
-        hasExtendedKey ? (
+      render={(props: any) => {
+        if (isWaitingFromMemory) {
+          return null;
+        }
+        return hasExtendedKey ? (
           <Component {...props} />
         ) : (
           <Redirect
             push
             to={{ pathname: '/unlock', state: { from: props.location } }}
           />
-        )
-      }
+        );
+      }}
     />
   );
 };

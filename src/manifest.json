@@ -16,10 +16,6 @@
       "matches": []
     }
   ],
-  "permissions": [],
-  "host_permissions": [
-    "http://192.168.1.233:1301/*",
-    "http://192.168.1.233:1234/*",
-    "https://pro-api.coinmarketcap.com/*"
-  ]
+  "permissions": ["scripting"],
+  "host_permissions": ["<all_urls>"]
 }

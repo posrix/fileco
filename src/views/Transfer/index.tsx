@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
+import { getFilByUnit, getPersistenceMemory } from 'src/utils/app';
 import {
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
-  getFilByUnit,
-} from 'src/utils/app';
+} from 'src/utils/lotus';
 import Header from 'src/views/Header';
 import { useQuery } from 'react-query';
 import CommonPageHeader from 'src/components/CommonPageHeader';
@@ -27,23 +27,40 @@ import {
 import { MessageStatus } from 'src/types/app';
 
 const Transfer: React.FC = () => {
+  const [gasEstimate, setGasEstimate] = useState(0);
+  const [extendedKey, setExtendedKey] = useState(null);
+
   const history = useHistory();
   const intl = useIntl();
-
   const dispatch = useDispatch<Dispatch>();
-  const [gasEstimate, setGasEstimate] = useState(0);
-  const { address, balance, extendedKey, selectedNetwork, accountId } =
+  const { address, balance, selectedNetwork, accountId, selectedAccountId } =
     useSelector((state: RootState) => {
+      const selectedAccountId = state.app.selectedAccountId;
       const account = state.app.accounts[state.app.selectedAccountId];
       const selectedNetwork = state.app.selectedNetwork;
       return {
         accountId: account.accountId,
         address: account.address,
         balance: account.balances[selectedNetwork],
-        extendedKey: account.extendedKey,
         selectedNetwork,
+        selectedAccountId,
       };
     });
+
+  useEffect(() => {
+    async function getExtendedKey() {
+      const password = await getPersistenceMemory({
+        event: 'GET_PASSWORD',
+        key: 'password',
+      });
+      const extendedKey = await dispatch.app.createAccountOrGetExtendedKey({
+        password,
+        accountId: selectedAccountId,
+      });
+      setExtendedKey(extendedKey);
+    }
+    getExtendedKey();
+  }, []);
 
   useQuery(
     ['balance', address, selectedNetwork],

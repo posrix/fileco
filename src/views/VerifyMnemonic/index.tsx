@@ -4,7 +4,11 @@ import Icon from 'src/components/Icon';
 import { useHistory } from 'react-router-dom';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import Alert from 'src/components/Alert';
-import { getLocalStorage, setLocalStorage } from 'src/utils/app';
+import {
+  getLocalStorage,
+  setLocalStorage,
+  setPersistenceMemory,
+} from 'src/utils/app';
 import { Dispatch } from 'src/models/store';
 import { useDispatch } from 'react-redux';
 import { shuffle } from 'lodash';
@@ -36,8 +40,11 @@ const VerifyMnemonic: React.FC = () => {
         window.localStorage.clear();
         passworder.encrypt(password, mnemonic).then(async (blob: any) => {
           setLocalStorage('mnemonic', blob);
-          chrome.runtime.sendMessage({ type: 'SET_PASSWORD', password });
-          await dispatch.app.createAccountOrSetExtendedKey({
+          setPersistenceMemory({
+            event: 'SET_PASSWORD',
+            entity: { password },
+          });
+          await dispatch.app.createAccountOrGetExtendedKey({
             password,
           });
           history.push('/home');

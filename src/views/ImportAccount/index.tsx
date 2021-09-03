@@ -4,7 +4,7 @@ import CommonPageHeader from 'src/components/CommonPageHeader';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
-import { setLocalStorage } from 'src/utils/app';
+import { setLocalStorage, setPersistenceMemory } from 'src/utils/app';
 import { Dispatch } from 'src/models/store';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
@@ -45,8 +45,11 @@ const ImportAccount: React.FC = () => {
         onSubmit={({ password, mnemonic }) => {
           passworder.encrypt(password, mnemonic).then(async (blob: any) => {
             setLocalStorage('mnemonic', blob);
-            chrome.runtime.sendMessage({ type: 'SET_PASSWORD', password });
-            await dispatch.app.createAccountOrSetExtendedKey({
+            setPersistenceMemory({
+              event: 'SET_PASSWORD',
+              entity: { password },
+            });
+            await dispatch.app.createAccountOrGetExtendedKey({
               password,
             });
             history.push('/home');

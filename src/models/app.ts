@@ -2,15 +2,17 @@ import { createModel } from '@rematch/core';
 import { Network, Message, MessageStatus } from 'src/types/app';
 import produce, { Draft } from 'immer';
 import {
+  getExtendedKeyBySeed,
+  getAddressByNetwork,
+  getAccountIndex,
+} from 'src/utils/app';
+import {
   LotusRPCAdaptor,
   convertFilscoutMessages,
   pollingPendingMessage,
   getRematchMessagesKeyByStatus,
-  getExtendedKeyBySeed,
-  getAddressByNetwork,
-  getAccountIndex,
   MessagePolling,
-} from 'src/utils/app';
+} from 'src/utils/lotus';
 import { sortBy, reverse, findIndex, remove, max, find } from 'lodash';
 import { getMessagesByAddress } from 'src/services/filscout';
 import { getCoinPriceList } from 'src/services/coinmarketcap';
@@ -21,7 +23,6 @@ const accountInitialState = {
   idAddresses: { [Network.Calibration]: '', [Network.Mainnet]: '' },
   address: '',
   accountId: 0,
-  extendedKey: {},
   balances: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   balancesUSD: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   messages: {
@@ -86,22 +87,6 @@ export const app = createModel<RootModel>()({
     ) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.accounts[accountId].address = address;
-      });
-    },
-    setExtendedKey(
-      state: AppState,
-      {
-        accountId,
-        extendedKey,
-      }: { accountId: number; extendedKey: { [key: string]: any } }
-    ) {
-      return produce(state, (draftState: Draft<AppState>) => {
-        draftState.accounts[accountId].extendedKey = extendedKey;
-      });
-    },
-    removeExtendedKey(state: AppState) {
-      return produce(state, (draftState: Draft<AppState>) => {
-        draftState.accounts[state.selectedAccountId].extendedKey = {};
       });
     },
     setBalanceUSD(
@@ -299,7 +284,7 @@ export const app = createModel<RootModel>()({
         network,
       });
     },
-    async createAccountOrSetExtendedKey(
+    async createAccountOrGetExtendedKey(
       {
         password,
         accountId,
@@ -332,18 +317,12 @@ export const app = createModel<RootModel>()({
             const index = findIndex(rootState.app.accounts, {
               accountId: newAccountIndex,
             });
-            // if account already exist, only set extendedKey
-            if (index >= 0) {
-              dispatch.app.setExtendedKey({
-                accountId: rootState.app.accounts[index].accountId,
-                extendedKey,
-              });
-            } else {
+            // create account if not exist
+            if (index < 0) {
               dispatch.app.addAccount({
                 ...accountInitialState,
                 accountId: newAccountIndex,
                 address,
-                extendedKey,
               });
             }
             dispatch.app.setSelectedAccountId(newAccountIndex);

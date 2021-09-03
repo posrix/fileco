@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from 'src/components/Button';
-import { getLocalStorage, setLocalStorage } from 'src/utils/app';
+import { getLocalStorage, setPersistenceMemory } from 'src/utils/app';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Container,
@@ -18,16 +18,16 @@ interface UnlockProps {
   location: any;
 }
 const Unlock: React.FC<UnlockProps> = ({ location }) => {
-  const history = useHistory();
-  const intl = useIntl();
-
   const [password, setPassword] = useState('');
   const [isPasswordError, setIsPasswordError] = useState(false);
 
+  const history = useHistory();
+  const intl = useIntl();
   const dispatch = useDispatch<Dispatch>();
   const selectedAccountId = useSelector(
     (state: RootState) => state.app.selectedAccountId
   );
+
   useEffect(() => {
     if (!getLocalStorage('mnemonic')) {
       history.replace('/');
@@ -36,11 +36,14 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
 
   const handleUnlock = async () => {
     try {
-      await dispatch.app.createAccountOrSetExtendedKey({
+      await dispatch.app.createAccountOrGetExtendedKey({
         password,
         accountId: selectedAccountId,
       });
-      chrome.runtime.sendMessage({ type: 'SET_PASSWORD', password });
+      setPersistenceMemory({
+        event: 'SET_PASSWORD',
+        entity: { password },
+      });
       history.replace(
         location.state && location.state.from
           ? location.state.from.pathname
