@@ -18,6 +18,7 @@ import { getMessagesByAddress } from 'src/services/filscout';
 import { getCoinPriceList } from 'src/services/coinmarketcap';
 import { Cid, AppState, Account } from 'src/types/app';
 import { RootModel } from '.';
+import { Moment } from 'moment';
 
 const accountInitialState = {
   idAddresses: { [Network.Calibration]: '', [Network.Mainnet]: '' },
@@ -43,12 +44,18 @@ const accountInitialState = {
 
 export const app = createModel<RootModel>()({
   state: {
+    passwordUpdatedTime: null,
     selectedNetwork: Network.Calibration,
     selectedAccountId: 0,
     priceInfo: null,
     accounts: [],
   } as AppState,
   reducers: {
+    setPasswordUpdatedTime(state: AppState, passwordUpdatedTime: Moment) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.passwordUpdatedTime = passwordUpdatedTime;
+      });
+    },
     setPriceInfo(state: AppState, priceInfo: { [K in any]: any }) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.priceInfo = priceInfo;

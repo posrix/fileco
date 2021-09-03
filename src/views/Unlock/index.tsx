@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from 'src/components/Button';
 import { getLocalStorage, setPersistenceMemory } from 'src/utils/app';
+import moment from 'moment';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Container,
@@ -44,6 +45,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
         event: 'SET_PASSWORD',
         entity: { password },
       });
+      dispatch.app.setPasswordUpdatedTime(moment());
       history.replace(
         location.state && location.state.from
           ? location.state.from.pathname

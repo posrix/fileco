@@ -1,3 +1,5 @@
+import { Moment } from 'moment';
+
 export enum Language {
   en = 'en',
   zh = 'zh',
@@ -63,6 +65,7 @@ export interface Account {
 }
 
 export interface AppState {
+  passwordUpdatedTime: Moment;
   priceInfo: { [K in any]: any };
   selectedNetwork: Network;
   selectedAccountId: number;

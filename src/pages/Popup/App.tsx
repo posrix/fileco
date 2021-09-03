@@ -12,6 +12,7 @@ import Setting from 'src/views/Setting';
 import ViewMnemonic from 'src/views/Setting/ViewMnemonic';
 import About from 'src/views/Setting/About';
 import ImportAccount from 'src/views/ImportAccount';
+import moment from 'moment';
 import { RootState, store } from 'src/models/store';
 import { useSelector } from 'react-redux';
 import { getPersistor } from '@rematch/persist';
@@ -58,10 +59,12 @@ const UnlockedRoute: React.FC<RouteProps> = ({
 }) => {
   const [hasExtendedKey, setHasExtendedKey] = useState(true);
   const [isWaitingFromMemory, setWaitingFromMemory] = useState(true);
+  const [isPasswordStale, setPasswordStale] = useState(false);
 
-  const account = useSelector(
-    (state: RootState) => state.app.accounts[state.app.selectedAccountId]
-  );
+  const { account, passwordUpdatedTime } = useSelector((state: RootState) => ({
+    account: state.app.accounts[state.app.selectedAccountId],
+    passwordUpdatedTime: state.app.passwordUpdatedTime,
+  }));
 
   useEffect(() => {
     const getPersistenceMemoryHandle = async () => {
@@ -76,6 +79,11 @@ const UnlockedRoute: React.FC<RouteProps> = ({
       setWaitingFromMemory(false);
     };
     getPersistenceMemoryHandle();
+
+    // password will expired after 10 mintures
+    if (moment().diff(passwordUpdatedTime, 'minutes') > 10) {
+      setPasswordStale(true);
+    }
   }, []);
 
   return (
@@ -85,7 +93,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
         if (isWaitingFromMemory) {
           return null;
         }
-        return hasExtendedKey && account ? (
+        return hasExtendedKey && account && !isPasswordStale ? (
           <Component {...props} />
         ) : (
           <Redirect
