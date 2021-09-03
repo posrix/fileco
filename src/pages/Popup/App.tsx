@@ -85,7 +85,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
         if (isWaitingFromMemory) {
           return null;
         }
-        return hasExtendedKey ? (
+        return hasExtendedKey && account ? (
           <Component {...props} />
         ) : (
           <Redirect
