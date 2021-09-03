@@ -24,7 +24,7 @@ import {
   Redirect,
   RouteProps,
 } from 'react-router-dom';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { getLocalStorage, getPersistenceMemory } from 'src/utils/app';
 import { LotusRPCAdaptor } from 'src/utils/lotus';
 import { localeMessages } from 'src/locales';
