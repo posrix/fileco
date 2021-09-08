@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 import Icon from 'src/components/Icon';
 
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const Header = styled.div`
   background-color: #e0e0e0;
   padding: 10px 16px;
@@ -127,4 +132,8 @@ export const ButtonSpinner = styled(Icon)`
       transform: rotate(360deg) translateZ(0);
     }
   }
+`;
+
+export const MessageListContainer = styled.div`
+  flex: 1 1 auto;
 `;

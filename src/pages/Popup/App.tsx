@@ -57,7 +57,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
-  const [hasExtendedKey, setHasExtendedKey] = useState(true);
+  const [hasPasswordPersist, setPasswordPersist] = useState(true);
   const [isWaitingFromMemory, setWaitingFromMemory] = useState(true);
   const [isPasswordStale, setPasswordStale] = useState(false);
 
@@ -74,7 +74,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
           key: 'password',
         });
       } catch (error) {
-        setHasExtendedKey(false);
+        setPasswordPersist(false);
       }
       setWaitingFromMemory(false);
     };
@@ -85,7 +85,8 @@ const UnlockedRoute: React.FC<RouteProps> = ({
       setPasswordStale(true);
     }
   }, []);
-
+  console.log('isWaitingFromMemory', isWaitingFromMemory);
+  console.log('hasPasswordPersist', hasPasswordPersist);
   return (
     <Route
       {...rest}
@@ -93,7 +94,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
         if (isWaitingFromMemory) {
           return null;
         }
-        return hasExtendedKey && account && !isPasswordStale ? (
+        return hasPasswordPersist && account && !isPasswordStale ? (
           <Component {...props} />
         ) : (
           <Redirect

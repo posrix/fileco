@@ -174,7 +174,10 @@ export function convertFilscoutMessages(rawMessages: any): Message[] {
     value: Number(rawMessage['value'].split(' ')[0]) * 1e18,
     datetime: rawMessage['timeFormat'],
     height: rawMessage['height'],
-    status: MessageStatus.SUCCESS,
+    status:
+      rawMessage['exitCodeName'] === 'OK'
+        ? MessageStatus.SUCCESS
+        : MessageStatus.FAILED,
   }));
 }
 

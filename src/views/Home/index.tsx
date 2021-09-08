@@ -17,6 +17,7 @@ import Icon from 'src/components/Icon';
 import Alert from 'src/components/Alert';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
+  Container,
   AccountContainer,
   AccountSelectionContainer,
   LotusAccount,
@@ -28,6 +29,7 @@ import {
   ActionsContainer,
   MessageListTitleContainer,
   MessageListTitle,
+  MessageListContainer,
   ButtonSpinner,
 } from './styled';
 
@@ -115,7 +117,7 @@ const Home: React.FC = () => {
   );
 
   return (
-    <>
+    <Container>
       <Header />
       <AccountContainer>
         <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
@@ -155,14 +157,16 @@ const Home: React.FC = () => {
           {isLoading && <ButtonSpinner glyph="spinner" />}
         </MessageListTitle>
       </MessageListTitleContainer>
-      <MessageList />
+      <MessageListContainer>
+        <MessageList />
+      </MessageListContainer>
       <Alert
         open={copied}
         setOpen={setCopied}
         autoHideDuration={1000}
         textLocalId="global.copied"
       />
-    </>
+    </Container>
   );
 };
 
