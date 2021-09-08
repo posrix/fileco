@@ -9,7 +9,7 @@
   "unlock.wallet.password": "钱包密码",
   "unlock.button": "解锁",
   "unlock.password.validation.incorrect": "密码不正确",
-  "unlock.forgotPassword.text": "忘记密码？导入助记词 ",
+  "unlock.forgotPassword.text": "忘记密码？导入助记词",
   "unlock.forgotPassword.link": "恢复钱包",
 
   "account.import.form.title": "导入身份钱包",

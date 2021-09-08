@@ -9,7 +9,7 @@
   "unlock.wallet.password": "Wallet Password",
   "unlock.button": "Unlock",
   "unlock.password.validation.incorrect": "Password is incorrect",
-  "unlock.forgotPassword.text": "Forgot password? Import mnemonic to ",
+  "unlock.forgotPassword.text": "Forgot password? Import mnemonic to",
   "unlock.forgotPassword.link": "restore wallert",
 
   "account.import.form.title": "Import identity wallet",
@@ -42,7 +42,7 @@
   "mnemonic.verify.wrong.order": "Mnemonic phrsae order is incorrect",
 
   "home.network.current": "Current Network: {network}",
-  "home.message.list": "Order List",
+  "home.message.list": "Message List",
   "home.message.list.send": "Send",
   "home.message.list.receive": "Receive",
   "home.message.list.from": "From",

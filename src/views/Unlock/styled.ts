@@ -30,10 +30,11 @@ export const Slogan = styled.div`
 `;
 
 export const UnlockContainer = styled.div`
-  padding: 65px 24px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  margin-top: 40px;
 `;
 
 export const ForgotPasswordContainer = styled.div`

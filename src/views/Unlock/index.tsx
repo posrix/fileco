@@ -110,6 +110,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
           <ForgotPasswordPartText>
             <FormattedMessage id="unlock.forgotPassword.text" />
           </ForgotPasswordPartText>
+          <span>&nbsp;</span>
           <ForgotPasswordLinkText onClick={routeToImportMnemonic}>
             <FormattedMessage id="unlock.forgotPassword.link" />
           </ForgotPasswordLinkText>
