@@ -16,6 +16,8 @@ export const AccountSelectWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-height: 300px;
+  overflow-y: overlay;
 `;
 
 export const AccountSelectContainer = styled.div`

@@ -13,6 +13,9 @@ import {
   Title,
   Slogan,
   UnlockContainer,
+  ForgotPasswordContainer,
+  ForgotPasswordLinkText,
+  ForgotPasswordPartText,
 } from './styled';
 
 interface UnlockProps {
@@ -56,6 +59,13 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
     }
   };
 
+  const routeToImportMnemonic = () => {
+    history.push({
+      pathname: 'import-account',
+      state: { forgotPassword: true },
+    });
+  };
+
   return (
     <Container>
       <CoverContainer>
@@ -96,6 +106,14 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
         >
           <FormattedMessage id="unlock.button" />
         </Button>
+        <ForgotPasswordContainer>
+          <ForgotPasswordPartText>
+            <FormattedMessage id="unlock.forgotPassword.text" />
+          </ForgotPasswordPartText>
+          <ForgotPasswordLinkText onClick={routeToImportMnemonic}>
+            <FormattedMessage id="unlock.forgotPassword.link" />
+          </ForgotPasswordLinkText>
+        </ForgotPasswordContainer>
       </UnlockContainer>
     </Container>
   );

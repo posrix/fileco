@@ -42,15 +42,21 @@ const accountInitialState = {
   },
 } as Account;
 
+const initialState = {
+  passwordUpdatedTime: null,
+  selectedNetwork: Network.Calibration,
+  selectedAccountId: 0,
+  priceInfo: null,
+  accounts: [],
+} as AppState;
+
 export const app = createModel<RootModel>()({
-  state: {
-    passwordUpdatedTime: null,
-    selectedNetwork: Network.Calibration,
-    selectedAccountId: 0,
-    priceInfo: null,
-    accounts: [],
-  } as AppState,
+  state: initialState,
   reducers: {
+    resetAllState(state: AppState) {
+      window.localStorage.clear();
+      return { ...initialState, priceInfo: state.priceInfo };
+    },
     setPasswordUpdatedTime(state: AppState, passwordUpdatedTime: Moment) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.passwordUpdatedTime = passwordUpdatedTime;

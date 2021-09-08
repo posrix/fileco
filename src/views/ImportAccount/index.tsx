@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
+import { useQueryClient } from 'react-query';
 import {
   Container,
   FormFieldsContainer,
@@ -22,10 +23,14 @@ import {
 
 const passworder = require('browser-passworder');
 
-const ImportAccount: React.FC = () => {
+interface ImportAccountProps {
+  forgotPassword?: boolean;
+}
+
+const ImportAccount: React.FC<ImportAccountProps> = ({ forgotPassword }) => {
   const history = useHistory();
   const intl = useIntl();
-
+  const queryClient = useQueryClient();
   const dispatch = useDispatch<Dispatch>();
 
   return (
@@ -43,12 +48,20 @@ const ImportAccount: React.FC = () => {
           terms: false,
         }}
         onSubmit={({ password, mnemonic }) => {
+          if (forgotPassword) {
+            // make all querys be staled
+            queryClient.invalidateQueries();
+
+            // reset all rematch state
+            dispatch.app.resetAllState();
+          }
           passworder.encrypt(password, mnemonic).then(async (blob: any) => {
             setLocalStorage('mnemonic', blob);
             setPersistenceMemory({
               event: 'SET_PASSWORD',
               entity: { password },
             });
+
             await dispatch.app.createAccountOrGetExtendedKey({
               password,
             });

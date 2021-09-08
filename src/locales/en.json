@@ -9,6 +9,8 @@
   "unlock.wallet.password": "Wallet Password",
   "unlock.button": "Unlock",
   "unlock.password.validation.incorrect": "Password is incorrect",
+  "unlock.forgotPassword.text": "Forgot password? Import mnemonic to ",
+  "unlock.forgotPassword.link": "restore wallert",
 
   "account.import.form.title": "Import identity wallet",
   "account.import.form.subTitle": "Enter the account mnemonic composed of 24 words to restore your account.",

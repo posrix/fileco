@@ -35,3 +35,18 @@ export const UnlockContainer = styled.div`
   flex-direction: column;
   gap: 40px;
 `;
+
+export const ForgotPasswordContainer = styled.div`
+  margin-top: 7px;
+  font-size: 12px;
+  display: flex;
+`;
+
+export const ForgotPasswordPartText = styled.div`
+  color: #757575;
+`;
+
+export const ForgotPasswordLinkText = styled.div`
+  color: #0060ff;
+  cursor: pointer;
+`;

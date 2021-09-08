@@ -32,17 +32,23 @@ import { Language, Network } from 'src/types/app';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { StylesProvider } from '@material-ui/core/styles';
+import { get } from 'lodash';
 
 const InitializedRoute: React.FC<RouteProps> = ({
   component: Component,
-  ...rest
+  ...routePorps
 }) => {
+  const forgotPassword = get(
+    routePorps,
+    'location.state.forgotPassword',
+    false
+  );
   return (
     <Route
-      {...rest}
+      {...routePorps}
       render={(props: any) =>
-        !getLocalStorage('mnemonic') ? (
-          <Component {...props} />
+        !getLocalStorage('mnemonic') || forgotPassword ? (
+          <Component {...props} forgotPassword={forgotPassword} />
         ) : (
           <Redirect
             to={{ pathname: '/home', state: { from: props.location } }}
@@ -85,8 +91,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
       setPasswordStale(true);
     }
   }, []);
-  console.log('isWaitingFromMemory', isWaitingFromMemory);
-  console.log('hasPasswordPersist', hasPasswordPersist);
+
   return (
     <Route
       {...rest}
