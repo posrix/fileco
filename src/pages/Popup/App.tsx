@@ -72,6 +72,8 @@ const UnlockedRoute: React.FC<RouteProps> = ({
     passwordUpdatedTime: state.app.passwordUpdatedTime,
   }));
 
+  const isProductionEnv = process.env.NODE_ENV === 'production';
+
   useEffect(() => {
     const getPersistenceMemoryHandle = async () => {
       try {
@@ -84,7 +86,12 @@ const UnlockedRoute: React.FC<RouteProps> = ({
       }
       setWaitingFromMemory(false);
     };
-    getPersistenceMemoryHandle();
+
+    // Only detect password persistence in production
+    // otherwish hot reload will casue event blocking
+    if (isProductionEnv) {
+      getPersistenceMemoryHandle();
+    }
 
     // password will expired after 10 mintures
     if (moment().diff(passwordUpdatedTime, 'minutes') > 10) {
@@ -96,7 +103,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
     <Route
       {...rest}
       render={(props: any) => {
-        if (isWaitingFromMemory) {
+        if (isWaitingFromMemory && isProductionEnv) {
           return null;
         }
         return hasPasswordPersist && account && !isPasswordStale ? (
