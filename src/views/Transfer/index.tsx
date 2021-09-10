@@ -8,7 +8,7 @@ import {
   getEstimateGas,
 } from 'src/utils/lotus';
 import Header from 'src/views/Header';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import { Formik, Form, Field } from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
@@ -30,22 +30,30 @@ const Transfer: React.FC = () => {
   const [gasEstimate, setGasEstimate] = useState(0);
   const [extendedKey, setExtendedKey] = useState(null);
 
+  const queryClient = useQueryClient();
   const history = useHistory();
   const intl = useIntl();
   const dispatch = useDispatch<Dispatch>();
-  const { address, balance, selectedNetwork, accountId, selectedAccountId } =
-    useSelector((state: RootState) => {
-      const selectedAccountId = state.app.selectedAccountId;
-      const account = state.app.accounts[state.app.selectedAccountId];
-      const selectedNetwork = state.app.selectedNetwork;
-      return {
-        accountId: account.accountId,
-        address: account.address,
-        balance: account.balances[selectedNetwork],
-        selectedNetwork,
-        selectedAccountId,
-      };
-    });
+  const {
+    address,
+    balance,
+    selectedNetwork,
+    isExternal,
+    accountId,
+    selectedAccountId,
+  } = useSelector((state: RootState) => {
+    const selectedAccountId = state.app.selectedAccountId;
+    const account = state.app.accounts[state.app.selectedAccountId];
+    const selectedNetwork = state.app.selectedNetwork;
+    return {
+      accountId: account.accountId,
+      address: account.address,
+      isExternal: account.isExternal,
+      balance: account.balances[selectedNetwork],
+      selectedNetwork,
+      selectedAccountId,
+    };
+  });
 
   useEffect(() => {
     async function getExtendedKey() {
@@ -53,14 +61,18 @@ const Transfer: React.FC = () => {
         event: 'GET_PASSWORD',
         key: 'password',
       });
-      const extendedKey = await dispatch.app.createAccountOrGetExtendedKey({
-        password,
-        accountId: selectedAccountId,
-      });
+      const extendedKey = !isExternal
+        ? await dispatch.app.createAccountOrGetExtendedKey({
+            password,
+            accountId: selectedAccountId,
+          })
+        : await dispatch.app.getExternalAccountExtendedKey({
+            password,
+          });
       setExtendedKey(extendedKey);
     }
     getExtendedKey();
-  }, []);
+  }, [isExternal, selectedAccountId]);
 
   useQuery(
     ['balance', address, selectedNetwork],
@@ -111,13 +123,18 @@ const Transfer: React.FC = () => {
               ...base,
               privateKey: extendedKey.privateKey,
             }).then((cid) => {
-              dispatch.app.pushAndPollingPendingMessage({
-                ...base,
-                cid,
-                datetime: moment().format('YYYY/MM/DD h:mm:ss'),
-                height: 0,
-                status: MessageStatus.PENDING,
-              });
+              dispatch.app
+                .pushAndPollingPendingMessage({
+                  ...base,
+                  cid,
+                  datetime: moment().format('YYYY/MM/DD h:mm:ss'),
+                  height: 0,
+                  status: MessageStatus.PENDING,
+                })
+                .then(() => {
+                  console.log('queryClient', queryClient);
+                  queryClient.invalidateQueries();
+                });
               history.push('/home');
             });
           }}

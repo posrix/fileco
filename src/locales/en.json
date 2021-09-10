@@ -71,6 +71,7 @@
 
   "user.dropdown.account.my": "My Accounts",
   "user.dropdown.account.add": "Add Account",
+  "user.dropdown.account.imported": "Imported",
   "user.dropdown.account.import": "Import Account",
   "user.dropdown.setting": "Setting",
   "user.dropdown.lock": "Lock",

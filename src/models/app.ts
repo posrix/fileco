@@ -16,9 +16,12 @@ import {
 import { sortBy, reverse, findIndex, remove, max, find } from 'lodash';
 import { getMessagesByAddress } from 'src/services/filscout';
 import { getCoinPriceList } from 'src/services/coinmarketcap';
-import { Cid, AppState, Account } from 'src/types/app';
+import { Cid, AppState, Account, Encrypted } from 'src/types/app';
+import signer from 'src/utils/signer';
 import { RootModel } from '.';
 import { Moment } from 'moment';
+
+const passworder = require('browser-passworder');
 
 const accountInitialState = {
   idAddresses: { [Network.Calibration]: '', [Network.Mainnet]: '' },
@@ -26,6 +29,8 @@ const accountInitialState = {
   accountId: 0,
   balances: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   balancesUSD: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
+  isExternal: false,
+  encryptedExternalPrivateKey: null,
   messages: {
     [Network.Calibration]: {
       combinedMessages: [],
@@ -297,6 +302,85 @@ export const app = createModel<RootModel>()({
         network,
       });
     },
+    async getExternalAccountExtendedKey(
+      {
+        password,
+      }: {
+        password: string;
+      },
+      rootState
+    ) {
+      return new Promise((resolve, reject) => {
+        const index = findIndex(rootState.app.accounts, {
+          accountId: rootState.app.selectedAccountId,
+        });
+        const { encryptedExternalPrivateKey } = rootState.app.accounts[index];
+        passworder
+          .decrypt(password, encryptedExternalPrivateKey)
+          .then(async (privateKey: string) => {
+            try {
+              const isTestnet =
+                rootState.app.selectedNetwork === Network.Calibration;
+              const extendedKey = signer.keyRecover(privateKey, isTestnet);
+              resolve(extendedKey);
+            } catch (error) {
+              reject(error);
+            }
+          });
+      });
+    },
+    async createExternalAccount(
+      {
+        password,
+        privateKey,
+      }: {
+        password: string;
+        privateKey: string;
+      },
+      rootState
+    ) {
+      return new Promise((resolve, reject) => {
+        let newAccountIndex: number;
+        if (rootState.app.accounts.length) {
+          const accountIds = rootState.app.accounts.map(
+            (account) => account.accountId
+          );
+          newAccountIndex = max(accountIds) + 1;
+        } else {
+          newAccountIndex = rootState.app.selectedAccountId;
+        }
+        passworder
+          .encrypt(password, privateKey)
+          .then(async (encryptedPrivateKey: Encrypted) => {
+            try {
+              const isTestnet =
+                rootState.app.selectedNetwork === Network.Calibration;
+              const extendedKey = signer.keyRecover(privateKey, isTestnet);
+              const address = getAddressByNetwork(
+                rootState.app.selectedNetwork,
+                extendedKey.address
+              );
+              const index = findIndex(rootState.app.accounts, {
+                accountId: newAccountIndex,
+              });
+              const newAccountNotExist = index < 0;
+              if (newAccountNotExist) {
+                dispatch.app.addAccount({
+                  ...accountInitialState,
+                  accountId: newAccountIndex,
+                  isExternal: true,
+                  address,
+                  encryptedExternalPrivateKey: encryptedPrivateKey,
+                });
+              }
+              dispatch.app.setSelectedAccountId(newAccountIndex);
+              resolve(extendedKey);
+            } catch (error) {
+              reject(error);
+            }
+          });
+      });
+    },
     async createAccountOrGetExtendedKey(
       {
         password,
@@ -330,8 +414,8 @@ export const app = createModel<RootModel>()({
             const index = findIndex(rootState.app.accounts, {
               accountId: newAccountIndex,
             });
-            // create account if not exist
-            if (index < 0) {
+            const newAccountNotExist = index < 0;
+            if (newAccountNotExist) {
               dispatch.app.addAccount({
                 ...accountInitialState,
                 accountId: newAccountIndex,
@@ -397,15 +481,19 @@ export const app = createModel<RootModel>()({
         network: selectedNetwork,
       });
       dispatch.app.combineMessages({ accountId: selectedAccountId });
-      pollingPendingMessage({
-        messagePollingInstance: new MessagePolling(
-          LotusRPCAdaptor.client[selectedNetwork]
-        ),
-        accountId: selectedAccountId,
-        network: selectedNetwork,
-        pendingMessage,
-        dispatch,
-        rootState,
+      return new Promise((resolve, reject) => {
+        pollingPendingMessage({
+          messagePollingInstance: new MessagePolling(
+            LotusRPCAdaptor.client[selectedNetwork]
+          ),
+          accountId: selectedAccountId,
+          network: selectedNetwork,
+          pendingMessage,
+          dispatch,
+          rootState,
+        })
+          .then(resolve)
+          .catch(reject);
       });
     },
   }),

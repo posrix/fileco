@@ -123,36 +123,41 @@ export function pollingPendingMessage({
   dispatch: Dispatch;
   rootState: RootState;
 }) {
-  messagePollingInstance.byCid({
-    cid: pendingMessage.cid,
-    enablePolling: true,
-    onSuccess: () => {
-      dispatch.app.removeMessageByStatus({
-        accountId,
-        cid: pendingMessage.cid,
-        messageStatus: MessageStatus.PENDING,
-        network,
-      });
-      dispatch.app.fetchMessages({ accountId });
-    },
-    onError: () => {
-      dispatch.app.removeMessageByStatus({
-        accountId,
-        cid: pendingMessage.cid,
-        messageStatus: MessageStatus.PENDING,
-        network,
-      });
-      dispatch.app.setMessagesByStatus({
-        accountId,
-        messages: [
-          { ...pendingMessage, status: MessageStatus.FAILED },
-          ...rootState.app.accounts[accountId].messages[network].failedMessages,
-        ],
-        messageStatus: MessageStatus.FAILED,
-        network,
-      });
-      dispatch.app.combineMessages({ accountId });
-    },
+  return new Promise((resolve, reject) => {
+    messagePollingInstance.byCid({
+      cid: pendingMessage.cid,
+      enablePolling: true,
+      onSuccess: () => {
+        dispatch.app.removeMessageByStatus({
+          accountId,
+          cid: pendingMessage.cid,
+          messageStatus: MessageStatus.PENDING,
+          network,
+        });
+        dispatch.app.fetchMessages({ accountId });
+        resolve(pendingMessage);
+      },
+      onError: () => {
+        dispatch.app.removeMessageByStatus({
+          accountId,
+          cid: pendingMessage.cid,
+          messageStatus: MessageStatus.PENDING,
+          network,
+        });
+        dispatch.app.setMessagesByStatus({
+          accountId,
+          messages: [
+            { ...pendingMessage, status: MessageStatus.FAILED },
+            ...rootState.app.accounts[accountId].messages[network]
+              .failedMessages,
+          ],
+          messageStatus: MessageStatus.FAILED,
+          network,
+        });
+        dispatch.app.combineMessages({ accountId });
+        reject(pendingMessage);
+      },
+    });
   });
 }
 

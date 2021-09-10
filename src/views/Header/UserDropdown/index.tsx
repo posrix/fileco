@@ -22,6 +22,7 @@ import {
   MenuName,
   Address,
   Balance,
+  ExternalAccountLabel,
   AddressContainer,
   DividerWrapper,
   LockContainer,
@@ -70,6 +71,18 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
     history.push('/unlock');
   };
 
+  const createExternalAccount = () => {
+    getPersistenceMemory({
+      event: 'GET_PASSWORD',
+      key: 'password',
+    }).then((password) => {
+      dispatch.app.createExternalAccount({
+        password,
+        privateKey: 'Zxu5ojVK3uxUtOqj0TOn0PaZSKtSt8c9vyRSO6rBVQU=',
+      });
+    });
+  };
+
   return (
     <Popover
       open={Boolean(anchorEl)}
@@ -114,6 +127,11 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                   {getFilByUnit(account.balances[selectedNetwork])}
                 </Balance>
               </AddressContainer>
+              {account.isExternal && (
+                <ExternalAccountLabel>
+                  <FormattedMessage id="user.dropdown.account.imported" />
+                </ExternalAccountLabel>
+              )}
             </AccountSelectContainer>
           ))}
         </AccountSelectWrapper>
@@ -127,7 +145,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
           <FormattedMessage id="user.dropdown.account.add" />
         </MenuName>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={createExternalAccount}>
         <Icon glyph="download" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.account.import" />

@@ -51,6 +51,14 @@ export const AddressContainer = styled.div`
   flex-direction: column;
 `;
 
+export const ExternalAccountLabel = styled.div`
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  color: #bdbdbd;
+  padding: 4px 4px;
+  margin-left: 30px;
+`;
+
 export const DividerWrapper = styled.div`
   margin: 12px 0;
 `;

@@ -55,6 +55,12 @@ interface Messages {
   failedMessages: Message[];
 }
 
+export interface Encrypted {
+  data: string;
+  iv: string;
+  salt: string;
+}
+
 export interface Account {
   idAddresses: Record<keyof typeof Network, string>;
   address: string;
@@ -62,6 +68,8 @@ export interface Account {
   balancesUSD: Record<keyof typeof Network, number>;
   messages: Record<keyof typeof Network, Messages>;
   accountId: number;
+  isExternal: boolean;
+  encryptedExternalPrivateKey?: Encrypted;
 }
 
 export interface AppState {

@@ -71,6 +71,7 @@
 
   "user.dropdown.account.my": "我的账号",
   "user.dropdown.account.add": "新增账号",
+  "user.dropdown.account.imported": "已导入",
   "user.dropdown.account.import": "导入账号",
   "user.dropdown.setting": "设置",
   "user.dropdown.lock": "锁定",
