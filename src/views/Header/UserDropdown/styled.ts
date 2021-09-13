@@ -16,7 +16,7 @@ export const AccountSelectWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-height: 300px;
+  max-height: 242px;
   overflow-y: overlay;
 `;
 
@@ -56,7 +56,7 @@ export const ExternalAccountLabel = styled.div`
   border: 1px solid #e0e0e0;
   color: #bdbdbd;
   padding: 4px 4px;
-  margin-left: 30px;
+  margin-left: 20px;
 `;
 
 export const DividerWrapper = styled.div`

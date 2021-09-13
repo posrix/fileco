@@ -360,11 +360,15 @@ export const app = createModel<RootModel>()({
                 rootState.app.selectedNetwork,
                 extendedKey.address
               );
+              const duplicatedAccount = find(
+                rootState.app.accounts,
+                (account) => account.address === extendedKey.address
+              );
               const index = findIndex(rootState.app.accounts, {
                 accountId: newAccountIndex,
               });
-              const newAccountNotExist = index < 0;
-              if (newAccountNotExist) {
+              const noAccountWithSameIndex = index < 0;
+              if (noAccountWithSameIndex && !!!duplicatedAccount) {
                 dispatch.app.addAccount({
                   ...accountInitialState,
                   accountId: newAccountIndex,
@@ -372,8 +376,8 @@ export const app = createModel<RootModel>()({
                   address,
                   encryptedExternalPrivateKey: encryptedPrivateKey,
                 });
+                dispatch.app.setSelectedAccountId(newAccountIndex);
               }
-              dispatch.app.setSelectedAccountId(newAccountIndex);
               resolve(extendedKey);
             } catch (error) {
               reject(error);
@@ -414,8 +418,8 @@ export const app = createModel<RootModel>()({
             const index = findIndex(rootState.app.accounts, {
               accountId: newAccountIndex,
             });
-            const newAccountNotExist = index < 0;
-            if (newAccountNotExist) {
+            const noAccountWithSameIndex = index < 0;
+            if (noAccountWithSameIndex) {
               dispatch.app.addAccount({
                 ...accountInitialState,
                 accountId: newAccountIndex,

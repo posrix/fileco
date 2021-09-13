@@ -6,8 +6,11 @@ import {
 } from 'src/types/app';
 import { findIndex } from 'lodash';
 import signer from 'src/utils/signer';
+import { DEV_PASSWORD } from './constants';
 
 const passworder = require('browser-passworder');
+
+export const isProductionEnv = process.env.NODE_ENV === 'production';
 
 export const getLocalStorage = (storageName: string) => {
   return window.localStorage.getItem(storageName) || '';
@@ -33,13 +36,17 @@ export const getPersistenceMemory = ({
   key,
 }: GetPersistenceMemory): Promise<string> => {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ type: event }, (memory) => {
-      if (memory[key]) {
-        resolve(memory[key]);
-      } else {
-        reject('Memory key not exist');
-      }
-    });
+    if (isProductionEnv) {
+      chrome.runtime.sendMessage({ type: event }, (memory) => {
+        if (memory[key]) {
+          resolve(memory[key]);
+        } else {
+          reject('Memory key not exist');
+        }
+      });
+    } else {
+      resolve(DEV_PASSWORD);
+    }
   });
 };
 
