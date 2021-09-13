@@ -12,6 +12,7 @@ import Setting from 'src/views/Setting';
 import ViewMnemonic from 'src/views/Setting/ViewMnemonic';
 import About from 'src/views/Setting/About';
 import ImportAccount from 'src/views/ImportAccount';
+import ImportWallet from 'src/views/ImportWallet';
 import moment from 'moment';
 import { RootState, store } from 'src/models/store';
 import { useSelector } from 'react-redux';
@@ -151,8 +152,8 @@ export default function App() {
                   />
                   <InitializedRoute
                     exact
-                    path="/import-account"
-                    component={ImportAccount}
+                    path="/import-wallet"
+                    component={ImportWallet}
                   />
                   <InitializedRoute
                     exact
@@ -171,6 +172,11 @@ export default function App() {
                     exact
                     path="/setting/about"
                     component={About}
+                  />
+                  <UnlockedRoute
+                    exact
+                    path="/import-account"
+                    component={ImportAccount}
                   />
                   <UnlockedRoute
                     exact

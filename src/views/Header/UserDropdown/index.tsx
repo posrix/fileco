@@ -71,18 +71,6 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
     history.push('/unlock');
   };
 
-  const createExternalAccount = () => {
-    getPersistenceMemory({
-      event: 'GET_PASSWORD',
-      key: 'password',
-    }).then((password) => {
-      dispatch.app.createExternalAccount({
-        password,
-        privateKey: 'Zxu5ojVK3uxUtOqj0TOn0PaZSKtSt8c9vyRSO6rBVQU=',
-      });
-    });
-  };
-
   return (
     <Popover
       open={Boolean(anchorEl)}
@@ -146,7 +134,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
           <FormattedMessage id="user.dropdown.account.add" />
         </MenuName>
       </MenuItem>
-      <MenuItem onClick={createExternalAccount}>
+      <MenuItem onClick={() => history.push('/import-account')}>
         <Icon glyph="download" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.account.import" />

@@ -20,6 +20,13 @@
   "account.import.form.terms.validaton.required": "Please confirm the terms of use",
   "account.import.form.terms": "Terms of use",
 
+  "external.account.import.form.title": "Import Account",
+  "external.account.import.form.subTitle": "The imported account will not be associated with the mnemonic phrase of the originally created Keystore lite account.",
+  "external.account.import.form.privateKey": "Private Key",
+  "external.account.import.form.privateKey.validaton.required": "Please enter the private key",
+  "external.account.import.form.error.common": "Import account failed",
+  "external.account.import.form.error.dup": "Account already exist",
+
   "password.create.form.title": "Set wallet access password",
   "password.create.form.subTitle": "Keystore Lite does not store your password on the server. Once you forget your password, you can only restore your wallet through the backup mnemonic.",
   "password.create.form.password": "8-20 digit password",

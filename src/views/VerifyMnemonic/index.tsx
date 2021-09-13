@@ -23,15 +23,15 @@ import {
 const passworder = require('browser-passworder');
 
 const VerifyMnemonic: React.FC = () => {
-  const history = useHistory();
-  const dispatch = useDispatch<Dispatch>();
-
   const password = getLocalStorage('password');
   const mnemonic = getLocalStorage('temporary-mnemonic');
 
   const [words, setWords] = useState(shuffle(mnemonic.split(' ')));
   const [sortedwords, setSortedWords] = useState([]);
   const [showError, setShowError] = React.useState(false);
+
+  const history = useHistory();
+  const dispatch = useDispatch<Dispatch>();
 
   const handleConfirm = () => {
     if (sortedwords.length) {

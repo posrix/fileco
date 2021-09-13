@@ -43,7 +43,7 @@ const Welcome = () => {
           </WalletEntryFlexWrapper>
           <Icon glyph="arrow-right" size={24} color="#BDBDBD" />
         </WalletEntryContainer>
-        <WalletEntryContainer onClick={() => history.push('/import-account')}>
+        <WalletEntryContainer onClick={() => history.push('/import-wallet')}>
           <WalletEntryFlexWrapper>
             <Icon glyph="import-wallet" size={32} />
             <div>

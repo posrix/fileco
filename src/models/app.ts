@@ -377,10 +377,14 @@ export const app = createModel<RootModel>()({
                   encryptedExternalPrivateKey: encryptedPrivateKey,
                 });
                 dispatch.app.setSelectedAccountId(newAccountIndex);
+                console.log('extendedKey', extendedKey);
+                resolve(extendedKey);
+              } else {
+                reject({ isDup: true });
               }
-              resolve(extendedKey);
             } catch (error) {
-              reject(error);
+              console.log('error', error);
+              reject({ isDup: false, error });
             }
           });
       });

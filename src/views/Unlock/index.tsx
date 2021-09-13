@@ -59,9 +59,9 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
     }
   };
 
-  const routeToImportMnemonic = () => {
+  const routeToImportWallet = () => {
     history.push({
-      pathname: 'import-account',
+      pathname: 'import-wallet',
       state: { forgotPassword: true },
     });
   };
@@ -111,7 +111,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
             <FormattedMessage id="unlock.forgotPassword.text" />
           </ForgotPasswordPartText>
           <span>&nbsp;</span>
-          <ForgotPasswordLinkText onClick={routeToImportMnemonic}>
+          <ForgotPasswordLinkText onClick={routeToImportWallet}>
             <FormattedMessage id="unlock.forgotPassword.link" />
           </ForgotPasswordLinkText>
         </ForgotPasswordContainer>
