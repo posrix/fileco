@@ -88,7 +88,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         style: {
           width: '280px',
           padding: '15px 0',
-          maxHeight: 481,
+          maxHeight: 517,
         },
       }}
     >
