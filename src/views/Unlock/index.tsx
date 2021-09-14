@@ -7,6 +7,7 @@ import Button from 'src/components/Button';
 import { getLocalStorage, setPersistenceMemory } from 'src/utils/app';
 import moment from 'moment';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { IS_PRODUCTION, DEV_PASSWORD } from 'src/utils/constants';
 import {
   Container,
   CoverContainer,
@@ -22,7 +23,7 @@ interface UnlockProps {
   location: any;
 }
 const Unlock: React.FC<UnlockProps> = ({ location }) => {
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(IS_PRODUCTION ? '' : DEV_PASSWORD);
   const [isPasswordError, setIsPasswordError] = useState(false);
 
   const history = useHistory();

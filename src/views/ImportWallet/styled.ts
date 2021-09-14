@@ -17,18 +17,19 @@ export const CheckboxContainer = styled.div`
   margin-top: 18px;
 `;
 
-export const TermsLabelContainer = styled.div`
+export const TermLabelContainer = styled.div`
+  cursor: pointer;
   display: flex;
   gap: 4px;
 `;
 
-export const TermsLabelText = styled.div`
+export const TermLabelText = styled.div`
   font-size: 12px;
   font-weight: 400;
   color: #212121;
 `;
 
-export const TermsLink = styled.div`
+export const TermLink = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: #0075ff;

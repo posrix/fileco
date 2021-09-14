@@ -6,7 +6,7 @@ import { Formik, Form, Field } from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import { setLocalStorage } from 'src/utils/app';
 import * as yup from 'yup';
-import TextField from '@material-ui/core/TextField';
+import PasswordInput from 'src/components/PasswordInput';
 import { Container, FormFieldsContainer } from './styled';
 
 const SetPassword: React.FC = () => {
@@ -29,19 +29,14 @@ const SetPassword: React.FC = () => {
           setLocalStorage('password', password);
           history.push('/mnemonic');
         }}
+        validateOnBlur={false}
         validationSchema={yup.object().shape({
           password: yup
             .string()
             .min(
-              2,
+              8,
               intl.formatMessage({
                 id: 'password.create.form.password.validaton.min',
-              })
-            )
-            .max(
-              30,
-              intl.formatMessage({
-                id: 'password.create.form.password.validaton.max',
               })
             )
             .required(
@@ -69,7 +64,6 @@ const SetPassword: React.FC = () => {
             <FormFieldsContainer>
               <Field
                 id="password"
-                type="password"
                 label={intl.formatMessage({
                   id: 'password.create.form.password',
                 })}
@@ -77,11 +71,10 @@ const SetPassword: React.FC = () => {
                 {...formik.getFieldProps('password')}
                 error={!!(formik.touched.password && formik.errors.password)}
                 helperText={formik.touched.password && formik.errors.password}
-                component={TextField}
+                component={PasswordInput}
               />
               <Field
                 id="confirm"
-                type="password"
                 label={intl.formatMessage({
                   id: 'password.create.form.confirm',
                 })}
@@ -89,7 +82,7 @@ const SetPassword: React.FC = () => {
                 {...formik.getFieldProps('confirm')}
                 error={!!(formik.touched.confirm && formik.errors.confirm)}
                 helperText={formik.touched.confirm && formik.errors.confirm}
-                component={TextField}
+                component={PasswordInput}
               />
             </FormFieldsContainer>
             <CommonPageFooter />

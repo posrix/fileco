@@ -6,11 +6,9 @@ import {
 } from 'src/types/app';
 import { findIndex } from 'lodash';
 import signer from 'src/utils/signer';
-import { DEV_PASSWORD } from './constants';
+import { IS_PRODUCTION, DEV_PASSWORD } from './constants';
 
 const passworder = require('browser-passworder');
-
-export const isProductionEnv = process.env.NODE_ENV === 'production';
 
 export const getLocalStorage = (storageName: string) => {
   return window.localStorage.getItem(storageName) || '';
@@ -36,7 +34,7 @@ export const getPersistenceMemory = ({
   key,
 }: GetPersistenceMemory): Promise<string> => {
   return new Promise((resolve, reject) => {
-    if (isProductionEnv) {
+    if (IS_PRODUCTION) {
       chrome.runtime.sendMessage({ type: event }, (memory) => {
         if (memory[key]) {
           resolve(memory[key]);

@@ -34,6 +34,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { StylesProvider } from '@material-ui/core/styles';
 import { get } from 'lodash';
+import { IS_PRODUCTION } from 'src/utils/constants';
 
 const InitializedRoute: React.FC<RouteProps> = ({
   component: Component,
@@ -73,8 +74,6 @@ const UnlockedRoute: React.FC<RouteProps> = ({
     passwordUpdatedTime: state.app.passwordUpdatedTime,
   }));
 
-  const isProductionEnv = process.env.NODE_ENV === 'production';
-
   useEffect(() => {
     const getPersistenceMemoryHandle = async () => {
       try {
@@ -90,7 +89,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
 
     // Only detect password persistence in production
     // otherwish hot reload will casue event blocking
-    if (isProductionEnv) {
+    if (IS_PRODUCTION) {
       getPersistenceMemoryHandle();
     }
 
@@ -104,7 +103,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
     <Route
       {...rest}
       render={(props: any) => {
-        if (isWaitingFromMemory && isProductionEnv) {
+        if (isWaitingFromMemory && IS_PRODUCTION) {
           return null;
         }
         return hasPasswordPersist && account && !isPasswordStale ? (

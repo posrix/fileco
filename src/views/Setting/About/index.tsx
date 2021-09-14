@@ -41,7 +41,7 @@ const About: React.FC = () => {
             <FormattedMessage id="setting.about.link.privacy" />
           </LinkText>
           <LinkText>
-            <FormattedMessage id="setting.about.link.terms" />
+            <FormattedMessage id="setting.about.link.term" />
           </LinkText>
           <LinkText>
             <FormattedMessage id="setting.about.link.website" />

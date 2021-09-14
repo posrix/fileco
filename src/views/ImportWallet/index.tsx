@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -11,13 +11,14 @@ import * as yup from 'yup';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useQueryClient } from 'react-query';
+import PasswordInput from 'src/components/PasswordInput';
 import {
   Container,
   FormFieldsContainer,
   CheckboxContainer,
-  TermsLabelContainer,
-  TermsLabelText,
-  TermsLink,
+  TermLabelContainer,
+  TermLabelText,
+  TermLink,
   CheckboxError,
 } from './styled';
 
@@ -29,9 +30,14 @@ interface ImportWalletProps {
 
 const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
   const history = useHistory();
+  const termRef = useRef(null);
   const { formatMessage } = useIntl();
   const queryClient = useQueryClient();
   const dispatch = useDispatch<Dispatch>();
+
+  const clickTermManually = () => {
+    termRef && termRef.current && termRef.current.click();
+  };
 
   return (
     <Container>
@@ -45,7 +51,7 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
           mnemonic: '',
           password: '',
           confirm: '',
-          terms: false,
+          term: false,
         }}
         onSubmit={({ password, mnemonic }) => {
           if (forgotPassword) {
@@ -78,15 +84,9 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
           password: yup
             .string()
             .min(
-              2,
+              8,
               formatMessage({
                 id: 'password.create.form.password.validaton.min',
-              })
-            )
-            .max(
-              30,
-              formatMessage({
-                id: 'password.create.form.password.validaton.max',
               })
             )
             .required(
@@ -107,7 +107,7 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 id: 'password.create.form.confirm.validaton.required',
               })
             ),
-          terms: yup
+          term: yup
             .boolean()
             .required(
               formatMessage({
@@ -117,7 +117,7 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
             .oneOf(
               [true],
               formatMessage({
-                id: 'account.import.form.terms.validaton.required',
+                id: 'account.import.form.term.validaton.required',
               })
             ),
         })}
@@ -141,7 +141,6 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
               />
               <Field
                 id="password"
-                type="password"
                 label={formatMessage({
                   id: 'password.create.form.password',
                 })}
@@ -149,11 +148,10 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 {...formik.getFieldProps('password')}
                 error={!!(formik.touched.password && formik.errors.password)}
                 helperText={formik.touched.password && formik.errors.password}
-                component={TextField}
+                component={PasswordInput}
               />
               <Field
                 id="confirm"
-                type="password"
                 label={formatMessage({
                   id: 'password.create.form.confirm',
                 })}
@@ -161,30 +159,31 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 {...formik.getFieldProps('confirm')}
                 error={!!(formik.touched.confirm && formik.errors.confirm)}
                 helperText={formik.touched.confirm && formik.errors.confirm}
-                component={TextField}
+                component={PasswordInput}
               />
               <CheckboxContainer>
                 <Field
-                  id="terms"
-                  {...formik.getFieldProps('terms')}
+                  id="term"
+                  {...formik.getFieldProps('term')}
                   color="primary"
                   disableRipple
                   component={Checkbox}
+                  inputRef={termRef}
                   style={{
                     padding: 0,
                   }}
                 />
-                <TermsLabelContainer>
-                  <TermsLabelText>
-                    <FormattedMessage id="account.import.form.terms.read" />
-                  </TermsLabelText>
-                  <TermsLink>
-                    <FormattedMessage id="account.import.form.terms" />
-                  </TermsLink>
-                </TermsLabelContainer>
+                <TermLabelContainer>
+                  <TermLabelText onClick={clickTermManually}>
+                    <FormattedMessage id="account.import.form.term.read" />
+                  </TermLabelText>
+                  <TermLink>
+                    <FormattedMessage id="account.import.form.term" />
+                  </TermLink>
+                </TermLabelContainer>
               </CheckboxContainer>
-              {formik.touched.terms && formik.errors.terms && (
-                <CheckboxError>{formik.errors.terms}</CheckboxError>
+              {formik.touched.term && formik.errors.term && (
+                <CheckboxError>{formik.errors.term}</CheckboxError>
               )}
             </FormFieldsContainer>
             <CommonPageFooter />

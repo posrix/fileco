@@ -16,9 +16,9 @@
   "account.import.form.subTitle": "Enter the account mnemonic composed of 24 words to restore your account.",
   "account.import.form.mnemonic": "Enter the mnemonic words and separate them with spaces ",
   "account.import.form.mnemonic.validaton.required": "Please enter the mnemonic phrase",
-  "account.import.form.terms.read": "I have read and agree",
-  "account.import.form.terms.validaton.required": "Please confirm the terms of use",
-  "account.import.form.terms": "Terms of use",
+  "account.import.form.term.read": "I have read and agree",
+  "account.import.form.term.validaton.required": "Please confirm the term of use",
+  "account.import.form.term": "Term of use",
 
   "external.account.import.form.title": "Import Account",
   "external.account.import.form.subTitle": "The imported account will not be associated with the mnemonic phrase of the originally created Keystore lite account.",
@@ -34,8 +34,7 @@
   "password.create.form.password.validaton.required": "password is required",
   "password.create.form.confirm.validaton.required": "confirm password is required",
   "password.create.form.password.validaton.match": "password must match",
-  "password.create.form.password.validaton.min": "Password is too short, should be 2 digits minimum",
-  "password.create.form.password.validaton.max": "Password is too long, should be 8 digits maximum",
+  "password.create.form.password.validaton.min": "Password is too short, should be 8 digits minimum",
 
   "mnemonic.produce.title": "Please backup your mnemonic",
   "mnemonic.produce.subTitle": "Please copy the mnemonic words on the paper in order and keep them in a safe place, we will confirm on the next screen",
@@ -100,7 +99,7 @@
   "setting.about.version.subTitle": "Keystore Lite Design and Implement",
   "setting.about.link.title": "Links",
   "setting.about.link.privacy": "Privacy Policy",
-  "setting.about.link.terms": "Terms Of Use",
+  "setting.about.link.term": "Term Of Use",
   "setting.about.link.website": "Visit Our Website",
 
   "global.confirm": "Confirm",

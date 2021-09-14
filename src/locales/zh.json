@@ -16,9 +16,9 @@
   "account.import.form.subTitle": "输入24个单词组成的账户助记词恢复您的账户。",
   "account.import.form.mnemonic": "输入助记词单词，并使用空格分离 ",
   "account.import.form.mnemonic.validaton.required": "请输入助记词",
-  "account.import.form.terms.read": "我已阅读并同意",
-  "account.import.form.terms.validaton.required": "请确认使用条款",
-  "account.import.form.terms": "使用条款",
+  "account.import.form.term.read": "我已阅读并同意",
+  "account.import.form.term.validaton.required": "请确认使用条款",
+  "account.import.form.term": "使用条款",
 
   "external.account.import.form.title": "导入账户",
   "external.account.import.form.subTitle": "导入的账户将不会与最初创建的 Keystore lite 账户助记词相关联。",
@@ -34,8 +34,7 @@
   "password.create.form.password.validaton.required": "请输入密码",
   "password.create.form.confirm.validaton.required": "请输入确认密码",
   "password.create.form.password.validaton.match": "两次输入密码不一致",
-  "password.create.form.password.validaton.min": "密码长度至少2位",
-  "password.create.form.password.validaton.max": "密码长度最大8位",
+  "password.create.form.password.validaton.min": "密码长度至少8位",
 
   "mnemonic.produce.title": "备份助记词",
   "mnemonic.produce.subTitle": "请按顺序在纸上抄写助记词并妥善保管，我们将在下一个屏幕确认",
@@ -100,7 +99,7 @@
   "setting.about.version.subTitle": "Keystore Lite在XXX设计和实现",
   "setting.about.link.title": "链接",
   "setting.about.link.privacy": "隐私政策",
-  "setting.about.link.terms": "使用条款",
+  "setting.about.link.term": "使用条款",
   "setting.about.link.website": "访问我们的网站",
 
   "global.confirm": "确认",
