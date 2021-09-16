@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from 'src/views/Header';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import { useIntl, FormattedMessage } from 'react-intl';
 import CommonPageFooter from 'src/components/CommonPageFooter';
@@ -30,55 +29,52 @@ const ViewMnemonic: React.FC = () => {
   };
 
   return (
-    <>
-      <Header />
-      <Container>
-        <CommonPageHeader
-          titleLocaleId="setting.view.mnemonic.title"
-          subTitleLocaleId="setting.view.mnemonic.subTitle"
-          gutter={24}
-        />
-        <Warning smallGap={!!mnemonic}>
-          <Icon glyph="warning" size={15} />
-          <FormattedMessage id="setting.view.mnemonic.warning" />
-        </Warning>
-        {!!mnemonic ? (
-          <>
-            <ViewMnemonicTitle>
-              <FormattedMessage id="setting.view.mnemonic.display.title" />
-            </ViewMnemonicTitle>
-            <ViewMnemonicContainer>{mnemonic}</ViewMnemonicContainer>
-            <CommonPageFooter onlyBack />
-          </>
-        ) : (
-          <>
-            <TextField
-              type="password"
-              fullWidth
-              value={password}
-              onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                setIsPasswordError(false);
-                setPassword(event.target.value as string);
-              }}
-              error={isPasswordError}
-              helperText={
-                isPasswordError &&
-                intl.formatMessage({
-                  id: 'unlock.password.validation.incorrect',
-                })
-              }
-              label={intl.formatMessage({
-                id: 'unlock.wallet.password',
-              })}
-            />
-            <CommonPageFooter
-              onConfirm={handleVerify}
-              confirmTextLocaleId="global.view"
-            />
-          </>
-        )}
-      </Container>
-    </>
+    <Container>
+      <CommonPageHeader
+        titleLocaleId="setting.view.mnemonic.title"
+        subTitleLocaleId="setting.view.mnemonic.subTitle"
+        gutter={24}
+      />
+      <Warning smallGap={!!mnemonic}>
+        <Icon glyph="warning" size={15} />
+        <FormattedMessage id="setting.view.mnemonic.warning" />
+      </Warning>
+      {!!mnemonic ? (
+        <>
+          <ViewMnemonicTitle>
+            <FormattedMessage id="setting.view.mnemonic.display.title" />
+          </ViewMnemonicTitle>
+          <ViewMnemonicContainer>{mnemonic}</ViewMnemonicContainer>
+          <CommonPageFooter onlyBack />
+        </>
+      ) : (
+        <>
+          <TextField
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+              setIsPasswordError(false);
+              setPassword(event.target.value as string);
+            }}
+            error={isPasswordError}
+            helperText={
+              isPasswordError &&
+              intl.formatMessage({
+                id: 'unlock.password.validation.incorrect',
+              })
+            }
+            label={intl.formatMessage({
+              id: 'unlock.wallet.password',
+            })}
+          />
+          <CommonPageFooter
+            onConfirm={handleVerify}
+            confirmTextLocaleId="global.view"
+          />
+        </>
+      )}
+    </Container>
   );
 };
 

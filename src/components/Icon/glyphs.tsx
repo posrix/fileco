@@ -9,13 +9,7 @@ const GlyphsBase = {
   'add-wallet': {
     viewBox: '0 0 24 24',
     data: (
-      <g
-        id="控件"
-        stroke="none"
-        strokeWidth="1"
-        fill="none"
-        fillRule="evenodd"
-      >
+      <g id="控件" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="添加钱包">
           <polygon id="路径" points="0 0 24 0 24 24 0 24"></polygon>
           <g
@@ -41,13 +35,7 @@ const GlyphsBase = {
   'import-wallet': {
     viewBox: '0 0 24 24',
     data: (
-      <g
-        id="控件"
-        stroke="none"
-        strokeWidth="1"
-        fill="none"
-        fillRule="evenodd"
-      >
+      <g id="控件" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="钱包归档">
           <polygon id="路径" points="0 0 24 0 24 24 0 24"></polygon>
           <path
@@ -257,10 +245,7 @@ const GlyphsBase = {
   check: {
     viewBox: '0 0 24 24',
     data: (
-      <path
-        fill="#757575"
-        d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
-      ></path>
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
     ),
   },
   download: {

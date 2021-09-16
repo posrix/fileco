@@ -71,6 +71,7 @@
   "transfer.detail.receiver": "接收方",
   "transfer.detail.amount": "数量",
   "transfer.detail.status": "状态",
+  "transfer.sent": "已转出 {amount}",
 
   "receive.qrcode": "收款二维码",
   "receive.address": "收款地址",

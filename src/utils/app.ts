@@ -99,7 +99,22 @@ export function getAddressByNetwork(network: Network, address: string): string {
     : address;
 }
 
-export function getFilByUnit(value: number | string, decimal: number = 4) {
+export function convertToFilUnit(value: number | string, decimal: number = 4) {
+  if (typeof value === 'string') {
+    value = Number(value);
+  }
+  if (value <= 0) {
+    return '0 FIL';
+  } else {
+    return (
+      Math.floor(value * Math.pow(10, -18) * Math.pow(10, decimal)) /
+        Math.pow(10, decimal) +
+      ' FIL'
+    );
+  }
+}
+
+export function convertByUnit(value: number | string, decimal: number = 4) {
   if (typeof value === 'string') {
     value = Number(value);
   }

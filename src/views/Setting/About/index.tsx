@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import CommonPageHeader from 'src/components/CommonPageHeader';
-import Header from 'src/views/Header';
-import { useIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import {
   Container,
@@ -15,41 +14,33 @@ import {
 } from './styled';
 
 const About: React.FC = () => {
-  const intl = useIntl();
-
   return (
-    <>
-      <Header />
-      <Container>
-        <CommonPageHeader
-          titleLocaleId="setting.menu.about.title"
-          gutter={38}
-        />
-        <ColumnContainer>
-          <VersionTitle>
-            <FormattedMessage id="setting.about.version.title" />
-          </VersionTitle>
-          <Version>1.0.0</Version>
-          <VersionSubTitle>
-            <FormattedMessage id="setting.about.version.subTitle" />
-          </VersionSubTitle>
-          <Divider />
-          <LinkTitle>
-            <FormattedMessage id="setting.about.link.title" />
-          </LinkTitle>
-          <LinkText>
-            <FormattedMessage id="setting.about.link.privacy" />
-          </LinkText>
-          <LinkText>
-            <FormattedMessage id="setting.about.link.term" />
-          </LinkText>
-          <LinkText>
-            <FormattedMessage id="setting.about.link.website" />
-          </LinkText>
-        </ColumnContainer>
-        <CommonPageFooter onlyBack />
-      </Container>
-    </>
+    <Container>
+      <CommonPageHeader titleLocaleId="setting.menu.about.title" gutter={38} />
+      <ColumnContainer>
+        <VersionTitle>
+          <FormattedMessage id="setting.about.version.title" />
+        </VersionTitle>
+        <Version>1.0.0</Version>
+        <VersionSubTitle>
+          <FormattedMessage id="setting.about.version.subTitle" />
+        </VersionSubTitle>
+        <Divider />
+        <LinkTitle>
+          <FormattedMessage id="setting.about.link.title" />
+        </LinkTitle>
+        <LinkText>
+          <FormattedMessage id="setting.about.link.privacy" />
+        </LinkText>
+        <LinkText>
+          <FormattedMessage id="setting.about.link.term" />
+        </LinkText>
+        <LinkText>
+          <FormattedMessage id="setting.about.link.website" />
+        </LinkText>
+      </ColumnContainer>
+      <CommonPageFooter onlyBack />
+    </Container>
   );
 };
 

@@ -7,18 +7,24 @@ import { ActionContainer } from './styled';
 export interface CommonPageFooterProps {
   onConfirm?: () => void;
   onlyBack?: boolean;
+  backRoute?: string;
   confirmTextLocaleId?: string;
 }
 
 const CommonPageFooter: React.FC<CommonPageFooterProps> = ({
   onConfirm,
   onlyBack,
+  backRoute,
   confirmTextLocaleId = 'global.confirm',
 }) => {
   const history = useHistory();
   return (
     <ActionContainer>
-      <Button variant="contained" fullWidth onClick={() => history.goBack()}>
+      <Button
+        variant="contained"
+        fullWidth
+        onClick={() => (backRoute ? history.push(backRoute) : history.goBack())}
+      >
         <FormattedMessage id="global.back" />
       </Button>
       {!onlyBack && (

@@ -18,6 +18,7 @@ import { RootState, store } from 'src/models/store';
 import { useSelector } from 'react-redux';
 import { getPersistor } from '@rematch/persist';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import Header from 'src/views/Header';
 import {
   HashRouter,
   Route,
@@ -35,6 +36,7 @@ import { Provider } from 'react-redux';
 import { StylesProvider } from '@material-ui/core/styles';
 import { get } from 'lodash';
 import { IS_PRODUCTION } from 'src/utils/constants';
+import { PageViewWrapper, RouteWrapper } from './styled';
 
 const InitializedRoute: React.FC<RouteProps> = ({
   component: Component,
@@ -107,7 +109,12 @@ const UnlockedRoute: React.FC<RouteProps> = ({
           return null;
         }
         return hasPasswordPersist && account && !isPasswordStale ? (
-          <Component {...props} />
+          <PageViewWrapper>
+            <Header />
+            <RouteWrapper>
+              <Component {...props} />
+            </RouteWrapper>
+          </PageViewWrapper>
         ) : (
           <Redirect
             push

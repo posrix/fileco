@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
-import { getFilByUnit, getPersistenceMemory } from 'src/utils/app';
+import { convertToFilUnit, getPersistenceMemory } from 'src/utils/app';
+import { MessageStatus } from 'src/types/app';
 import {
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
 } from 'src/utils/lotus';
-import Header from 'src/views/Header';
 import { useQuery, useQueryClient } from 'react-query';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import { Formik, Form, Field } from 'formik';
@@ -18,20 +17,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import * as yup from 'yup';
 import moment from 'moment';
+import TransferSent from './TransferSent';
 import {
   Container,
   StyleTextField,
   TransferInfoContainer,
   TransferInfo,
 } from './styled';
-import { MessageStatus } from 'src/types/app';
 
 const Transfer: React.FC = () => {
   const [gasEstimate, setGasEstimate] = useState(0);
+  const [sentAmount, setSentAmount] = useState(0);
   const [extendedKey, setExtendedKey] = useState(null);
 
   const queryClient = useQueryClient();
-  const history = useHistory();
   const intl = useIntl();
   const dispatch = useDispatch<Dispatch>();
   const {
@@ -104,109 +103,108 @@ const Transfer: React.FC = () => {
   };
 
   return (
-    <>
-      <Header />
-      <Container>
-        <CommonPageHeader titleLocaleId="transfer.form.title" gutter={50} />
-        <Formik
-          initialValues={{
-            address: '',
-            amount: '',
-          }}
-          onSubmit={(values) => {
-            const base = {
-              from: address,
-              to: values.address,
-              value: Number(values.amount) * 1e18,
-            };
-            sendSignedMessage({
-              ...base,
-              privateKey: extendedKey.privateKey,
-            }).then((cid) => {
-              dispatch.app
-                .pushAndPollingPendingMessage({
-                  ...base,
-                  cid,
-                  datetime: moment().format('YYYY/MM/DD h:mm:ss'),
-                  height: 0,
-                  status: MessageStatus.PENDING,
-                })
-                .then(() => {
-                  console.log('queryClient', queryClient);
-                  queryClient.invalidateQueries();
-                });
-              history.push('/home');
-            });
-          }}
-          validationSchema={yup.object().shape({
-            address: yup.string().required(
-              intl.formatMessage({
-                id: 'transfer.form.address.validaton.required',
+    <Container>
+      <CommonPageHeader titleLocaleId="transfer.form.title" gutter={50} />
+      <Formik
+        initialValues={{
+          address: '',
+          amount: '',
+        }}
+        onSubmit={(values) => {
+          const sentAmount = Number(values.amount) * 1e18 - gasEstimate;
+          const base = {
+            from: address,
+            to: values.address,
+            value: sentAmount,
+          };
+          sendSignedMessage({
+            ...base,
+            privateKey: extendedKey.privateKey,
+          }).then((cid) => {
+            dispatch.app
+              .pushAndPollingPendingMessage({
+                ...base,
+                cid,
+                datetime: moment().format('YYYY/MM/DD h:mm:ss'),
+                height: 0,
+                status: MessageStatus.PENDING,
               })
-            ),
-            amount: yup.string().required(
-              intl.formatMessage({
-                id: 'transfer.form.amount.validaton.required',
-              })
-            ),
-          })}
-          validateOnBlur={false}
-        >
-          {(formik) => (
-            <Form>
-              <Field
-                id="address"
-                label={intl.formatMessage({
-                  id: 'transfer.form.address',
-                })}
-                fullWidth
-                {...formik.getFieldProps('address')}
-                error={!!(formik.touched.address && formik.errors.address)}
-                helperText={formik.touched.address && formik.errors.address}
-                onBlur={() => gasEstimateHandler(formik)}
-                component={StyleTextField}
-              />
-              <Field
-                id="amount"
-                label={intl.formatMessage({
-                  id: 'transfer.form.amount',
-                })}
-                fullWidth
-                {...formik.getFieldProps('amount')}
-                error={!!(formik.touched.amount && formik.errors.amount)}
-                helperText={formik.touched.amount && formik.errors.amount}
-                onBlur={() => gasEstimateHandler(formik)}
-                component={StyleTextField}
-                validate={(value: string) => {
-                  let error;
-                  if (Number(value) > balance) {
-                    error = intl.formatMessage({
-                      id: 'transfer.form.amount.validaton.exceed',
-                    });
-                  }
-                  return error;
-                }}
-              />
-              <CommonPageFooter />
-            </Form>
-          )}
-        </Formik>
-        <TransferInfoContainer>
-          <TransferInfo>
-            <FormattedMessage
-              id="transfer.form.info.balance.available"
-              values={{ balance: getFilByUnit(balance) }}
+              .then(() => {
+                console.log('queryClient', queryClient);
+                queryClient.invalidateQueries();
+              });
+            setSentAmount(sentAmount);
+          });
+        }}
+        validationSchema={yup.object().shape({
+          address: yup.string().required(
+            intl.formatMessage({
+              id: 'transfer.form.address.validaton.required',
+            })
+          ),
+          amount: yup.string().required(
+            intl.formatMessage({
+              id: 'transfer.form.amount.validaton.required',
+            })
+          ),
+        })}
+        validateOnBlur={false}
+      >
+        {(formik) => (
+          <Form>
+            <Field
+              id="address"
+              label={intl.formatMessage({
+                id: 'transfer.form.address',
+              })}
+              fullWidth
+              {...formik.getFieldProps('address')}
+              error={!!(formik.touched.address && formik.errors.address)}
+              helperText={formik.touched.address && formik.errors.address}
+              onBlur={() => gasEstimateHandler(formik)}
+              component={StyleTextField}
             />
-          </TransferInfo>
-          <TransferInfo>
-            <FormattedMessage
-              id="transfer.form.info.gas.estimate"
-              values={{ gasEstimate: getFilByUnit(gasEstimate) }}
+            <Field
+              id="amount"
+              label={intl.formatMessage({
+                id: 'transfer.form.amount',
+              })}
+              fullWidth
+              {...formik.getFieldProps('amount')}
+              error={!!(formik.touched.amount && formik.errors.amount)}
+              helperText={formik.touched.amount && formik.errors.amount}
+              onBlur={() => gasEstimateHandler(formik)}
+              component={StyleTextField}
+              validate={(value: string) => {
+                let error;
+                if (Number(value) > balance) {
+                  error = intl.formatMessage({
+                    id: 'transfer.form.amount.validaton.exceed',
+                  });
+                }
+                return error;
+              }}
             />
-          </TransferInfo>
-        </TransferInfoContainer>
-      </Container>
-    </>
+            <CommonPageFooter />
+          </Form>
+        )}
+      </Formik>
+      <TransferInfoContainer>
+        <TransferInfo>
+          <FormattedMessage
+            id="transfer.form.info.balance.available"
+            values={{ balance: convertToFilUnit(balance) }}
+          />
+        </TransferInfo>
+        <TransferInfo>
+          <FormattedMessage
+            id="transfer.form.info.gas.estimate"
+            values={{ gasEstimate: convertToFilUnit(gasEstimate) }}
+          />
+        </TransferInfo>
+      </TransferInfoContainer>
+      <TransferSent amount={sentAmount} />
+    </Container>
   );
 };
 

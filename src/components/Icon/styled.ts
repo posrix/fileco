@@ -1,23 +1,17 @@
 import styled from 'styled-components';
+import { IconProps } from './';
 
-export const InlineSvg = styled.svg<any>`
+export const InlineSvg = styled.svg<Pick<IconProps, 'color'>>`
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   height: 100%;
   width: 100%;
   color: ${(props) => (props.color ? props.color : 'unset')};
   fill: currentColor;
 `;
 
-interface SvgWrapperProps {
-  height?: number;
-  width?: number;
-  count?: number;
-  hide?: boolean;
-}
+interface SvgWrapperProps
+  extends Pick<IconProps, 'height' | 'width' | 'hide'> {}
 
 export const SvgWrapper = styled.div<SvgWrapperProps>`
   display: inline-block;

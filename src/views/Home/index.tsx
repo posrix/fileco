@@ -4,11 +4,10 @@ import { useHistory } from 'react-router-dom';
 import Button from 'src/components/Button';
 import {
   getAddressByNetwork,
-  getFilByUnit,
+  convertToFilUnit,
   addressEllipsis,
 } from 'src/utils/app';
 import { useQuery } from 'react-query';
-import Header from 'src/views/Header';
 import { RootState } from 'src/models/store';
 import { Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -118,7 +117,6 @@ const Home: React.FC = () => {
 
   return (
     <Container>
-      <Header />
       <AccountContainer>
         <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
           <AccountSelectionContainer>
@@ -130,7 +128,7 @@ const Home: React.FC = () => {
       <BalanceContainer>
         <Icon glyph="filecoin" size={32} />
         <BalanceFilecoin>
-          <TextEllipsis>{getFilByUnit(balance)}</TextEllipsis>
+          <TextEllipsis>{convertToFilUnit(balance)}</TextEllipsis>
         </BalanceFilecoin>
         <BalanceDollar>${balanceUSD} USD</BalanceDollar>
       </BalanceContainer>

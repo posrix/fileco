@@ -2,23 +2,21 @@ import React from 'react';
 import glyphs from './glyphs';
 import { InlineSvg, SvgWrapper } from './styled';
 
-interface Props {
+export interface IconProps {
   glyph: string;
   size?: number;
   height?: number;
   width?: number;
-  count?: number;
   color?: string;
   hide?: boolean;
   onClick?(): void;
 }
 
-class Icon extends React.Component<Props> {
+class Icon extends React.Component<IconProps> {
   render() {
     const {
       size,
-      count,
-      color,
+      color = '#757575',
       glyph,
       hide = false,
       onClick,
@@ -37,7 +35,6 @@ class Icon extends React.Component<Props> {
         width={width}
         height={height}
         hide={hide}
-        count={count}
         onClick={onClick}
         {...rest}
       >
@@ -51,7 +48,6 @@ class Icon extends React.Component<Props> {
           aria-labelledby="title"
           viewBox={glyphs[glyph].viewBox}
           preserveAspectRatio="xMidYMid meet"
-          fit
         >
           {glyphs[glyph].data}
         </InlineSvg>

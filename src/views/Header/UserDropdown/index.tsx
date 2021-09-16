@@ -8,7 +8,7 @@ import { Divider } from '@material-ui/core';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
 import {
-  getFilByUnit,
+  convertToFilUnit,
   addressEllipsis,
   getPersistenceMemory,
   setPersistenceMemory,
@@ -113,7 +113,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
               <AddressContainer>
                 <Address>{addressEllipsis(account.address)}</Address>
                 <Balance>
-                  {getFilByUnit(account.balances[selectedNetwork])}
+                  {convertToFilUnit(account.balances[selectedNetwork])}
                 </Balance>
               </AddressContainer>
               {account.isExternal && (

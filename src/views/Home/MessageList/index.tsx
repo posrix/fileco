@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from 'src/components/Icon';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import { addressEllipsis, getFilByUnit } from 'src/utils/app';
+import { addressEllipsis, convertToFilUnit } from 'src/utils/app';
 import { RootState } from 'src/models/store';
 import { useSelector } from 'react-redux';
 import { MessageStatus } from 'src/types/app';
@@ -74,7 +74,9 @@ const MessageList: React.FC = () => {
                 </>
               )}
               <MessageListSegment>
-                <OrderAmount>{getFilByUnit(message.value)}</OrderAmount>
+                <OrderAmount>
+                  {convertToFilUnit(message.value)}
+                </OrderAmount>
                 <OrderDate>{message.datetime}</OrderDate>
               </MessageListSegment>
             </>

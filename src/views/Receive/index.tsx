@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Header from 'src/views/Header';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import Icon from 'src/components/Icon';
@@ -26,36 +25,33 @@ const Receive: React.FC = () => {
   );
 
   return (
-    <>
-      <Header />
-      <Container>
-        <CommonPageHeader titleLocaleId="global.receive" gutter={20} />
-        <FieldTitle>
-          <FormattedMessage id="receive.qrcode" />
-        </FieldTitle>
-        <QrCodeContainer>
-          <QRCode value={address} size={120} />
-        </QrCodeContainer>
-        <FieldTitle>
-          <FormattedMessage id="receive.address" />
-        </FieldTitle>
-        <CopyAddressContianer>
-          <CopyAddress>{address}</CopyAddress>
-          <CopyIconContianer>
-            <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
-              <Icon glyph="copy" size={22} />
-            </CopyToClipboard>
-          </CopyIconContianer>
-        </CopyAddressContianer>
-        <CommonPageFooter onlyBack />
-        <Alert
-          open={copied}
-          setOpen={setCopied}
-          autoHideDuration={1000}
-          textLocalId="global.copied"
-        />
-      </Container>
-    </>
+    <Container>
+      <CommonPageHeader titleLocaleId="global.receive" gutter={20} />
+      <FieldTitle>
+        <FormattedMessage id="receive.qrcode" />
+      </FieldTitle>
+      <QrCodeContainer>
+        <QRCode value={address} size={120} />
+      </QrCodeContainer>
+      <FieldTitle>
+        <FormattedMessage id="receive.address" />
+      </FieldTitle>
+      <CopyAddressContianer>
+        <CopyAddress>{address}</CopyAddress>
+        <CopyIconContianer>
+          <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
+            <Icon glyph="copy" size={22} />
+          </CopyToClipboard>
+        </CopyIconContianer>
+      </CopyAddressContianer>
+      <CommonPageFooter onlyBack />
+      <Alert
+        open={copied}
+        setOpen={setCopied}
+        autoHideDuration={1000}
+        textLocalId="global.copied"
+      />
+    </Container>
   );
 };
 
