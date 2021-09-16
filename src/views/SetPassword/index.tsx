@@ -7,11 +7,12 @@ import CommonPageFooter from 'src/components/CommonPageFooter';
 import { setLocalStorage } from 'src/utils/app';
 import * as yup from 'yup';
 import PasswordInput from 'src/components/PasswordInput';
+import Checkbox from 'src/components/Checkbox';
 import { Container, FormFieldsContainer } from './styled';
 
 const SetPassword: React.FC = () => {
   const history = useHistory();
-  const intl = useIntl();
+  const { formatMessage } = useIntl();
 
   return (
     <Container>
@@ -24,6 +25,7 @@ const SetPassword: React.FC = () => {
         initialValues={{
           password: '',
           confirm: '',
+          term: false,
         }}
         onSubmit={({ password }) => {
           setLocalStorage('password', password);
@@ -35,12 +37,12 @@ const SetPassword: React.FC = () => {
             .string()
             .min(
               8,
-              intl.formatMessage({
+              formatMessage({
                 id: 'password.create.form.password.validaton.min',
               })
             )
             .required(
-              intl.formatMessage({
+              formatMessage({
                 id: 'password.create.form.password.validaton.required',
               })
             ),
@@ -48,13 +50,26 @@ const SetPassword: React.FC = () => {
             .string()
             .oneOf(
               [yup.ref('password'), null],
-              intl.formatMessage({
+              formatMessage({
                 id: 'password.create.form.password.validaton.match',
               })
             )
             .required(
-              intl.formatMessage({
+              formatMessage({
                 id: 'password.create.form.confirm.validaton.required',
+              })
+            ),
+          term: yup
+            .boolean()
+            .required(
+              formatMessage({
+                id: 'account.import.form.mnemonic.validaton.required',
+              })
+            )
+            .oneOf(
+              [true],
+              formatMessage({
+                id: 'account.import.form.term.validaton.required',
               })
             ),
         })}
@@ -64,7 +79,7 @@ const SetPassword: React.FC = () => {
             <FormFieldsContainer>
               <Field
                 id="password"
-                label={intl.formatMessage({
+                label={formatMessage({
                   id: 'password.create.form.password',
                 })}
                 fullWidth
@@ -75,7 +90,7 @@ const SetPassword: React.FC = () => {
               />
               <Field
                 id="confirm"
-                label={intl.formatMessage({
+                label={formatMessage({
                   id: 'password.create.form.confirm',
                 })}
                 fullWidth
@@ -83,6 +98,14 @@ const SetPassword: React.FC = () => {
                 error={!!(formik.touched.confirm && formik.errors.confirm)}
                 helperText={formik.touched.confirm && formik.errors.confirm}
                 component={PasswordInput}
+              />
+              <Field
+                id="term"
+                {...formik.getFieldProps('term')}
+                labelTextLocaleId="account.import.form.term.read"
+                labelLinkTextLocaleId="account.import.form.term"
+                error={formik.touched.term && formik.errors.term}
+                component={Checkbox}
               />
             </FormFieldsContainer>
             <CommonPageFooter />

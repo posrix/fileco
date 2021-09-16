@@ -9,7 +9,7 @@ import { Dispatch } from 'src/models/store';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox from 'src/components/Checkbox';
 import { useQueryClient } from 'react-query';
 import PasswordInput from 'src/components/PasswordInput';
 import {
@@ -161,30 +161,14 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 helperText={formik.touched.confirm && formik.errors.confirm}
                 component={PasswordInput}
               />
-              <CheckboxContainer>
-                <Field
-                  id="term"
-                  {...formik.getFieldProps('term')}
-                  color="primary"
-                  disableRipple
-                  component={Checkbox}
-                  inputRef={termRef}
-                  style={{
-                    padding: 0,
-                  }}
-                />
-                <TermLabelContainer>
-                  <TermLabelText onClick={clickTermManually}>
-                    <FormattedMessage id="account.import.form.term.read" />
-                  </TermLabelText>
-                  <TermLink>
-                    <FormattedMessage id="account.import.form.term" />
-                  </TermLink>
-                </TermLabelContainer>
-              </CheckboxContainer>
-              {formik.touched.term && formik.errors.term && (
-                <CheckboxError>{formik.errors.term}</CheckboxError>
-              )}
+              <Field
+                id="term"
+                {...formik.getFieldProps('term')}
+                labelTextLocaleId="account.import.form.term.read"
+                labelLinkTextLocaleId="account.import.form.term"
+                error={formik.touched.term && formik.errors.term}
+                component={Checkbox}
+              />
             </FormFieldsContainer>
             <CommonPageFooter />
           </Form>
