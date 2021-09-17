@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { convertToFilUnit, getPersistenceMemory } from 'src/utils/app';
+import {
+  convertByUnit,
+  convertToFilUnit,
+  getPersistenceMemory,
+} from 'src/utils/app';
 import { MessageStatus } from 'src/types/app';
 import {
   sendSignedMessage,
@@ -9,8 +13,16 @@ import {
 } from 'src/utils/lotus';
 import { useQuery, useQueryClient } from 'react-query';
 import CommonPageHeader from 'src/components/CommonPageHeader';
-import { Formik, Form, Field } from 'formik';
+import {
+  Formik,
+  Form,
+  Field,
+  FormikProps,
+  FormikValues,
+  FormikErrors,
+} from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
+import TextField from '@material-ui/core/TextField';
 import { RootState } from 'src/models/store';
 import { Dispatch } from 'src/models/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,18 +32,18 @@ import moment from 'moment';
 import TransferSent from './TransferSent';
 import {
   Container,
-  StyleTextField,
+  FormFieldWrapper,
   TransferInfoContainer,
   TransferInfo,
 } from './styled';
 
 const Transfer: React.FC = () => {
-  const [gasEstimate, setGasEstimate] = useState(0);
+  const [gas, setGas] = useState(0);
   const [sentAmount, setSentAmount] = useState(0);
   const [extendedKey, setExtendedKey] = useState(null);
 
   const queryClient = useQueryClient();
-  const intl = useIntl();
+  const { formatMessage } = useIntl();
   const dispatch = useDispatch<Dispatch>();
   const {
     address,
@@ -53,6 +65,11 @@ const Transfer: React.FC = () => {
       selectedAccountId,
     };
   });
+
+  const initialValues = {
+    address: '',
+    amount: '',
+  };
 
   useEffect(() => {
     async function getExtendedKey() {
@@ -86,105 +103,141 @@ const Transfer: React.FC = () => {
     }
   );
 
-  const gasEstimateHandler = (formik: any) => {
-    formik.validateForm().then((errors: any) => {
+  const fetchGas = (values: FormikValues) => {
+    return getEstimateGas(
+      constructUnsignedMessage({
+        from: address,
+        to: values.address,
+        value: Number(values.amount) * 1e18,
+      })
+    ).then((data) => {
+      setGas(Number(data.gasFeeCap));
+    });
+  };
+
+  const fetchGasHandle = (formik: FormikProps<typeof initialValues>) => {
+    formik.validateForm().then((errors: FormikErrors<typeof initialValues>) => {
       if (isEmpty(errors)) {
-        getEstimateGas(
-          constructUnsignedMessage({
-            from: address,
-            to: formik.values.address,
-            value: Number(formik.values.amount) * 1e18,
-          })
-        ).then((estimateGas) => {
-          setGasEstimate(estimateGas.gasFeeCap);
-        });
+        fetchGas(formik.values);
       }
     });
   };
+
+  const transferSubmitHandle = useCallback(
+    async (values: FormikValues) => {
+      // Fetch gas again because formik error detect will delay while first input
+      await fetchGas(values);
+      const amountWithGas = Number(values.amount) * Math.pow(10, 18) - gas;
+      const base = {
+        from: address,
+        to: values.address,
+        value: amountWithGas,
+      };
+      // set temp balance
+      dispatch.app.setBalance({
+        balance: balance - amountWithGas,
+        accountId,
+        network: selectedNetwork,
+      });
+      sendSignedMessage({
+        ...base,
+        privateKey: extendedKey.privateKey,
+      }).then((cid) => {
+        dispatch.app
+          .pushAndPollingPendingMessage({
+            ...base,
+            cid,
+            datetime: moment().format('YYYY/MM/DD h:mm:ss'),
+            height: 0,
+            status: MessageStatus.PENDING,
+          })
+          .catch((error) => {
+            console.log('Transfer failed', error);
+            // resotre balance while transaction failed
+            dispatch.app.setBalance({
+              balance: balance + amountWithGas,
+              accountId,
+              network: selectedNetwork,
+            });
+          });
+        setSentAmount(amountWithGas);
+      });
+    },
+    [gas]
+  );
+
+  const validationSchema = yup.object().shape({
+    address: yup
+      .string()
+      .required(
+        formatMessage({
+          id: 'transfer.form.address.validaton.required',
+        })
+      )
+      .notOneOf(
+        [address],
+        formatMessage({
+          id: 'transfer.form.address.validaton.self',
+        })
+      ),
+    amount: yup
+      .number()
+      .nullable(true)
+      .typeError(
+        formatMessage({
+          id: 'transfer.form.amount.validaton.type',
+        })
+      )
+      .max(
+        balance * Math.pow(10, -18),
+        formatMessage({
+          id: 'transfer.form.amount.validaton.exceed',
+        })
+      )
+      .required(
+        formatMessage({
+          id: 'transfer.form.amount.validaton.required',
+        })
+      ),
+  });
 
   return (
     <Container>
       <CommonPageHeader titleLocaleId="transfer.form.title" gutter={50} />
       <Formik
-        initialValues={{
-          address: '',
-          amount: '',
-        }}
-        onSubmit={(values) => {
-          const sentAmount = Number(values.amount) * 1e18 - gasEstimate;
-          const base = {
-            from: address,
-            to: values.address,
-            value: sentAmount,
-          };
-          sendSignedMessage({
-            ...base,
-            privateKey: extendedKey.privateKey,
-          }).then((cid) => {
-            dispatch.app
-              .pushAndPollingPendingMessage({
-                ...base,
-                cid,
-                datetime: moment().format('YYYY/MM/DD h:mm:ss'),
-                height: 0,
-                status: MessageStatus.PENDING,
-              })
-              .then(() => {
-                console.log('queryClient', queryClient);
-                queryClient.invalidateQueries();
-              });
-            setSentAmount(sentAmount);
-          });
-        }}
-        validationSchema={yup.object().shape({
-          address: yup.string().required(
-            intl.formatMessage({
-              id: 'transfer.form.address.validaton.required',
-            })
-          ),
-          amount: yup.string().required(
-            intl.formatMessage({
-              id: 'transfer.form.amount.validaton.required',
-            })
-          ),
-        })}
-        validateOnBlur={false}
+        initialValues={initialValues}
+        onSubmit={transferSubmitHandle}
+        validationSchema={validationSchema}
       >
         {(formik) => (
           <Form>
-            <Field
-              id="address"
-              label={intl.formatMessage({
-                id: 'transfer.form.address',
-              })}
-              fullWidth
-              {...formik.getFieldProps('address')}
-              error={!!(formik.touched.address && formik.errors.address)}
-              helperText={formik.touched.address && formik.errors.address}
-              onBlur={() => gasEstimateHandler(formik)}
-              component={StyleTextField}
-            />
-            <Field
-              id="amount"
-              label={intl.formatMessage({
-                id: 'transfer.form.amount',
-              })}
-              fullWidth
-              {...formik.getFieldProps('amount')}
-              error={!!(formik.touched.amount && formik.errors.amount)}
-              helperText={formik.touched.amount && formik.errors.amount}
-              onBlur={() => gasEstimateHandler(formik)}
-              component={StyleTextField}
-              validate={(value: string) => {
-                let error;
-                if (Number(value) > balance) {
-                  error = intl.formatMessage({
-                    id: 'transfer.form.amount.validaton.exceed',
-                  });
-                }
-                return error;
-              }}
-            />
+            <FormFieldWrapper>
+              <Field
+                id="address"
+                label={formatMessage({
+                  id: 'transfer.form.address',
+                })}
+                fullWidth
+                {...formik.getFieldProps('address')}
+                error={!!(formik.touched.address && formik.errors.address)}
+                helperText={formik.touched.address && formik.errors.address}
+                onBlur={() => fetchGasHandle(formik)}
+                component={TextField}
+              />
+              <Field
+                autoComplete="off"
+                id="amount"
+                label={formatMessage({
+                  id: 'transfer.form.amount',
+                })}
+                fullWidth
+                {...formik.getFieldProps('amount')}
+                error={!!(formik.touched.amount && formik.errors.amount)}
+                helperText={formik.touched.amount && formik.errors.amount}
+                onBlur={() => fetchGasHandle(formik)}
+                component={TextField}
+              />
+            </FormFieldWrapper>
             <CommonPageFooter />
           </Form>
         )}
@@ -199,7 +252,7 @@ const Transfer: React.FC = () => {
         <TransferInfo>
           <FormattedMessage
             id="transfer.form.info.gas.estimate"
-            values={{ gasEstimate: convertToFilUnit(gasEstimate) }}
+            values={{ gas: convertByUnit(gas) }}
           />
         </TransferInfo>
       </TransferInfoContainer>

@@ -58,10 +58,12 @@
   "transfer.form.address": "发送地址",
   "transfer.form.amount": "发送数量",
   "transfer.form.address.validaton.required": "请输入发送地址",
+  "transfer.form.address.validaton.self": "不能转账给自己",
   "transfer.form.amount.validaton.required": "请输入发送数量",
   "transfer.form.amount.validaton.exceed": "金额不能大于余额",
+  "transfer.form.amount.validaton.type": "金额只能是数字",
   "transfer.form.info.balance.available": "可用余额: {balance}",
-  "transfer.form.info.gas.estimate": "预估 Gas 费用: {gasEstimate}",
+  "transfer.form.info.gas.estimate": "预估 Gas 费用: {gas}",
 
   "transfer.detail.title": "发送详情",
   "transfer.detail.cid": "交易ID",

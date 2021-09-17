@@ -284,21 +284,28 @@ export const app = createModel<RootModel>()({
       }
       dispatch.app.setBalanceUSD({ accountId, network });
     },
-    async fetchBalance({
-      accountId,
-      network,
-      address,
-    }: {
-      accountId: number;
-      network: Network;
-      address: string;
-    }) {
+    async fetchBalance(
+      {
+        accountId,
+        network,
+        address,
+      }: {
+        accountId: number;
+        network: Network;
+        address: string;
+      },
+      rootState
+    ) {
       const balance = await LotusRPCAdaptor.client[network].walletBalance(
         address
       );
+      // Reduce all pendings messages amount to balance
+      const pendingMessagesAmount = rootState.app.accounts[accountId].messages[
+        network
+      ].pendingMessages.reduce((a, b) => a + b.value, 0);
       dispatch.app.setBalance({
         accountId,
-        balance: Number(balance),
+        balance: Number(balance) - pendingMessagesAmount,
         network,
       });
     },
@@ -377,13 +384,11 @@ export const app = createModel<RootModel>()({
                   encryptedExternalPrivateKey: encryptedPrivateKey,
                 });
                 dispatch.app.setSelectedAccountId(newAccountIndex);
-                console.log('extendedKey', extendedKey);
                 resolve(extendedKey);
               } else {
                 reject({ isDup: true });
               }
             } catch (error) {
-              console.log('error', error);
               reject({ isDup: false, error });
             }
           });

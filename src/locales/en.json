@@ -58,10 +58,12 @@
   "transfer.form.address": "Transfer Address",
   "transfer.form.amount": "Transfer Amount",
   "transfer.form.address.validaton.required": "Please enter transfer address",
+  "transfer.form.address.validaton.self": "Can't transfer to myself",
   "transfer.form.amount.validaton.required": "Please enter transfer amount",
   "transfer.form.amount.validaton.exceed": "Amount can not greater than balance",
+  "transfer.form.amount.validaton.type": "Amount can only be number",
   "transfer.form.info.balance.available": "Available Balance: {balance}",
-  "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gasEstimate}",
+  "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gas}",
 
   "transfer.detail.title": "Transfer Detail",
   "transfer.detail.cid": "Trade ID",
