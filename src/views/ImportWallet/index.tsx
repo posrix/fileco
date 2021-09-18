@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import CommonPageHeader from 'src/components/CommonPageHeader';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import { setLocalStorage, setPersistenceMemory } from 'src/utils/app';
@@ -12,15 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from 'src/components/Checkbox';
 import { useQueryClient } from 'react-query';
 import PasswordInput from 'src/components/PasswordInput';
-import {
-  Container,
-  FormFieldsContainer,
-  CheckboxContainer,
-  TermLabelContainer,
-  TermLabelText,
-  TermLink,
-  CheckboxError,
-} from './styled';
+import { Container, FormFieldsContainer } from './styled';
 
 const passworder = require('browser-passworder');
 
@@ -123,10 +115,9 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
         })}
       >
         {(formik) => (
-          <Form autoComplete="off">
+          <Form>
             <FormFieldsContainer>
               <Field
-                id="mnemonic"
                 label={formatMessage({
                   id: 'account.import.form.mnemonic',
                 })}
@@ -137,10 +128,9 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 multiline
                 variant="outlined"
                 rows={4}
-                component={TextField}
+                as={TextField}
               />
               <Field
-                id="password"
                 label={formatMessage({
                   id: 'password.create.form.password',
                 })}
@@ -148,10 +138,9 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 {...formik.getFieldProps('password')}
                 error={!!(formik.touched.password && formik.errors.password)}
                 helperText={formik.touched.password && formik.errors.password}
-                component={PasswordInput}
+                as={PasswordInput}
               />
               <Field
-                id="confirm"
                 label={formatMessage({
                   id: 'password.create.form.confirm',
                 })}
@@ -159,15 +148,14 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
                 {...formik.getFieldProps('confirm')}
                 error={!!(formik.touched.confirm && formik.errors.confirm)}
                 helperText={formik.touched.confirm && formik.errors.confirm}
-                component={PasswordInput}
+                as={PasswordInput}
               />
               <Field
-                id="term"
                 {...formik.getFieldProps('term')}
                 labelTextLocaleId="account.import.form.term.read"
                 labelLinkTextLocaleId="account.import.form.term"
                 error={formik.touched.term && formik.errors.term}
-                component={Checkbox}
+                as={Checkbox}
               />
             </FormFieldsContainer>
             <CommonPageFooter />

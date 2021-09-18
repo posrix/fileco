@@ -213,7 +213,6 @@ const Transfer: React.FC = () => {
           <Form>
             <FormFieldWrapper>
               <Field
-                id="address"
                 label={formatMessage({
                   id: 'transfer.form.address',
                 })}
@@ -222,11 +221,10 @@ const Transfer: React.FC = () => {
                 error={!!(formik.touched.address && formik.errors.address)}
                 helperText={formik.touched.address && formik.errors.address}
                 onBlur={() => fetchGasHandle(formik)}
-                component={TextField}
+                as={TextField}
               />
               <Field
                 autoComplete="off"
-                id="amount"
                 label={formatMessage({
                   id: 'transfer.form.amount',
                 })}
@@ -235,7 +233,7 @@ const Transfer: React.FC = () => {
                 error={!!(formik.touched.amount && formik.errors.amount)}
                 helperText={formik.touched.amount && formik.errors.amount}
                 onBlur={() => fetchGasHandle(formik)}
-                component={TextField}
+                as={TextField}
               />
             </FormFieldWrapper>
             <CommonPageFooter />

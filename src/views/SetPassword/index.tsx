@@ -78,7 +78,6 @@ const SetPassword: React.FC = () => {
           <Form autoComplete="off">
             <FormFieldsContainer>
               <Field
-                id="password"
                 label={formatMessage({
                   id: 'password.create.form.password',
                 })}
@@ -86,10 +85,9 @@ const SetPassword: React.FC = () => {
                 {...formik.getFieldProps('password')}
                 error={!!(formik.touched.password && formik.errors.password)}
                 helperText={formik.touched.password && formik.errors.password}
-                component={PasswordInput}
+                as={PasswordInput}
               />
               <Field
-                id="confirm"
                 label={formatMessage({
                   id: 'password.create.form.confirm',
                 })}
@@ -97,15 +95,14 @@ const SetPassword: React.FC = () => {
                 {...formik.getFieldProps('confirm')}
                 error={!!(formik.touched.confirm && formik.errors.confirm)}
                 helperText={formik.touched.confirm && formik.errors.confirm}
-                component={PasswordInput}
+                as={PasswordInput}
               />
               <Field
-                id="term"
                 {...formik.getFieldProps('term')}
                 labelTextLocaleId="account.import.form.term.read"
                 labelLinkTextLocaleId="account.import.form.term"
                 error={formik.touched.term && formik.errors.term}
-                component={Checkbox}
+                as={Checkbox}
               />
             </FormFieldsContainer>
             <CommonPageFooter />

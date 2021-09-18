@@ -65,7 +65,6 @@ const ImportAccount: React.FC = () => {
           <Form autoComplete="off">
             <FormFieldsContainer>
               <Field
-                id="privateKey"
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
@@ -84,7 +83,7 @@ const ImportAccount: React.FC = () => {
                 multiline
                 variant="outlined"
                 rows={4}
-                component={TextField}
+                as={TextField}
               />
             </FormFieldsContainer>
             <CommonPageFooter />
