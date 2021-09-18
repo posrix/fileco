@@ -23,7 +23,7 @@ const MessageList: React.FC = () => {
     const account = state.app.accounts[state.app.selectedAccountId];
     return {
       messages: account.messages[state.app.selectedNetwork].combinedMessages,
-      address: state.app.selectedNetwork,
+      address: account.address,
     };
   });
 
