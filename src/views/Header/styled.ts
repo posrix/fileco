@@ -20,3 +20,7 @@ export const NetworkSelector = styled.div`
   cursor: pointer;
   align-items: center;
 `;
+
+export const AvatarWrapper = styled.div`
+  cursor: pointer;
+`;

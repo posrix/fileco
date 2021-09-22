@@ -3,20 +3,20 @@ import { FormattedMessage } from 'react-intl';
 import Icon from 'src/components/Icon';
 import { RootState } from 'src/models/store';
 import { useSelector } from 'react-redux';
-import Avatar from 'react-avatar';
 import SelectNetworkDropdown from './SelectNetworkDropdown';
 import UserDropdown from './UserDropdown';
-import { Container, NetworkSelector } from './styled';
+import Jazzicon from 'react-jazzicon';
+import { Container, NetworkSelector, AvatarWrapper } from './styled';
 
 const Header: React.FC = () => {
   const [selectNetworkAnchorEl, setSelectNetworkAnchorEl] =
     useState<null | HTMLElement>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
 
-  const { address, selectedNetwork } = useSelector((state: RootState) => {
+  const { accountId, selectedNetwork } = useSelector((state: RootState) => {
     const account = state.app.accounts[state.app.selectedAccountId];
     return {
-      address: account.address,
+      accountId: account.accountId,
       selectedNetwork: state.app.selectedNetwork,
     };
   });
@@ -39,13 +39,9 @@ const Header: React.FC = () => {
         />
         <Icon glyph="arrow-down" size={12} />
       </NetworkSelector>
-      <Avatar
-        name={address}
-        round
-        size="28"
-        style={{ cursor: 'pointer' }}
-        onClick={handleUserClick}
-      />
+      <AvatarWrapper onClick={handleUserClick}>
+        <Jazzicon diameter={28} seed={accountId} />
+      </AvatarWrapper>
       <SelectNetworkDropdown
         setAnchorEl={setSelectNetworkAnchorEl}
         anchorEl={selectNetworkAnchorEl}

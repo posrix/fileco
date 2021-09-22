@@ -13,7 +13,7 @@ import {
   getPersistenceMemory,
   setPersistenceMemory,
 } from 'src/utils/app';
-import Avatar from 'react-avatar';
+import Jazzicon from 'react-jazzicon';
 import {
   AccountContainer,
   AccountTitle,
@@ -109,7 +109,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 size={24}
                 hide={!(selectedAccountId === account.accountId)}
               />
-              <Avatar name={account.address} round size="28" />
+              <Jazzicon diameter={28} seed={account.accountId} />
               <AddressContainer>
                 <Address>{addressEllipsis(account.address)}</Address>
                 <Balance>
