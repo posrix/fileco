@@ -16,6 +16,12 @@ export const MessageListSegment = styled.div`
   gap: 4px;
 `;
 
+export const MessageInfoContainer = styled.div`
+  display: flex;
+  gap: 15px;
+  align-items: center;
+`;
+
 export const Title = styled.div`
   font-size: 14px;
   font-weight: 400;

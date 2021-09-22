@@ -10,6 +10,7 @@ import List from 'react-virtualized/dist/commonjs/List';
 import {
   MessageListItem,
   MessageListSegment,
+  MessageInfoContainer,
   Title,
   OrderAmount,
   OrderDate,
@@ -43,7 +44,7 @@ const MessageList: React.FC = () => {
           >
             <>
               {message.from === address ? (
-                <>
+                <MessageInfoContainer>
                   <Icon glyph="arrow-down-circle" />
                   <MessageListSegment>
                     <Title>
@@ -56,9 +57,9 @@ const MessageList: React.FC = () => {
                       {addressEllipsis(message.to)}
                     </OrderFrom>
                   </MessageListSegment>
-                </>
+                </MessageInfoContainer>
               ) : (
-                <>
+                <MessageInfoContainer>
                   <Icon glyph="arrow-up-circle" />
                   <MessageListSegment>
                     <Title>
@@ -71,12 +72,10 @@ const MessageList: React.FC = () => {
                       {addressEllipsis(message.from)}
                     </OrderFrom>
                   </MessageListSegment>
-                </>
+                </MessageInfoContainer>
               )}
               <MessageListSegment>
-                <OrderAmount>
-                  {convertToFilUnit(message.value)}
-                </OrderAmount>
+                <OrderAmount>{convertToFilUnit(message.value)}</OrderAmount>
                 <OrderDate>{message.datetime}</OrderDate>
               </MessageListSegment>
             </>
