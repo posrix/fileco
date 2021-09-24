@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import { useIntl } from 'react-intl';
@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from 'src/components/Checkbox';
 import { useQueryClient } from 'react-query';
 import PasswordInput from 'src/components/PasswordInput';
+import moment from 'moment';
 import { Container, FormFieldsContainer } from './styled';
 
 const passworder = require('browser-passworder');
@@ -22,14 +23,9 @@ interface ImportWalletProps {
 
 const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
   const history = useHistory();
-  const termRef = useRef(null);
   const { formatMessage } = useIntl();
   const queryClient = useQueryClient();
   const dispatch = useDispatch<Dispatch>();
-
-  const clickTermManually = () => {
-    termRef && termRef.current && termRef.current.click();
-  };
 
   return (
     <Container>
@@ -59,7 +55,7 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
               event: 'SET_PASSWORD',
               entity: { password },
             });
-
+            dispatch.app.setPasswordFreshTime(moment());
             await dispatch.app.createAccountOrGetExtendedKey({
               password,
             });

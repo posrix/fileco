@@ -73,7 +73,7 @@ export interface Account {
 }
 
 export interface AppState {
-  passwordUpdatedTime: Moment;
+  passwordFreshTime: Moment;
   priceInfo: { [K in any]: any };
   selectedNetwork: Network;
   selectedAccountId: number;

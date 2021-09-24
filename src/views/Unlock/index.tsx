@@ -49,7 +49,7 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
         event: 'SET_PASSWORD',
         entity: { password },
       });
-      dispatch.app.setPasswordUpdatedTime(moment());
+      dispatch.app.setPasswordFreshTime(moment());
       history.replace(
         location.state && location.state.from
           ? location.state.from.pathname

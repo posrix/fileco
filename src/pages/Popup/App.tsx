@@ -71,9 +71,9 @@ const UnlockedRoute: React.FC<RouteProps> = ({
   const [isWaitingFromMemory, setWaitingFromMemory] = useState(true);
   const [isPasswordStale, setPasswordStale] = useState(false);
 
-  const { account, passwordUpdatedTime } = useSelector((state: RootState) => ({
+  const { account, passwordFreshTime } = useSelector((state: RootState) => ({
     account: state.app.accounts[state.app.selectedAccountId],
-    passwordUpdatedTime: state.app.passwordUpdatedTime,
+    passwordFreshTime: state.app.passwordFreshTime,
   }));
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const UnlockedRoute: React.FC<RouteProps> = ({
     }
 
     // password will expired after 10 mintures
-    if (moment().diff(passwordUpdatedTime, 'minutes') > 10) {
+    if (moment().diff(passwordFreshTime, 'minutes') > 10) {
       setPasswordStale(true);
     }
   }, []);

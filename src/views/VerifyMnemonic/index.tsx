@@ -12,6 +12,7 @@ import {
 import { Dispatch } from 'src/models/store';
 import { useDispatch } from 'react-redux';
 import { shuffle } from 'lodash';
+import moment from 'moment';
 import {
   Container,
   WordButton,
@@ -44,6 +45,7 @@ const VerifyMnemonic: React.FC = () => {
             event: 'SET_PASSWORD',
             entity: { password },
           });
+          dispatch.app.setPasswordFreshTime(moment());
           await dispatch.app.createAccountOrGetExtendedKey({
             password,
           });
