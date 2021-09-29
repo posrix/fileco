@@ -27,6 +27,7 @@ const accountInitialState = {
   idAddresses: { [Network.Calibration]: '', [Network.Mainnet]: '' },
   address: '',
   accountId: 0,
+  nonce: undefined,
   balances: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   balancesUSD: { [Network.Calibration]: 0, [Network.Mainnet]: 0 },
   isExternal: false,
@@ -85,6 +86,14 @@ export const app = createModel<RootModel>()({
     setSelectedNetwork(state: AppState, selectedNetwork: Network) {
       return produce(state, (draftState: Draft<AppState>) => {
         draftState.selectedNetwork = selectedNetwork;
+      });
+    },
+    setNonce(
+      state: AppState,
+      { accountId, nonce }: { accountId: number; nonce: number }
+    ) {
+      return produce(state, (draftState: Draft<AppState>) => {
+        draftState.accounts[accountId].nonce = nonce;
       });
     },
     setIdAddress(

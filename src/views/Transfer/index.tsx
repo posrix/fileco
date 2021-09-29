@@ -11,7 +11,7 @@ import {
   constructUnsignedMessage,
   getEstimateGas,
 } from 'src/utils/lotus';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import CommonPageHeader from 'src/components/CommonPageHeader';
 import {
   Formik,
@@ -42,8 +42,8 @@ const Transfer: React.FC = () => {
   const [sentAmount, setSentAmount] = useState(0);
   const [extendedKey, setExtendedKey] = useState(null);
 
-  const queryClient = useQueryClient();
   const { formatMessage } = useIntl();
+
   const dispatch = useDispatch<Dispatch>();
   const {
     address,

@@ -197,15 +197,31 @@ export async function sendSignedMessage({
   value: number;
   privateKey: string;
 }) {
-  const unsignedMessage = constructUnsignedMessage({ from, to, value });
   const LotusRPCClient =
     LotusRPCAdaptor.client[store.getState().app.selectedNetwork];
+
+  const unsignedMessage = constructUnsignedMessage({ from, to, value });
+
   // get nonce and compare value with balance
   const actor = await LotusRPCClient.stateGetActor(from, []);
   if (Number(actor.Balance) < value) {
     throw new Error('transfer amount is greater than balance');
   }
-  unsignedMessage.Nonce = actor.Nonce;
+  const { selectedAccountId } = store.getState().app;
+  const { nonce } = store.getState().app.accounts[selectedAccountId];
+  if (nonce === undefined) {
+    store.dispatch.app.setNonce({
+      accountId: selectedAccountId,
+      nonce: actor.Nonce,
+    });
+    unsignedMessage.Nonce = actor.Nonce;
+  } else {
+    unsignedMessage.Nonce = nonce + 1;
+    store.dispatch.app.setNonce({
+      accountId: selectedAccountId,
+      nonce: nonce + 1,
+    });
+  }
 
   // get gas info
   const { gasFeeCap, gasLimit, gasPremium } = await getEstimateGas(

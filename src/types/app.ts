@@ -64,6 +64,7 @@ export interface Encrypted {
 export interface Account {
   idAddresses: Record<keyof typeof Network, string>;
   address: string;
+  nonce: number;
   balances: Record<keyof typeof Network, number>;
   balancesUSD: Record<keyof typeof Network, number>;
   messages: Record<keyof typeof Network, Messages>;
