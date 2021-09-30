@@ -51,7 +51,7 @@ export function constructUnsignedMessage({
   };
 }
 
-export async function getEstimateGas(unsignedMessage: any): Promise<any> {
+export async function getEstimateGas(unsignedMessage: any) {
   const estimateMessageGas = await LotusRPCAdaptor.client[
     store.getState().app.selectedNetwork
   ].gasEstimateMessageGas(unsignedMessage, { MaxFee: '0' }, []);
@@ -196,47 +196,50 @@ export async function sendSignedMessage({
   to: string;
   value: number;
   privateKey: string;
-}) {
-  const LotusRPCClient =
-    LotusRPCAdaptor.client[store.getState().app.selectedNetwork];
+}): Promise<Cid> {
+  return new Promise(async (resolve, reject) => {
+    const LotusRPCClient =
+      LotusRPCAdaptor.client[store.getState().app.selectedNetwork];
 
-  const unsignedMessage = constructUnsignedMessage({ from, to, value });
+    const unsignedMessage = constructUnsignedMessage({ from, to, value });
 
-  // get nonce and compare value with balance
-  const actor = await LotusRPCClient.stateGetActor(from, []);
-  if (Number(actor.Balance) < value) {
-    throw new Error('transfer amount is greater than balance');
-  }
-  const { selectedAccountId } = store.getState().app;
-  const { nonce } = store.getState().app.accounts[selectedAccountId];
-  if (nonce === undefined) {
-    store.dispatch.app.setNonce({
-      accountId: selectedAccountId,
-      nonce: actor.Nonce,
-    });
-    unsignedMessage.Nonce = actor.Nonce;
-  } else {
-    unsignedMessage.Nonce = nonce + 1;
-    store.dispatch.app.setNonce({
-      accountId: selectedAccountId,
-      nonce: nonce + 1,
-    });
-  }
+    // get nonce and compare value with balance
+    const actor = await LotusRPCClient.stateGetActor(from, []);
+    if (Number(actor.Balance) < value) {
+      throw new Error('transfer amount is greater than balance');
+    }
+    const { selectedAccountId } = store.getState().app;
+    const { nonce } = store.getState().app.accounts[selectedAccountId];
+    if (nonce === undefined) {
+      store.dispatch.app.setNonce({
+        accountId: selectedAccountId,
+        nonce: actor.Nonce,
+      });
+      unsignedMessage.Nonce = actor.Nonce;
+    } else {
+      unsignedMessage.Nonce = nonce + 1;
+      store.dispatch.app.setNonce({
+        accountId: selectedAccountId,
+        nonce: nonce + 1,
+      });
+    }
 
-  // get gas info
-  const { gasFeeCap, gasLimit, gasPremium } = await getEstimateGas(
-    unsignedMessage
-  );
-  unsignedMessage.GasFeeCap = gasFeeCap;
-  unsignedMessage.GasLimit = gasLimit;
-  unsignedMessage.GasPremium = gasPremium;
+    // get gas info
+    const { gasFeeCap, gasLimit, gasPremium } = await getEstimateGas(
+      unsignedMessage
+    );
+    unsignedMessage.GasFeeCap = gasFeeCap;
+    unsignedMessage.GasLimit = gasLimit;
+    unsignedMessage.GasPremium = gasPremium;
 
-  // sign message and push message
-  const signedMessage = signer.transactionSignLotus(
-    unsignedMessage,
-    privateKey
-  );
-  return await LotusRPCClient.mpoolPush(signedMessage);
+    // sign message and push message
+    const signedMessage = signer.transactionSignLotus(
+      unsignedMessage,
+      privateKey
+    );
+    const cid = await LotusRPCClient.mpoolPush(signedMessage);
+    resolve(cid);
+  });
 }
 
 export function getRematchMessagesKeyByStatus(messageStatus: MessageStatus) {

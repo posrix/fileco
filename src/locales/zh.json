@@ -64,6 +64,7 @@
   "transfer.form.amount.validaton.type": "金额只能是数字",
   "transfer.form.info.balance.available": "可用余额: {balance}",
   "transfer.form.info.gas.estimate": "预估 Gas 费用: {gas}",
+  "transfer.failed": "转账失败",
 
   "transfer.detail.title": "发送详情",
   "transfer.detail.cid": "交易ID",

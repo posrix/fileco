@@ -1,12 +1,12 @@
 import React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarProps } from '@material-ui/core';
-import { AlertProps } from '@material-ui/lab';
-import Alert from '@material-ui/lab/Alert';
+import { AlertProps as AlertComponentProps } from '@material-ui/lab';
+import AlertComponent from '@material-ui/lab/Alert';
 import { FormattedMessage } from 'react-intl';
 
-interface AlertComponentProps
-  extends AlertProps,
+interface AlertProps
+  extends AlertComponentProps,
     Pick<SnackbarProps, 'autoHideDuration' | 'anchorOrigin'> {
   textLocalId: string;
   open: boolean;
@@ -14,7 +14,7 @@ interface AlertComponentProps
   clickAwayClose?: boolean;
 }
 
-const AlertComponent: React.FC<AlertComponentProps> = ({
+const Alert: React.FC<AlertProps> = ({
   textLocalId,
   severity,
   open,
@@ -38,11 +38,11 @@ const AlertComponent: React.FC<AlertComponentProps> = ({
         setOpen(false);
       }}
     >
-      <Alert severity={severity}>
+      <AlertComponent severity={severity}>
         <FormattedMessage id={textLocalId} />
-      </Alert>
+      </AlertComponent>
     </Snackbar>
   );
 };
 
-export default AlertComponent;
+export default Alert;

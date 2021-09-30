@@ -22,6 +22,7 @@ import {
   FormikErrors,
 } from 'formik';
 import CommonPageFooter from 'src/components/CommonPageFooter';
+import Alert from 'src/components/Alert';
 import TextField from '@material-ui/core/TextField';
 import { RootState } from 'src/models/store';
 import { Dispatch } from 'src/models/store';
@@ -41,6 +42,7 @@ const Transfer: React.FC = () => {
   const [gas, setGas] = useState(0);
   const [sentAmount, setSentAmount] = useState(0);
   const [extendedKey, setExtendedKey] = useState(null);
+  const [showError, setShowError] = React.useState(false);
 
   const { formatMessage } = useIntl();
 
@@ -110,9 +112,14 @@ const Transfer: React.FC = () => {
         to: values.address,
         value: Number(values.amount) * 1e18,
       })
-    ).then((data) => {
-      setGas(Number(data.gasFeeCap));
-    });
+    )
+      .then((data) => {
+        setGas(Number(data.gasFeeCap));
+      })
+      .catch((error) => {
+        console.error('[Fetch Gas Failed]', error);
+        setShowError(true);
+      });
   };
 
   const fetchGasHandle = (formik: FormikProps<typeof initialValues>) => {
@@ -139,29 +146,28 @@ const Transfer: React.FC = () => {
         accountId,
         network: selectedNetwork,
       });
-      sendSignedMessage({
+      const cid = await sendSignedMessage({
         ...base,
         privateKey: extendedKey.privateKey,
-      }).then((cid) => {
-        dispatch.app
-          .pushAndPollingPendingMessage({
-            ...base,
-            cid,
-            datetime: moment().format('YYYY/MM/DD h:mm:ss'),
-            height: 0,
-            status: MessageStatus.PENDING,
-          })
-          .catch((error) => {
-            console.log('Transfer failed', error);
-            // resotre balance while transaction failed
-            dispatch.app.setBalance({
-              balance: balance + amountWithGas,
-              accountId,
-              network: selectedNetwork,
-            });
-          });
-        setSentAmount(amountWithGas);
       });
+      dispatch.app
+        .pushAndPollingPendingMessage({
+          ...base,
+          cid,
+          datetime: moment().format('YYYY/MM/DD h:mm:ss'),
+          height: 0,
+          status: MessageStatus.PENDING,
+        })
+        .catch((error) => {
+          console.error('[Transfer Failed]', error);
+          // resotre balance while transaction failed
+          dispatch.app.setBalance({
+            balance: balance + amountWithGas,
+            accountId,
+            network: selectedNetwork,
+          });
+        });
+      setSentAmount(amountWithGas);
     },
     [gas]
   );
@@ -255,6 +261,12 @@ const Transfer: React.FC = () => {
         </TransferInfo>
       </TransferInfoContainer>
       <TransferSent amount={sentAmount} />
+      <Alert
+        open={showError}
+        setOpen={setShowError}
+        severity="error"
+        textLocalId="transfer.failed"
+      />
     </Container>
   );
 };

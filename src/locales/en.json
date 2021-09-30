@@ -64,6 +64,7 @@
   "transfer.form.amount.validaton.type": "Amount can only be number",
   "transfer.form.info.balance.available": "Available Balance: {balance}",
   "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gas}",
+  "transfer.failed": "Transfer failed",
 
   "transfer.detail.title": "Transfer Detail",
   "transfer.detail.cid": "Trade ID",
