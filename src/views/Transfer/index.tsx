@@ -5,14 +5,11 @@ import {
   convertToFilUnit,
   getPersistenceMemory,
 } from 'src/utils/app';
-import { MessageStatus } from 'src/types/app';
 import {
   sendSignedMessage,
   constructUnsignedMessage,
   getEstimateGas,
 } from 'src/utils/lotus';
-import { useQuery } from 'react-query';
-import CommonPageHeader from 'src/components/CommonPageHeader';
 import {
   Formik,
   Form,
@@ -21,6 +18,9 @@ import {
   FormikValues,
   FormikErrors,
 } from 'formik';
+import { useQuery } from 'react-query';
+import { MessageStatus } from 'src/types/app';
+import CommonPageHeader from 'src/components/CommonPageHeader';
 import CommonPageFooter from 'src/components/CommonPageFooter';
 import Alert from 'src/components/Alert';
 import TextField from '@material-ui/core/TextField';
@@ -43,6 +43,7 @@ const Transfer: React.FC = () => {
   const [sentAmount, setSentAmount] = useState(0);
   const [extendedKey, setExtendedKey] = useState(null);
   const [showError, setShowError] = React.useState(false);
+  const [errorTextLocaleId, setErrorTextLocaleId] = React.useState('');
 
   const { formatMessage } = useIntl();
 
@@ -118,6 +119,7 @@ const Transfer: React.FC = () => {
       })
       .catch((error) => {
         console.error('[Fetch Gas Failed]', error);
+        setErrorTextLocaleId('transfer.fetchGas.failed');
         setShowError(true);
       });
   };
@@ -160,6 +162,7 @@ const Transfer: React.FC = () => {
         })
         .catch((error) => {
           console.error('[Transfer Failed]', error);
+          setErrorTextLocaleId('transfer.send.failed');
           // resotre balance while transaction failed
           dispatch.app.setBalance({
             balance: balance + amountWithGas,
@@ -265,7 +268,7 @@ const Transfer: React.FC = () => {
         open={showError}
         setOpen={setShowError}
         severity="error"
-        textLocalId="transfer.failed"
+        textLocalId={errorTextLocaleId}
       />
     </Container>
   );

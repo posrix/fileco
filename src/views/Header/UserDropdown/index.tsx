@@ -52,6 +52,11 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
     setAnchorEl(null);
   };
 
+  const routeTo = (route: string) => {
+    history.push(route);
+    handleClose();
+  };
+
   const createAccount = () => {
     getPersistenceMemory({
       event: 'GET_PASSWORD',
@@ -68,7 +73,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       event: 'SET_PASSWORD',
       entity: { password: '' },
     });
-    history.push('/unlock');
+    routeTo('/unlock');
   };
 
   return (
@@ -134,7 +139,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
           <FormattedMessage id="user.dropdown.account.add" />
         </MenuName>
       </MenuItem>
-      <MenuItem onClick={() => history.push('/import-account')}>
+      <MenuItem onClick={() => routeTo('/import-account')}>
         <Icon glyph="download" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.account.import" />
@@ -143,7 +148,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       <DividerWrapper>
         <Divider />
       </DividerWrapper>
-      <MenuItem onClick={() => history.push('/setting')}>
+      <MenuItem onClick={() => routeTo('/setting')}>
         <Icon glyph="setting" size={24} />
         <MenuName>
           <FormattedMessage id="user.dropdown.setting" />

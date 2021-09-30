@@ -64,7 +64,8 @@
   "transfer.form.amount.validaton.type": "Amount can only be number",
   "transfer.form.info.balance.available": "Available Balance: {balance}",
   "transfer.form.info.gas.estimate": "Estimate Gas Fee: {gas}",
-  "transfer.failed": "Transfer failed",
+  "transfer.fetchGas.failed": "Fecth gas failed",
+  "transfer.send.failed": "Transfer failed",
 
   "transfer.detail.title": "Transfer Detail",
   "transfer.detail.cid": "Trade ID",
@@ -74,6 +75,7 @@
   "transfer.detail.receiver": "Receiver",
   "transfer.detail.amount": "Amount",
   "transfer.detail.status": "Status",
+  "transfer.sent": "Sent {amount}",
 
   "receive.qrcode": "Receive QrCode",
   "receive.address": "Receive address",

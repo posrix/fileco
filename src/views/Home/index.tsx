@@ -161,7 +161,6 @@ const Home: React.FC = () => {
       <Alert
         open={copied}
         setOpen={setCopied}
-        autoHideDuration={1000}
         textLocalId="global.copied"
       />
     </Container>
