@@ -1,11 +1,11 @@
 {
-  "name": "keystore-lite",
+  "name": "fileco",
   "version": "0.0.1",
   "description": "A filecoin wallet in chrome extension",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.bitrost.tech/projects/KL/repos/keystore-lite/browse"
+    "url": "git@github.com:posrix/fileco.git"
   },
   "scripts": {
     "build": "node webpack/build.js",
@@ -27,7 +27,6 @@
     "@types/react-dom": "^17.0.1",
     "@types/react-router-dom": "^5.1.7",
     "@types/yup": "^0.29.11",
-    "aes-js": "^3.1.2",
     "axios": "^0.21.1",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
@@ -44,7 +43,6 @@
     "lodash": "^4.17.21",
     "lowercase-keys": "^2.0.0",
     "moment": "^2.29.1",
-    "pbkdf2": "^3.1.2",
     "react": "^17.0.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.1",
