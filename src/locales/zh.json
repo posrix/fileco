@@ -21,14 +21,14 @@
   "account.import.form.term": "使用条款",
 
   "external.account.import.form.title": "导入账户",
-  "external.account.import.form.subTitle": "导入的账户将不会与最初创建的 Keystore lite 账户助记词相关联。",
+  "external.account.import.form.subTitle": "导入的账户将不会与最初创建的 Fileco 账户助记词相关联。",
   "external.account.import.form.privateKey": "输入您的私钥",
   "external.account.import.form.privateKey.validaton.required": "请输入私钥",
   "external.account.import.form.error.common": "导入账户失败",
   "external.account.import.form.error.dup": "账户已存在",
 
   "password.create.form.title": "设置钱包访问密码",
-  "password.create.form.subTitle": "Keystore Lite 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
+  "password.create.form.subTitle": "Fileco 不会在服务器存储您的密码。一旦忘记密码，您只能通过已备份的助记词来恢复钱包。",
   "password.create.form.password": "8-20位密码",
   "password.create.form.confirm": "确认密码",
   "password.create.form.password.validaton.required": "请输入密码",
@@ -100,8 +100,8 @@
   "setting.view.mnemonic.warning": "助记词代表您的钱包资产所有权，请勿泄漏给任何人",
   "setting.view.mnemonic.display.title": "您的助记词",
 
-  "setting.about.version.title": "Keystore Lite 版本",
-  "setting.about.version.subTitle": "Keystore Lite在XXX设计和实现",
+  "setting.about.version.title": "Fileco 版本",
+  "setting.about.version.subTitle": "Fileco在XXX设计和实现",
   "setting.about.link.title": "链接",
   "setting.about.link.privacy": "隐私政策",
   "setting.about.link.term": "使用条款",

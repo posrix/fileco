@@ -21,7 +21,7 @@ const Welcome = () => {
     <Container>
       <CoverContainer>
         <div>
-          <Title>Keystore</Title>
+          <Title>Fileco</Title>
           <Title>Lite</Title>
           <Slogan>
             <FormattedMessage id="welcome.slogan" />
