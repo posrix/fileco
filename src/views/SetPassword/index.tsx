@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import PasswordInput from 'src/components/PasswordInput';
 import Checkbox from 'src/components/Checkbox';
 import { Container, FormFieldsContainer } from './styled';
+import { DEV_PASSWORD, IS_PRODUCTION } from 'src/utils/constants';
 
 const SetPassword: React.FC = () => {
   const history = useHistory();
@@ -23,8 +24,8 @@ const SetPassword: React.FC = () => {
       />
       <Formik
         initialValues={{
-          password: '',
-          confirm: '',
+          password: IS_PRODUCTION ? '' : DEV_PASSWORD,
+          confirm: IS_PRODUCTION ? '' : DEV_PASSWORD,
           term: false,
         }}
         onSubmit={({ password }) => {

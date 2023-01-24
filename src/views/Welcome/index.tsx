@@ -22,7 +22,6 @@ const Welcome = () => {
       <CoverContainer>
         <div>
           <Title>Fileco</Title>
-          <Title>Lite</Title>
           <Slogan>
             <FormattedMessage id="welcome.slogan" />
           </Slogan>

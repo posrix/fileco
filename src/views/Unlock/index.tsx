@@ -72,7 +72,6 @@ const Unlock: React.FC<UnlockProps> = ({ location }) => {
       <CoverContainer>
         <div>
           <Title>Fileco</Title>
-          <Title>Lite</Title>
           <Slogan>
             <FormattedMessage id="unlock.welcome.back.slogan" />
           </Slogan>

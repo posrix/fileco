@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "keystore Lite",
+  "name": "Fileco",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
     "default_popup": "popup.html",

@@ -31,7 +31,7 @@ const Header: React.FC = () => {
 
   return (
     <Container>
-      <Icon glyph="keystore" size={28} />
+      <Icon glyph="logo" size={28} />
       <NetworkSelector onClick={handleNetworkSelectorClick}>
         <FormattedMessage
           id="home.network.current"

@@ -14,6 +14,7 @@ import { useQueryClient } from 'react-query';
 import PasswordInput from 'src/components/PasswordInput';
 import moment from 'moment';
 import { Container, FormFieldsContainer } from './styled';
+import { DEV_PASSWORD, IS_PRODUCTION } from 'src/utils/constants';
 
 const passworder = require('browser-passworder');
 
@@ -37,15 +38,14 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ forgotPassword }) => {
       <Formik
         initialValues={{
           mnemonic: '',
-          password: '',
-          confirm: '',
+          password: IS_PRODUCTION ? '' : DEV_PASSWORD,
+          confirm: IS_PRODUCTION ? '' : DEV_PASSWORD,
           term: false,
         }}
         onSubmit={({ password, mnemonic }) => {
           if (forgotPassword) {
             // make all querys be staled
             queryClient.invalidateQueries();
-
             // reset all rematch state
             dispatch.app.resetAllState();
           }
