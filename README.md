@@ -5,7 +5,7 @@ HD wallet based on bip39 and bip32, provides strong security through encryption 
 
 ### Technologies
 - react@17
-- typescript@
+- typescript@4
 - material-ui@4
 - styled-components@5
 - rematch@2
